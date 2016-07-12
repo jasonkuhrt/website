@@ -103,7 +103,7 @@
       "always"
     ],
     "array-bracket-spacing": [
-      1,
+      0,
       "always",
       {
         "singleValue": false,
