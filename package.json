@@ -1,5 +1,6 @@
 {
-  "name": "turkey",
+  "name": "website",
+  "private": true,
   "version": "1.0.0",
   "description": "Exploring a turnkey starting point for JS projects.",
   "main": "src/main.js",
@@ -11,18 +12,18 @@
     "lint": "eslint src/main.js",
     "postversion": "git push && git push --tags",
     "build-production": "npm run beforebuild && webpack -p --devtool sourcemap",
-    "deploy": "npm run build-production && surge --domain turkey.surge.sh --project ./build"
+    "deploy": "npm run build-production && surge --domain jasonkuhrt.surge.sh --project ./build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/presstube/turkey.git"
+    "url": "git+https://github.com/jasonkuhrt/website.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/presstube/turkey/issues"
+    "url": "https://github.com/jasonkuhrt/website/issues"
   },
-  "homepage": "https://github.com/presstube/turkey#readme",
+  "homepage": "https://github.com/jasonkuhrt/website#readme",
   "dependencies": {
     "lodash": "^4.11.1",
     "react": "^15.0.1",
