@@ -60,3 +60,7 @@ html {
 .DotMagenta {
   color: hsl(336, 100%, 75%);
 }
+
+.DotBlue {
+  color: hsl(195, 100%, 50%);
+}
