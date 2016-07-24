@@ -78,3 +78,9 @@ html {
 .DotPurple {
   color: hsl(278, 80%, 51%)
 }
+
+section h1 {
+  font-size: 1rem;
+  font-weight: bold;
+  /*margin-left: -2rem;*/
+}
