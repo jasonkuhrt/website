@@ -5,7 +5,7 @@ export default class App extends React.Component {
     return (
       <div id="app">
         <header id="banner">
-          <h1 id="avatar">Jason Kuhrt</h1>
+          <h1 className="Avatar">Jason<br/>Kuhrt</h1>
           <p>A romantic polymath shapeshifting amidst Art, Design, and Engineering<span className="DotMagenta">.</span> Devotee to the humanities<span className="DotCyan">.</span> In an alternate universe, xor: Coureur de Bois, Architect, Athlete, Lego Master Builder<span className="DotBlue">.</span></p>
         </header>
         <section className="Section">

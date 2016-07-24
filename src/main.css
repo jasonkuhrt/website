@@ -55,6 +55,9 @@ html {
 
 
 /* Components */
+.Avatar {
+  line-height: 0.9;
+}
 
 .Section {
   margin-top: 6rem;
