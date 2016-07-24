@@ -6,6 +6,8 @@ html, body {
 }
 h1,h2,h3,h4,h5,h6 {
   font-weight: normal;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 }
 * {
   box-sizing: border-box;
@@ -79,8 +81,11 @@ html {
   color: hsl(278, 80%, 51%)
 }
 
-section h1 {
-  font-size: 1rem;
+h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  /*opacity: 0.75;*/
+  margin-top: 1.5rem;
+  /*text-align: center;*/
   font-weight: bold;
-  /*margin-left: -2rem;*/
 }
