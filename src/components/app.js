@@ -9,18 +9,10 @@ export default class App extends React.Component {
           <p>An aspiring polymath shapeshifting amidst Art, Design, and Engineering<span className="DotMagenta">.</span> Once described as "poet philosopher" within a "feral tribe of wandering alchemists after the apocolypse"<span className="DotPurple">.</span> Devotee to the humanities<span className="DotCyan">.</span> In an alternate universe, xor: Coureur de Bois, Architect, Athlete, Lego Master Builder<span className="DotBlue">.</span></p>
         </header>
         <section className="Section">
-          <h1>Hello,</h1>
-          <h2>Ethos</h2>
-          <p>I am a generalist in the pursuit of elegant systems primarily among the fields of engineering, design, and art. I am driven by a passion to substitute the ogre of chaos for qualities of simplicity and humanity, consistency and honesty, transparency and accountability. To this end, I prioritize opportunities encompassing systemic problem solving.</p>
-          <h2>Expertise</h2>
-          <p>I have architected a real-time cloud platform, contributed critical design thinking to product, and putted a humble art practice focused on anatomy of systems. As a design-minded generalist engineer I am equipped to help mediate various domain tradeoffs inherent to those interdisciplinary projects concerned with using technology to enhance the human condition.</p>
-          <h2>Recently</h2>
-          <p>I worked at littleBits where my principal mission was to engineer the cloud platform behind the cloudBit. The cloudBit was an "Internet of Things" (IoT) product realized as a prized module in the littleBits library. When used, it bridged communication between a user's circuit and the internet. The internet became a building block. Such manifest physicality of a medium otherwise invisible to the senses bore a potent feeling that we could revolutionize people's utility of, expression with, and relationship to connectivity.</p>
-          <p>I contributed as lead engineer for almost three years. Despite lacking experience in network programming, distributed systems or formal engineering, and being without programmer collaboration or operations support until the last months, progress occurred. Following a TED unveil, we launched mid 2014 with a simple control app, IFTTT integration, and multiple APIs.</p>
-        </section>
-        <section>
-          <h1>Lets Chat</h1>
-          <p>I am currently based in Montreal and available for contract work. Feel free to get in touch with a specific opportunity or just a friendly hello!</p>
+          <h1>Hello!</h1>
+          <p>Hi, my name is Jason Rose-Kuhrt. I am a design-minded self-taught functionally-oriented software engineer with over five years experience creating web apps and backend systems. Recently I helped lead development of the realtime distributed cloud system at littleBits that powers the cloudBit. I earned a BFA majoring in design at Concordia University where systems, theory, and society were foundational. I can get a computer to do the right thing, yet I am adept at ideation, interdisciplinary collaboration, design thinking, research, and synthesis.</p>
+          <h2>Work With Me</h2>
+          <p>I am currently based in Montreal and available for contract work. Feel free to get in touch with an opportunity or just a friendly hello!</p>
         </section>
         <ul>
           <li><a href="mailto:jasonkuhrt@me.com">Email</a></li>
@@ -29,6 +21,16 @@ export default class App extends React.Component {
           <li><a href="https://twitter.com/JasonKuhrt">Twitter</a></li>
           <li><a href="https://ca.linkedin.com/in/kuhrt">linkedIn</a></li>
         </ul>
+        <section className="Section">
+          <h1>More About Me</h1>
+          <h2>Ethos</h2>
+          <p>I am a generalist in the pursuit of elegant systems primarily among the fields of engineering, design, and art. I am driven by a passion to substitute the ogre of chaos for qualities of simplicity and humanity, consistency and honesty, transparency and accountability. To this end, I prioritize opportunities encompassing systemic problem solving.</p>
+          <h2>Expertise</h2>
+          <p>I have architected a real-time cloud platform, contributed critical design thinking to product, and putted a humble art practice focused on anatomy of systems. As a design-minded generalist engineer I am equipped to help mediate various domain tradeoffs inherent to those interdisciplinary projects concerned with using technology to enhance the human condition.</p>
+          <h2>Recently</h2>
+          <p>I helped lead development of the realtime distributed cloud system at littleBits that powers the cloudBit. The cloudBit was an "Internet of Things" (IoT) product realized as a prized module in the littleBits library. When used, it bridged communication between a user's circuit and the internet. The internet became a physical building block. For a medium otherwise invisible to the senses this bore a potent feeling that we could revolutionize people's utility of, expression with, and relationship to connectivity.</p>
+          <p>To realize this platform I built a number of backend services in NodeJS. These included a TLS Server (host to cloudBit clients) and two realtime APIs (HTTPS with SSE, Web Sockets) plus Another half-dozen services of smaller roles at different times. Tools used included NoSQL databases Redis and RethinkDB for data and messaging, Elastic Search for analysis/debugging via logs, AWS/GCP for infrastructure, docker/kubernetes for deployment, OAuth 2 for authorization. I also built the control app in ReactJS where users setup, managed, and interacted with their cloudBit. Furthermore I helped build the team, wrote research essays on advanced platform features, wrote internal CLI tools, weighed in on product decisions, contributed leadership, and more.</p>
+        </section>
       </div>
     )
   }
