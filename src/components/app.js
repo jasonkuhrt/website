@@ -10,7 +10,7 @@ export default class App extends React.Component {
         </header>
         <section className="Section">
           <h1>Hello!</h1>
-          <p>Hi, my name is Jason Rose-Kuhrt. I am a design-minded self-taught functionally-oriented software engineer with over five years experience creating web apps and backend systems. Recently I helped lead development of the realtime distributed cloud system at littleBits that powers the cloudBit. I earned a BFA majoring in design at Concordia University where systems, theory, and society were foundational. I can get a computer to do the right thing, yet I am adept at ideation, interdisciplinary collaboration, design thinking, research, and synthesis.</p>
+          <p>Hi, my name is Jason Kuhrt. I am a design-minded self-taught functionally-oriented software engineer with over five years experience creating web apps and backend systems. Recently I helped lead development of the realtime distributed cloud system at littleBits that powers the cloudBit. I earned a BFA majoring in design at Concordia University where systems, theory, and society were foundational. I can get a computer to do the right thing, yet I am adept at ideation, interdisciplinary collaboration, design thinking, research, and synthesis.</p>
           <h2>Work With Me</h2>
           <p>I am currently based in Montreal and available for contract work. Feel free to get in touch with an opportunity or just a friendly hello!</p>
         </section>
