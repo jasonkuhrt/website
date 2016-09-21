@@ -5,15 +5,17 @@
   "description": "Exploring a turnkey starting point for JS projects.",
   "main": "src/main.js",
   "scripts": {
+    "clean": "rm -rf ./build",
     "beforebuild": "mkdir -p build && cp index.html build",
+    "afterbuild":"npm run clean",
     "start": "npm run beforebuild && webpack-dev-server -d --inline",
     "start-production": "npm start -p --devtool sourcemap",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/main.js",
     "postversion": "git push && git push --tags",
     "build-production": "npm run beforebuild && webpack -p --devtool sourcemap",
-    "deploy": "npm run build-production && surge --domain jasonkuhrt.com --project ./build",
-    "deploy-stage": "npm run build-production && surge --domain stage.jasonkuhrt.com --project ./build"
+    "deploy": "npm run build-production && surge --domain jasonkuhrt.com --project ./build && npm run afterbuild",
+    "deploy-stage": "npm run build-production && surge --domain stage.jasonkuhrt.com --project ./build && npm run afterbuild"
   },
   "repository": {
     "type": "git",
