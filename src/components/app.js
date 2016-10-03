@@ -1,4 +1,4 @@
-import pathResume from "../assets/jasonkuhrt-resume-v2.pdf"
+import pathResume from "../assets/permalinked/resume.pdf"
 import React from "react"
 
 export default class App extends React.Component {

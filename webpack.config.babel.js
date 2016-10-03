@@ -17,7 +17,7 @@ export default {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loaders: ["babel"]},
       { test: /\.css$/, exclude: /node_modules/, loaders: ["style", "css"]},
-      { test: /\.pdf$/, exclude: /node_modules/, loaders: ["file"]},
+      { test: /.*\/assets\/permalinked\/.*/, exclude: /node_modules/, loaders: ["file?name=[name].[ext]"]},
     ]
   },
   devServer: {
