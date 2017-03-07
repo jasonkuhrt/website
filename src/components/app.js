@@ -16,11 +16,12 @@ export default class App extends React.Component {
           <p>I am currently based in Montreal and available for contract work. Feel free to get in touch with an opportunity or just a friendly hello!</p>
         </section>
         <ul>
+          <li><a href="https://github.com/jasonkuhrt">Github</a></li>
+          <li><a href="https://blog.jasonkuhrt.com">Blog</a></li>
+          <li><a href="https://twitter.com/jasonkuhrt">Twitter</a></li>
+          <li><a href="https://www.behance.net/KUHRT">Behance</a></li>
           <li><a href={pathResume} target="_blank">Resume</a></li>
           <li><a href="mailto:jasonkuhrt@me.com">Email</a></li>
-          <li><a href="https://github.com/jasonkuhrt">Github</a></li>
-          <li><a href="https://www.behance.net/KUHRT">Behance</a></li>
-          <li><a href="https://twitter.com/JasonKuhrt">Twitter</a></li>
         </ul>
         <section className="Section">
           <h1>More About Me</h1>
