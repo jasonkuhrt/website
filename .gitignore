@@ -37,3 +37,7 @@ jspm_packages
 
 # Project specific
 build
+
+#app
+.next
+out
