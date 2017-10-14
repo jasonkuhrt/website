@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint {components,pages}/**/*.js --ignore-path .gitignore",
     "build": "next build && next export",
-    "deploy": "yarn build && cd out && now && cd .. && now alias $(now ls out | grep --only-matching 'out.*\.sh' | head -n 1) jasonkuhrt.com",
+    "deploy": "yarn build && cd out && now && cd .. && now alias $(now ls out | grep --only-matching 'out.*\\.sh' | head -n 1) jasonkuhrt.com",
     "postversion": "git push && git push --tags",
     "dev": "next"
   },
