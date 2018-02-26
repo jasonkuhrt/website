@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/jasonkuhrt/website#readme",
   "dependencies": {
-    "next": "^3.2.2",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "next": "^5.0.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
