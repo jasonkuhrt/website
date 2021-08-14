@@ -1,35 +1,25 @@
 {
-  "name": "website",
+  "name": "kuhrt",
+  "version": "0.1.0",
   "private": true,
-  "version": "1.0.0",
-  "description": "My personal website",
   "scripts": {
-    "lint": "eslint {components,pages}/**/*.js --ignore-path .gitignore",
-    "build": "next build && next export",
-    "deploy": "yarn build && cd out && now && cd .. && now alias $(now ls out | grep --only-matching 'out.*\\.sh' | head -n 1) jasonkuhrt.com",
-    "postversion": "git push && git push --tags",
-    "dev": "next"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jasonkuhrt/website.git"
-  },
-  "author": "",
-  "license": "UNLICENSED",
-  "bugs": {
-    "url": "https://github.com/jasonkuhrt/website/issues"
-  },
-  "homepage": "https://github.com/jasonkuhrt/website#readme",
   "dependencies": {
-    "next": "^5.0.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "next": "11.1.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.0",
-    "eslint": "^4.7.2",
-    "eslint-plugin-react": "^7.4.0",
-    "prettier": "^1.7.0",
-    "prettier-eslint": "^8.1.1"
+    "@types/react": "17.0.17",
+    "autoprefixer": "^10.3.1",
+    "eslint": "7.32.0",
+    "eslint-config-next": "11.1.0",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.7",
+    "typescript": "4.3.5"
   }
 }
