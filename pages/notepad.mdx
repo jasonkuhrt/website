@@ -3,3 +3,57 @@
 ```
 const a = 1
 ```
+
+## Optimized Published Package Types
+
+My TypeScript library project template currently outputs the build like so:
+
+```
+|- dist-cjs/
+	|- index.js
+	|- index.js.map
+	|- index.d.ts
+	|- index.d.ts.map
+|- dist-esm/
+	|- index.js
+	|- index.js.map
+	|- index.d.ts
+	|- index.d.ts.map
+
+```
+
+The only file above that needs duplication is `index.js` which has different runtime module loading. The rest is to support TS tooling and is identical. Duplicating it is a waste:
+
+- Simply wasteful e.g. disk space
+- Larger package for consumers to download from npm, greater bandwidth usage, more latentcy
+
+The solution to this problem is to use the [`typeVersions`](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#version-selection-with-typesversions) package.json field to tell TS where to find these files. In this way, they can be put one place for all emitted builds.
+
+> Note that in the future, when [microsoft/TypeScript#33079](https://github.com/microsoft/TypeScript/issues/33079) is closed, the solution will change and be based on the now-standard `exports` packge.json field.
+
+Let's say that `exports` were configred like this:
+
+```json
+"exports": {
+	".": {
+		"require": "./dist-cjs/index.js",
+		"import": "./dist-esm/index.js"
+	}
+}
+```
+
+Then `typeVersions` could be configured like this:
+
+```json
+"typeVersions": {
+	"*": {
+		"*": "./dist-esm/*",
+	}
+}
+```
+
+With the above config, it becomes only required to put the TS supporting files into the ESM build.
+
+The first level `*` is about which TypeScript version this config applies to.
+
+The second `*` is about which path pattern this mapping applies to.
