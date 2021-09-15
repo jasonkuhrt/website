@@ -17,11 +17,7 @@ const Home: NextPage = () => {
         <div className="flex mt-3 space-x-5">
           {socialLinks.map((socialLink) => (
             <Link key={socialLink.title} href={socialLink.href}>
-              <a
-                title={socialLink.title}
-                className="opacity-20 hover:opacity-100"
-                target="_blank"
-              >
+              <a title={socialLink.title} className="opacity-20 hover:opacity-100" target="_blank">
                 <socialLink.icon size={20} />
               </a>
             </Link>
