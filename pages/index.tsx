@@ -46,52 +46,54 @@ const Home: NextPage = () => {
       <section className="mt-20 w-full">
         <h1 className="">Appearances</h1>
         <table>
-          <Appearance
-            title="Berlin TypeScript Meetup #9"
-            date="August 2022"
-            links={{
-              info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
-              recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
-              twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
-            }}
-          />
-          <Appearance
-            title="Berlin GraphQL Meetup #25"
-            date="February 2022"
-            links={{
-              info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
-              recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
-              twitter: 'https://twitter.com/prisma/status/1492136994834628613',
-            }}
-          />
-          <Appearance
-            title="GraphQL Radio"
-            date="August 2022"
-            links={{
-              recording:
-                'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
-              twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
-            }}
-          />
-          <Appearance
-            title="SF Node Meetup"
-            date="February 2021"
-            links={{
-              info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
-              recording: 'https://www.youtube.com/watch?v=WUz5JulzSDA',
-              twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
-            }}
-          />
-          <Appearance
-            title="Node.js Wroclaw Meetup #8"
-            date="November 2020"
-            links={{
-              info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
-              recording:
-                'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
-              twitter: 'https://twitter.com/prisma/status/1328653494010736646',
-            }}
-          />
+          <tbody>
+            <Appearance
+              title="Berlin TypeScript Meetup #9"
+              date="August 2022"
+              links={{
+                info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
+                recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
+                twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
+              }}
+            />
+            <Appearance
+              title="Berlin GraphQL Meetup #25"
+              date="February 2022"
+              links={{
+                info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
+                recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
+                twitter: 'https://twitter.com/prisma/status/1492136994834628613',
+              }}
+            />
+            <Appearance
+              title="GraphQL Radio"
+              date="August 2022"
+              links={{
+                recording:
+                  'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
+                twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
+              }}
+            />
+            <Appearance
+              title="SF Node Meetup"
+              date="February 2021"
+              links={{
+                info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
+                recording: 'https://www.youtube.com/watch?v=WUz5JulzSDA',
+                twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
+              }}
+            />
+            <Appearance
+              title="Node.js Wroclaw Meetup #8"
+              date="November 2020"
+              links={{
+                info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
+                recording:
+                  'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
+                twitter: 'https://twitter.com/prisma/status/1328653494010736646',
+              }}
+            />
+          </tbody>
         </table>
       </section>
     </div>
