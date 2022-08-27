@@ -9,7 +9,7 @@ import { title } from 'process'
 
 const Home: NextPage = () => {
   return (
-    <div className="mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
+    <div style={{ marginBottom: '50vh' }} className=" mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
       <section className="flex flex-col items-center">
         <div className="rounded-full overflow-hidden w-48 h-48">
           <Image src={profilePicture} alt="Profile picture of Jason Kuhrt" />
@@ -44,20 +44,21 @@ const Home: NextPage = () => {
       </section>
 
       <section className="mt-20 w-full">
-        <h1 className="">Appearances</h1>
-        <table>
+        <h1 className="">Talks</h1>
+        <table className="w-full">
           <tbody>
-            <Appearance
-              title="Berlin TypeScript Meetup #9"
+            <Talk
+              title="Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge"
+              venue="Berlin TypeScript Meetup #9"
               date="August 2022"
               links={{
                 info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
-                recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
                 twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
               }}
             />
-            <Appearance
-              title="Berlin GraphQL Meetup #25"
+            <Talk
+              title="Diving into the new Nexus Prisma"
+              venue="Berlin GraphQL Meetup #25"
               date="February 2022"
               links={{
                 info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
@@ -65,8 +66,9 @@ const Home: NextPage = () => {
                 twitter: 'https://twitter.com/prisma/status/1492136994834628613',
               }}
             />
-            <Appearance
-              title="GraphQL Radio"
+            <Talk
+              title="Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond"
+              venue="GraphQL Radio"
               date="August 2022"
               links={{
                 recording:
@@ -74,8 +76,9 @@ const Home: NextPage = () => {
                 twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
               }}
             />
-            <Appearance
-              title="SF Node Meetup"
+            <Talk
+              title="Introduction to Nexus"
+              venue="SF Node Meetup"
               date="February 2021"
               links={{
                 info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
@@ -83,14 +86,25 @@ const Home: NextPage = () => {
                 twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
               }}
             />
-            <Appearance
-              title="Node.js Wroclaw Meetup #8"
+            <Talk
+              title="Nexus Schema in the Context of Building a Small API"
+              venue="Node.js Wroclaw Meetup #8"
               date="November 2020"
               links={{
                 info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
                 recording:
                   'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
                 twitter: 'https://twitter.com/prisma/status/1328653494010736646',
+              }}
+            />
+            <Talk
+              title="Building a type-safe GraphQL server with Nexus and Prisma"
+              venue="Prisma Day"
+              date="June 2020"
+              links={{
+                info: 'https://www.prisma.io/day-2020/',
+                recording: 'https://www.youtube.com/watch?v=oFk4rxz_KO8&feature=youtu.be',
+                twitter: 'https://twitter.com/JasonKuhrt/status/1274421971997134851',
               }}
             />
           </tbody>
@@ -100,8 +114,9 @@ const Home: NextPage = () => {
   )
 }
 
-const Appearance = (props: {
-  title: string
+const Talk = (props: {
+  title?: string
+  venue: string
   date: string
   links?: {
     recording?: string
@@ -110,25 +125,40 @@ const Appearance = (props: {
   }
 }) => {
   return (
-    <tr className="flex hover:bg-[#fcfcfc] p-2">
-      <td className="w-80">{props.title}</td>
-      <td className="w-40 mr-10">{props.date}</td>
-      <td className="flex ml-4 space-x-2">
-        {props.links?.info && (
-          <a className="opacity-20 hover:opacity-100" href={props.links.info}>
-            <Info />
-          </a>
-        )}
-        {props.links?.recording && (
-          <a className="opacity-20 hover:opacity-100" href={props.links.recording}>
-            <Youtube />
-          </a>
-        )}
-        {props.links?.twitter && (
-          <a className="opacity-20 hover:opacity-100" href={props.links?.twitter}>
-            <Twitter />
-          </a>
-        )}
+    <tr className="text-sm hover:bg-[#fcfcfc] p-2">
+      <td className="p-3 align-top">
+        <div className="w-96">
+          <div>{props.title ?? 'todo'}</div>
+          <div className="opacity-40">@ {props.venue}</div>
+        </div>
+      </td>
+      <td className="p-3 align-top">{props.date}</td>
+      <td className="p-3 align-top">
+        <div className="flex space-x-2">
+          {props.links?.info ? (
+            <a className="opacity-20 hover:opacity-100" href={props.links.info}>
+              <Info size={20} />
+            </a>
+          ) : (
+            <span className="opacity-10">
+              <Info size={20} />
+            </span>
+          )}
+          {props.links?.recording ? (
+            <a className="opacity-20 hover:opacity-100" href={props.links.recording}>
+              <Youtube size={20} />
+            </a>
+          ) : (
+            <span className="opacity-10">
+              <Youtube size={20} />
+            </span>
+          )}
+          {props.links?.twitter && (
+            <a className="opacity-20 hover:opacity-100" href={props.links?.twitter}>
+              <Twitter size={20} />
+            </a>
+          )}
+        </div>
       </td>
     </tr>
   )
