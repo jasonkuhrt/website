@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { socialLinks } from '../data/socialLinks'
-import profilePicture from '../public/profile-picture.png'
+import profilePicture from '../public/avatar@0.5x.png'
 import { Info, Twitter, Youtube } from 'react-feather'
 import { title } from 'process'
 
