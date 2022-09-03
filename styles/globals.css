@@ -17,12 +17,14 @@ a {
   text-decoration: none;
 }
 
-td {
-  /* border: 1px solid #eee; */
-}
-
 * {
   box-sizing: border-box;
+}
+
+
+
+::selection {
+  background: hsl(58, 100%, 50%);
 }
 
 h1 {
@@ -30,6 +32,59 @@ h1 {
   color: hsl(0, 0%, 20%);
 }
 
-::selection {
-  background: hsl(58, 100%, 50%);
+h2 {
+  margin-top: 3rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: hsl(0, 0%, 30%);
+  text-align: center;
+}
+
+ol {
+  list-style:circle;
+  list-style-position: inside;
+  margin-top: 1rem;
+  margin-left: 1rem;
+}
+li {
+  margin-top: 0.75rem;
+}
+
+p {
+  margin-top:2rem;
+}
+
+p a {
+  border-bottom: 0.1rem dashed hsl(0, 0%, 89%);
+}
+
+p a:hover {
+  border-bottom: 0.1rem solid hsl(0, 0%, 50%);
+}
+
+li > p {
+  margin-top: 0;
+}
+
+
+
+p > code {
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  margin-left: -0.25rem;
+  margin-right: -0.25rem;
+  background-color: hsl(270, 100%, 97%);
+  color: hsl(270, 37%, 48%);
+}
+
+pre {
+  margin-top: 1rem;
+  border-radius: 0.333rem;
+  padding: 1.25rem 1.5rem;
+  background-color: hsl(0, 0%, 96%);
+  font-size: 0.9rem;
+}
+
+li pre {
+  margin-left: 1rem;
 }

@@ -28,7 +28,7 @@ const PostLayout: FC<{ log: Log }> = ({ log }) => {
       <Head>
         <title>{log.title}</title>
       </Head>
-      <article className="mx-auto max-w-2xl py-16">
+      <article style={{ marginBottom: '50vh' }} className="mx-auto max-w-2xl py-16">
         <div className="mb-6 text-center">
           <Link href="/">
             <a title="home" className="text-center text-sm font-bold uppercase text-blue-700">
@@ -36,13 +36,13 @@ const PostLayout: FC<{ log: Log }> = ({ log }) => {
             </a>
           </Link>
         </div>
-        <div className="mb-6 text-center">
+        <div className="mb-24 text-center">
           <h1 className="mb-1 text-3xl font-bold">{log.title}</h1>
-          <time dateTime={log.date} className="text-sm text-slate-600">
+          <time dateTime={log.date} className="text-sm">
             {format(parseISO(log.date), 'LLLL d, yyyy')}
           </time>
         </div>
-        <div className="cl-post-body" dangerouslySetInnerHTML={{ __html: log.body.html }} />
+        <div dangerouslySetInnerHTML={{ __html: log.body.html }} />
       </article>
     </>
   )
