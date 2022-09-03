@@ -7,6 +7,7 @@ import profilePicture from '../public/avatar@0.5x.png'
 import { Info, Twitter, Youtube } from 'react-feather'
 import { allLogs, Log } from '../.contentlayer/generated'
 import { compareDesc } from 'date-fns'
+import Head from 'next/head'
 
 export const getStaticProps: GetStaticProps = async () => {
   const logs = allLogs.sort((a, b) => {
@@ -18,6 +19,10 @@ export const getStaticProps: GetStaticProps = async () => {
 const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
   return (
     <div style={{ marginBottom: '50vh' }} className="p-6 mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
+      <Head>
+        <title>Jason Kuhrt</title>
+      </Head>
+
       <section className="flex flex-col items-center">
         <div className="rounded-full overflow-hidden w-48 h-48">
           <Image src={profilePicture} alt="Profile picture of Jason Kuhrt" />
@@ -34,14 +39,6 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
           ))}
         </div>
       </section>
-      <Title>Logs</Title>
-      <div>
-        {logs.map((log, index) => (
-          <Link key={index} href={log.url}>
-            <a title={log.title}>{log.title}</a>
-          </Link>
-        ))}
-      </div>
 
       <section>
         <p className="">
@@ -60,7 +57,18 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
       </section>
 
       <section>
-        <Title>Logs</Title>
+        <Link href="/logs">
+          <a>
+            <Title>Logs</Title>
+          </a>
+        </Link>
+        <div>
+          {logs.map((log, index) => (
+            <Link key={index} href={log.url}>
+              <a title={log.title}>{log.title}</a>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="mt-20 w-full">

@@ -1,43 +1,51 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { compareDesc, format, parseISO } from 'date-fns'
-import { allPosts, Post } from '../../.contentlayer/generated'
-import { GetStaticProps } from 'next'
+import { GetStaticProps, NextPage } from 'next'
 import { FC } from 'react'
+import { allLogs, Log } from '../../.contentlayer/generated'
 
 export const getStaticProps: GetStaticProps = async () => {
-  const posts = allPosts.sort((a, b) => {
+  const logs = allLogs.sort((a, b) => {
     return compareDesc(new Date(a.date), new Date(b.date))
   })
-  return { props: { posts } }
+  return { props: { logs } }
 }
 
-const PostCard: FC<Post> = (post) => {
+const LogCard: FC<Log> = (log) => {
   return (
     <div className="mb-6">
-      <time dateTime={post.date} className="block text-sm text-slate-600">
-        {format(parseISO(post.date), 'LLLL d, yyyy')}
+      <time dateTime={log.date} className="block text-sm text-slate-600">
+        {format(parseISO(log.date), 'LLLL d, yyyy')}
       </time>
       <h2 className="text-lg">
-        <Link href={post.url}>
-          <a className="text-blue-700 hover:text-blue-900">{post.title}</a>
+        <Link href={log.url}>
+          <a className="text-blue-700 hover:text-blue-900">{log.title}</a>
         </Link>
       </h2>
     </div>
   )
 }
 
-const Home: FC<{ posts: Post[] }> = ({ posts }) => {
+const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
   return (
     <div className="mx-auto max-w-2xl py-16 text-center">
       <Head>
-        <title>Contentlayer Blog Example</title>
+        <title>Jason Kuhrt – Logs</title>
       </Head>
 
-      <h1 className="mb-8 text-3xl font-bold">Contentlayer Blog Example</h1>
+      <div className="mb-6 text-center">
+        <Link href="/">
+          <a title="home" className="text-center text-sm font-bold uppercase text-blue-700">
+            ↑
+          </a>
+        </Link>
+      </div>
 
-      {posts.map((post, idx) => (
-        <PostCard key={idx} {...post} />
+      <h1 className="mb-8 text-3xl font-bold">Logs</h1>
+
+      {logs.map((log, idx) => (
+        <LogCard key={idx} {...log} />
       ))}
     </div>
   )
