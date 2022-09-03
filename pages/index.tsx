@@ -1,12 +1,21 @@
-import type { NextPage } from 'next'
+import type { GetStaticProps, NextPage } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { FC } from 'react'
 import { socialLinks } from '../data/socialLinks'
 import profilePicture from '../public/avatar@0.5x.png'
 import { Info, Twitter, Youtube } from 'react-feather'
+import { allLogs, Log } from '../.contentlayer/generated'
+import { compareDesc } from 'date-fns'
 
-const Home: NextPage = () => {
+export const getStaticProps: GetStaticProps = async () => {
+  const logs = allLogs.sort((a, b) => {
+    return compareDesc(new Date(a.date), new Date(b.date))
+  })
+  return { props: { logs } }
+}
+
+const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
   return (
     <div style={{ marginBottom: '50vh' }} className="p-6 mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
       <section className="flex flex-col items-center">
@@ -25,6 +34,14 @@ const Home: NextPage = () => {
           ))}
         </div>
       </section>
+      <Title>Logs</Title>
+      <div>
+        {logs.map((log, index) => (
+          <Link key={index} href={log.url}>
+            <a title={log.title}>{log.title}</a>
+          </Link>
+        ))}
+      </div>
 
       <section>
         <p className="">
@@ -42,8 +59,12 @@ const Home: NextPage = () => {
         </p>
       </section>
 
+      <section>
+        <Title>Logs</Title>
+      </section>
+
       <section className="mt-20 w-full">
-        <h1 className="">Talks</h1>
+        <Title>Talks</Title>
         <div className="w-full">
           <Talk
             title="Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge"
@@ -111,7 +132,12 @@ const Home: NextPage = () => {
   )
 }
 
-const Talk = (props: {
+const Title: FC<{ children: React.ReactNode }> = (props) => {
+  // TODO hash anchor link
+  return <h1>{props.children}</h1>
+}
+
+const Talk: FC<{
   title: string
   venue: string
   date: string
@@ -120,7 +146,7 @@ const Talk = (props: {
     info?: string
     twitter?: string
   }
-}) => {
+}> = (props) => {
   return (
     <div className="flex flex-col md:flex-row text-sm hover:bg-[#fcfcfc] p-2">
       <div className="p-3 align-top">
