@@ -26,7 +26,7 @@ const PostLayout: FC<{ log: Log }> = ({ log }) => {
   return (
     <>
       <Head>
-        <title>{log.title}</title>
+        <title>Jason Kuhrt – {log.title}</title>
       </Head>
       <article style={{ marginBottom: '50vh' }} className="mx-auto max-w-2xl py-16">
         <div className="mb-6 text-center">
