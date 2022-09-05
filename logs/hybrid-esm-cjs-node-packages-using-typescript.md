@@ -3,6 +3,10 @@ title: Hybrid ESM/CJS Node Packages using TypeScript
 date: 2022-9-3
 ---
 
+Update 2022/9/5: There is a [TS issue](https://github.com/microsoft/TypeScript/issues/46786#issuecomment-1237243821) covering the topic herein.
+
+---
+
 I worked out a solution to creating hybrid CJS/ESM Node packages using TypeScript's new ([since 4.7](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#ecmascript-module-support-in-nodejs)) ESM support.
 
 ## Understanding What Needs to be Emitted
