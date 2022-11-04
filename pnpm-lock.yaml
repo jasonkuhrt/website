@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@prisma-labs/prettier-config': ^0.1.0
   '@types/node': ^18.7.13
-  '@types/react': 18.0.17
+  '@types/react': 18.0.25
   autoprefixer: ^10.4.8
   contentlayer: ^0.2.7
   date-fns: ^2.29.2
@@ -30,7 +30,7 @@ dependencies:
 devDependencies:
   '@prisma-labs/prettier-config': 0.1.0
   '@types/node': 18.7.13
-  '@types/react': 18.0.17
+  '@types/react': 18.0.25
   autoprefixer: 10.4.8_postcss@8.4.16
   contentlayer: 0.2.7
   eslint: 8.23.0
@@ -789,8 +789,8 @@ packages:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
     dev: true
 
-  /@types/react/18.0.17:
-    resolution: {integrity: sha512-38ETy4tL+rn4uQQi7mB81G7V1g0u2ryquNmsVIOKUAEIDK+3CUjZ6rSRpdvS99dNBnkLFL83qfmtLacGOTIhwQ==}
+  /@types/react/18.0.25:
+    resolution: {integrity: sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
