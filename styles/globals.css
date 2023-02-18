@@ -2,13 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-highlight: hsl(270, 37%, 48%);
+  --color-highlight-fill: hsl(270, 100%, 97%);
+  --color-accent:  hsl(58, 100%, 50%);
+  --color-accent-hint: hsl(173, 100%, 94%);
+  --color-base-primary: hsl(0, 0%, 20%);
+  --color-base-secondary: hsl(0, 0%, 40%);
+  --color-hint: hsl(0, 0%, 89%);
+  --color-white: hsl(0, 0%, 96%);
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
   font-family: Space Mono, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
     Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  color: hsl(0, 0%, 40%);
+  color: var(--color-base-secondary);
   line-height: 1.75;
 }
 
@@ -24,28 +35,33 @@ a {
 
 
 ::selection {
-  background: hsl(58, 100%, 50%);
+  background: var(--color-accent);
 }
 
 h1 {
   font-weight: 700;
-  color: hsl(0, 0%, 20%);
+  color: var(--color-base-primary);
 }
 
 h2 {
   margin-top: 3rem;
   font-weight: 700;
   font-size: 1.2rem;
-  color: hsl(0, 0%, 30%);
+  color: var(--color-base-primary);
   text-align: center;
 }
 
+ul {
+  list-style: circle;
+}
+
 ol {
-  list-style:circle;
+  list-style: decimal;
   list-style-position: inside;
   margin-top: 1rem;
   margin-left: 1rem;
 }
+
 li {
   margin-top: 0.75rem;
 }
@@ -54,12 +70,17 @@ p {
   margin-top:2rem;
 }
 
-p a {
-  border-bottom: 0.1rem dashed hsl(0, 0%, 89%);
+a {
+  border-bottom: 0.1rem dashed var(--color-hint);
 }
 
-p a:hover {
-  border-bottom: 0.1rem solid hsl(0, 0%, 50%);
+a:hover {
+  border-bottom: 0.1rem solid var(--color-base-secondary);
+}
+
+a:active {
+  background-color: var(--color-accent-hint);
+  outline: var(--color-accent-hint) 6px solid;
 }
 
 li > p {
@@ -73,16 +94,18 @@ p > code {
   padding: 0.2rem 0.5rem;
   margin-left: -0.25rem;
   margin-right: -0.25rem;
-  background-color: hsl(270, 100%, 97%);
-  color: hsl(270, 37%, 48%);
+  background-color: var(--color-highlight-fill);
+  color: var(--color-highlight);
 }
 
 pre {
   margin-top: 1rem;
+  margin-bottom: 1rem;
   border-radius: 0.333rem;
   padding: 1.25rem 1.5rem;
-  background-color: hsl(0, 0%, 96%);
+  background-color: var(--color-white);
   font-size: 0.9rem;
+  overflow: scroll;
 }
 
 li pre {

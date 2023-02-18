@@ -62,13 +62,15 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
             <Title>Logs</Title>
           </a>
         </Link>
-        <div>
+        <ul>
           {logs.map((log, index) => (
-            <Link key={index} href={log.url}>
-              <a title={log.title}>{log.title}</a>
-            </Link>
+            <li key={index}>
+              <Link href={log.url}>
+                <a title={log.title}>{log.title}</a>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="mt-20 w-full">

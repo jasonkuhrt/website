@@ -23,10 +23,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 const PostLayout: FC<{ log: Log }> = ({ log }) => {
+  const title = `Jason Kuhrt – ${log.title}`
   return (
     <>
       <Head>
-        <title>Jason Kuhrt – {log.title}</title>
+        <title>{title}</title>
       </Head>
       <article style={{ marginBottom: '50vh' }} className="mx-auto max-w-2xl py-16">
         <div className="mb-6 text-center">
