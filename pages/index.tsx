@@ -31,10 +31,14 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
         <h1 className="mt-5">Jason Kuhrt</h1>
         <div className="flex mt-3 space-x-5">
           {socialLinks.map((socialLink) => (
-            <Link key={socialLink.title} href={socialLink.href}>
-              <a title={socialLink.title} className="opacity-20 hover:opacity-100" target="_blank">
-                <socialLink.icon size={20} />
-              </a>
+            <Link
+              key={socialLink.title}
+              href={socialLink.href}
+              title={socialLink.title}
+              className="opacity-20 hover:opacity-100"
+              target="_blank"
+            >
+              <socialLink.icon size={20} />
             </Link>
           ))}
         </div>
@@ -58,15 +62,13 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
 
       <section>
         <Link href="/logs">
-          <a>
-            <Title>Logs</Title>
-          </a>
+          <Title>Logs</Title>
         </Link>
         <ul>
           {logs.map((log, index) => (
             <li key={index}>
-              <Link href={log.url}>
-                <a title={log.title}>{log.title}</a>
+              <Link href={log.url} title={log.title}>
+                {log.title}
               </Link>
             </li>
           ))}

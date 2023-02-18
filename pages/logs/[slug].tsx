@@ -31,10 +31,8 @@ const PostLayout: FC<{ log: Log }> = ({ log }) => {
       </Head>
       <article style={{ marginBottom: '50vh' }} className="mx-auto max-w-2xl py-16">
         <div className="mb-6 text-center">
-          <Link href="/">
-            <a title="home" className="text-center text-sm font-bold uppercase text-blue-700">
-              ↑
-            </a>
+          <Link href="/" title="home" className="text-center text-sm font-bold uppercase text-blue-700">
+            ↑
           </Link>
         </div>
         <div className="mb-24 text-center">
