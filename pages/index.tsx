@@ -80,6 +80,7 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
             date="August 2022"
             links={{
               info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
+              recording: `https://www.youtube.com/watch?v=JWvy7JXE6vw`,
               twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
             }}
           />
