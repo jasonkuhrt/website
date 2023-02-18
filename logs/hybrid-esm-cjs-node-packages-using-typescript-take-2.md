@@ -5,6 +5,8 @@ date: 2023-2-17
 
 A colleague of mine at Prisma ([👨 Tyler](https://twitter.com/rtbenfield)) tipped me off to a simpler approach to creating hybrid CJS/ESM packages. His insight was how Node.js respects the presence and contents of `package.json` files...
 
+You can find a minimal functional example applying the pattern below in my [TypeScript library template repository](https://github.com/jasonkuhrt/template-typescript-lib).
+
 1. First have two `tsconfig` files, one for CJS and one for ESM. Make both inherit from a base `tsconfig.json` that contains non emit configuration (e.g. `strict` mode):
 
    ```json
