@@ -4,10 +4,11 @@ import Link from 'next/link'
 import React, { FC } from 'react'
 import { socialLinks } from '../data/socialLinks'
 import profilePicture from '../public/avatar@0.5x.png'
-import { Info, Twitter, Youtube } from 'react-feather'
+import { faTwitter, faYoutube, faMeetup } from '@fortawesome/free-brands-svg-icons'
 import { allLogs, Log } from '../.contentlayer/generated'
 import { compareDesc } from 'date-fns'
 import Head from 'next/head'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export const getStaticProps: GetStaticProps = async () => {
   const logs = allLogs.sort((a, b) => {
@@ -32,13 +33,14 @@ const Home: NextPage<{ logs: Log[] }> = ({ logs }) => {
         <div className="flex mt-3 space-x-5">
           {socialLinks.map((socialLink) => (
             <Link
+              rel="me"
               key={socialLink.title}
               href={socialLink.href}
               title={socialLink.title}
               className="opacity-20 hover:opacity-100"
               target="_blank"
             >
-              <socialLink.icon size={20} />
+              <FontAwesomeIcon icon={socialLink.icon} size="1x" />
             </Link>
           ))}
         </div>
@@ -173,25 +175,25 @@ const Talk: FC<{
         <div className="flex space-x-2">
           {props.links?.info ? (
             <a className="opacity-20 hover:opacity-100" href={props.links.info}>
-              <Info size={20} />
+              <FontAwesomeIcon icon={faMeetup} size="1x" />
             </a>
           ) : (
             <div className="opacity-10">
-              <Info size={20} />
+              <FontAwesomeIcon icon={faMeetup} size="1x" />
             </div>
           )}
           {props.links?.recording ? (
             <a className="opacity-20 hover:opacity-100" href={props.links.recording}>
-              <Youtube size={20} />
+              <FontAwesomeIcon icon={faYoutube} size="1x" />
             </a>
           ) : (
             <div className="opacity-10">
-              <Youtube size={20} />
+              <FontAwesomeIcon icon={faYoutube} size="1x" />
             </div>
           )}
           {props.links?.twitter && (
             <a className="opacity-20 hover:opacity-100" href={props.links?.twitter}>
-              <Twitter size={20} />
+              <FontAwesomeIcon icon={faTwitter} size="1x" />
             </a>
           )}
         </div>

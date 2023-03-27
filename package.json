@@ -10,11 +10,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-brands-svg-icons": "^6.3.0",
+    "@fortawesome/free-solid-svg-icons": "^6.3.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "date-fns": "^2.29.3",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-feather": "^2.0.10"
+    "styles.css": "link:@fortawesome/fontawesome-svg-core/styles.css"
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",

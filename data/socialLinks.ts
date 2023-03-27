@@ -1,30 +1,42 @@
-import { GitHub, Icon, Instagram, Mail, Twitter } from 'react-feather'
+import {
+  faMastodon,
+  faGithub,
+  faInstagram,
+  faTwitter,
+  IconDefinition,
+} from '@fortawesome/free-brands-svg-icons'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 type SocialLink = {
   href: string
   title: string
-  icon: Icon
+  icon: IconDefinition
 }
 
 export const socialLinks: SocialLink[] = [
   {
     href: 'https://github.com/jasonkuhrt',
     title: 'github.com/jasonkuhrt',
-    icon: GitHub,
+    icon: faGithub,
+  },
+  {
+    href: 'https://mastodon.social/@jasonkuhrt',
+    title: 'Mastodon',
+    icon: faMastodon,
   },
   {
     href: 'https://twitter.com/jasonkuhrt',
     title: 'twitter.com/jasonkuhrt',
-    icon: Twitter,
+    icon: faTwitter,
   },
   {
     href: 'https://instagram.com/jasonkuhrt',
     title: 'instagram.com/jasonkuhrt',
-    icon: Instagram,
+    icon: faInstagram,
   },
   {
     href: 'mailto:jasonkuhrt@me.com',
     title: 'jasonkuhrt@me.com',
-    icon: Mail,
+    icon: faEnvelope,
   },
 ]
