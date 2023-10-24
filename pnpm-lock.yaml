@@ -6,7 +6,7 @@ specifiers:
   '@fortawesome/free-solid-svg-icons': ^6.3.0
   '@fortawesome/react-fontawesome': ^0.2.0
   '@prisma-labs/prettier-config': ^0.1.0
-  '@types/node': ^18.15.10
+  '@types/node': ^20.0.0
   '@types/react': 18.0.29
   autoprefixer: ^10.4.14
   contentlayer: ^0.3.0
@@ -37,7 +37,7 @@ dependencies:
 
 devDependencies:
   '@prisma-labs/prettier-config': 0.1.0
-  '@types/node': 18.15.10
+  '@types/node': 20.8.8
   '@types/react': 18.0.29
   autoprefixer: 10.4.14_postcss@8.4.21
   contentlayer: 0.3.0
@@ -531,7 +531,7 @@ packages:
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.6
-      '@types/node': 18.15.10
+      '@types/node': 20.8.8
     dev: true
 
   /@grpc/proto-loader/0.6.13:
@@ -1096,8 +1096,10 @@ packages:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
     dev: true
 
-  /@types/node/18.15.10:
-    resolution: {integrity: sha512-9avDaQJczATcXgfmMAW3MIWArOO7A+m90vuCFLr8AotWf8igO/mRoYukrk2cqZVtv38tHs33retzHEilM7FpeQ==}
+  /@types/node/20.8.8:
+    resolution: {integrity: sha512-YRsdVxq6OaLfmR9Hy816IMp33xOBjfyOgUd77ehqg96CFywxAPbDbXvAsuN2KVg2HOT8Eh6uAfU+l4WffwPVrQ==}
+    dependencies:
+      undici-types: 5.25.3
     dev: true
 
   /@types/parse5/6.0.3:
@@ -3034,7 +3036,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 18.15.10
+      '@types/node': 20.8.8
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -4070,7 +4072,7 @@ packages:
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
       '@types/long': 4.0.2
-      '@types/node': 18.15.10
+      '@types/node': 20.8.8
       long: 4.0.0
     dev: true
 
@@ -4089,7 +4091,7 @@ packages:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 18.15.10
+      '@types/node': 20.8.8
       long: 5.2.1
     dev: true
 
@@ -4690,6 +4692,10 @@ packages:
       has-bigints: 1.0.2
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
+    dev: true
+
+  /undici-types/5.25.3:
+    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
     dev: true
 
   /unified/10.1.2:
