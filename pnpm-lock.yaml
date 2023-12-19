@@ -10,7 +10,7 @@ specifiers:
   '@types/react': 18.0.29
   autoprefixer: ^10.4.14
   contentlayer: ^0.3.0
-  date-fns: ^2.29.3
+  date-fns: ^3.0.0
   eslint: 8.36.0
   eslint-config-next: 13.2.4
   next: 13.2.4
@@ -29,7 +29,7 @@ dependencies:
   '@fortawesome/free-brands-svg-icons': 6.3.0
   '@fortawesome/free-solid-svg-icons': 6.3.0
   '@fortawesome/react-fontawesome': 0.2.0_d5rbrisxfyemehbvmdbryvgjte
-  date-fns: 2.29.3
+  date-fns: 3.0.0
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1718,9 +1718,8 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /date-fns/2.29.3:
-    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
-    engines: {node: '>=0.11'}
+  /date-fns/3.0.0:
+    resolution: {integrity: sha512-xjDz3rNN9jp+Lh3P/4MeY4E5HkaRnEnrJCcrdRZnKdn42gJlIe6hwrrwVXePRwVR2kh1UcMnz00erYBnHF8PFA==}
     dev: false
 
   /debug/3.2.7:
