@@ -1,0 +1,25 @@
+---
+import '@fontsource/space-mono'
+
+interface Props {
+  title?: string
+}
+const props = Astro.props
+
+import BaseHead from '../components/BaseHead.astro'
+import { siteTitle, siteDescription } from '../consts'
+import { getCollection } from 'astro:content'
+
+const logs = await getCollection('logs')
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={siteTitle} description={siteDescription} />
+    <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
