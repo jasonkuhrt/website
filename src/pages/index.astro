@@ -3,7 +3,6 @@ import { socialLinks } from '../consts'
 import Talk from '../components/Talk.astro'
 import Title from '../components/Title.astro'
 import { Image } from 'astro:assets'
-import ProfilePicture from '../assets/images/avatar@0.5x.png'
 import { getCollection } from 'astro:content'
 import Pagee from '../layouts/Pagee.astro'
 import { Icon } from 'astro-icon/components'
@@ -15,7 +14,7 @@ const logs = await getCollection('logs')
   <div style={{ marginBottom: '50vh' }} class="p-6 mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
     <section class="flex flex-col items-center">
       <div class="rounded-full overflow-hidden w-48 h-48">
-        <Image src={ProfilePicture} alt="Profile picture of Jason Kuhrt" />
+        <Image src="/images/avatar@0.5x.png" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
       </div>
 
       <h1 class="mt-5">Jason Kuhrt</h1>
