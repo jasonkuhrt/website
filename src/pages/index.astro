@@ -58,7 +58,7 @@ const logs = await getCollection('logs')
       </a>
       <ul>
         {
-          logs.map((log, index) => (
+          logs.map((log) => (
             <li>
               <a href={`/logs/${log.slug}`} title={log.data.title}>
                 {log.data.title}
