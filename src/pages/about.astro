@@ -1,0 +1,121 @@
+---
+import { socialLinks } from '../consts'
+import Talk from '../components/Talk.astro'
+import Title from '../components/Title.astro'
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+import Pagee from '../layouts/Pagee.astro'
+import { Icon } from 'astro-icon/components'
+
+const logs = await getCollection('logs')
+---
+
+<Pagee>
+  <div style={{ marginBottom: '50vh' }} class="p-6 mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
+    <section class="flex flex-col items-center">
+      <div class="rounded-full overflow-hidden w-48 h-48">
+        <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
+      </div>
+
+      <h1 class="mt-5">Jason Kuhrt</h1>
+      <div class="flex mt-3 space-x-5 text-xl">
+        {
+          socialLinks.map((socialLink) => (
+            <a
+              rel="me"
+              href={socialLink.href}
+              title={socialLink.title}
+              class="opacity-30 hover:opacity-90"
+              target="_blank"
+            >
+              <Icon name={`${socialLink.iconSet}:${socialLink.icon}`} class="text-2xl" />
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section>
+      <p>
+        Hey! 👋
+        <br />
+        <br /> I am a software engineer passionate about system design, developer experience, static typing, and
+        functional programming. Educated in design theory, practice, and social responsibility, I discovered programming
+        through open source community and tools like Wordpress, Node.js, and GitHub. Over a decade later I find
+        myself in love with TypeScript and working at Prisma, leading development on the Prisma Data Platform Control
+        Plane.
+        <br />
+        <br />
+        In my personal life, I sometimes work on open source projects, but closest to my heart are the backpacking
+        trips I take with my boys across the beautiful rugged Canadian landscape. 🏔🇨🇦
+      </p>
+    </section>
+
+    <section class="mt-20 w-full">
+      <Title text="Talks" />
+      <div class="w-full">
+        <Talk
+          title="Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge"
+          venue="Berlin TypeScript Meetup #9"
+          date="August 2022"
+          links={{
+            info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
+            recording: `https://www.youtube.com/watch?v=JWvy7JXE6vw`,
+            twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
+          }}
+        />
+        <Talk
+          title="Diving into the new Nexus Prisma"
+          venue="Berlin GraphQL Meetup #25"
+          date="February 2022"
+          links={{
+            info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
+            recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
+            twitter: 'https://twitter.com/prisma/status/1492136994834628613',
+          }}
+        />
+        <Talk
+          title="Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond"
+          venue="GraphQL Radio"
+          date="August 2022"
+          links={{
+            recording:
+              'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
+            twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
+          }}
+        />
+        <Talk
+          title="Introduction to Nexus"
+          venue="SF Node Meetup"
+          date="February 2021"
+          links={{
+            info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
+            recording: 'https://www.youtube.com/watch?v=WUz5JulzSDA',
+            twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
+          }}
+        />
+        <Talk
+          title="Nexus Schema in the Context of Building a Small API"
+          venue="Node.js Wroclaw Meetup #8"
+          date="November 2020"
+          links={{
+            info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
+            recording:
+              'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
+            twitter: 'https://twitter.com/prisma/status/1328653494010736646',
+          }}
+        />
+        <Talk
+          title="Building a type-safe GraphQL server with Nexus and Prisma"
+          venue="Prisma Day"
+          date="June 2020"
+          links={{
+            info: 'https://www.prisma.io/day-2020/',
+            recording: 'https://www.youtube.com/watch?v=oFk4rxz_KO8&feature=youtu.be',
+            twitter: 'https://twitter.com/JasonKuhrt/status/1274421971997134851',
+          }}
+        />
+      </div>
+    </section>
+  </div>
+</Pagee>

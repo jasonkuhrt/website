@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content'
+import Pagee from '../layouts/Pagee.astro'
+const blog = await getCollection('logs')
+---
+
+<Pagee title="Drawing">
+  <p>Coming soon. I will be curating a catalog of my open source work here.</p>
+</Pagee>

@@ -6,6 +6,8 @@ interface Props {
 }
 const props = Astro.props
 
+import Navigation from '../components/navigation.astro'
+
 import BaseHead from '../components/BaseHead.astro'
 import { siteTitle, siteDescription } from '../consts'
 ---
@@ -16,7 +18,10 @@ import { siteTitle, siteDescription } from '../consts'
     <BaseHead title={siteTitle} description={siteDescription} />
     <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
   </head>
-  <body>
-    <slot />
+  <body class="flex flex-col">
+    <Navigation />
+    <div>
+      <slot />
+    </div>
   </body>
 </html>

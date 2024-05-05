@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content'
+import Pagee from '../../layouts/Pagee.astro'
+import { format } from 'date-fns'
+const blog = await getCollection('logs')
+---
+
+<Pagee title="logs">
+  {
+    blog.map((post) => (
+      <div class="mb-6">
+        <time date-time={post.data.date} class="block text-sm text-slate-600">
+          {format(post.data.date, 'LLLL d, yyyy')}
+        </time>
+        <h2 class="text-lg">
+          <a href={`/blog/${post.slug}`} class="text-blue-700 hover:text-blue-900">
+            {post.data.title}
+          </a>
+        </h2>
+      </div>
+    ))
+  }
+</Pagee>
