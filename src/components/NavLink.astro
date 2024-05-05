@@ -1,0 +1,29 @@
+---
+const pathname = new URL(Astro.request.url).pathname
+const currentPath = pathname.slice(1)
+interface Props {
+  href: string
+  text?: string
+  activePath?: RegExp
+}
+const props = Astro.props
+
+const href = props.href
+const text = props.text ?? props.href.replace(/^\//, '').replace(/\/$/, '')
+const pathPattern = props.activePath ?? new RegExp(`.*${text}.*`)
+const isActive = Boolean(currentPath.match(pathPattern))
+---
+
+<a class={isActive ? 'active' : ''} href={href}>{text}</a>
+
+<style>
+  a {
+    color: black;
+  }
+  a.active {
+    font-weight: 700;
+  }
+  a:not(.active) {
+    opacity: 0.5;
+  }
+</style>
