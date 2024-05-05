@@ -13,11 +13,11 @@ import { format } from 'date-fns'
 
 const { log } = Astro.props
 const { Content } = await log.render()
-import Pagee from '../../layouts/Page.astro'
+import Page from '../../layouts/Page.astro'
 ---
 
-<Pagee title={log.data.title}>
-  <article style={{ marginBottom: '50vh' }} class="mx-auto max-w-2xl py-16">
+<Page title={log.data.title}>
+  <article>
     <div class="mb-24 text-center">
       <h1 class="mb-1 text-3xl font-bold">{log.data.title}</h1>
       <time date-time={log.data.date} class="text-sm">
@@ -26,4 +26,4 @@ import Pagee from '../../layouts/Page.astro'
     </div>
     <Content />
   </article>
-</Pagee>
+</Page>

@@ -11,28 +11,26 @@ const logs = await getCollection('logs')
 ---
 
 <Pagee>
-  <div style={{ marginBottom: '50vh' }} class="p-6 mt-24 space-y-20 max-w-2xl mr-auto ml-auto">
-    <section class="flex flex-col items-center">
-      <div class="rounded-full overflow-hidden w-48 h-48">
-        <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
-      </div>
+  <section class="flex flex-col items-center">
+    <div class="rounded-full overflow-hidden w-48 h-48">
+      <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
+    </div>
 
-      <h1 class="mt-5">Jason Kuhrt</h1>
-      <div class="flex mt-3 space-x-5 text-xl">
-        {
-          socialLinks.map((socialLink) => (
-            <a
-              rel="me"
-              href={socialLink.href}
-              title={socialLink.title}
-              class="opacity-30 hover:opacity-90"
-              target="_blank"
-            >
-              <Icon name={`${socialLink.iconSet}:${socialLink.icon}`} class="text-2xl" />
-            </a>
-          ))
-        }
-      </div>
-    </section>
-  </div>
+    <h1 class="mt-5">Jason Kuhrt</h1>
+    <div class="flex mt-3 space-x-5 text-xl">
+      {
+        socialLinks.map((socialLink) => (
+          <a
+            rel="me"
+            href={socialLink.href}
+            title={socialLink.title}
+            class="opacity-30 hover:opacity-90"
+            target="_blank"
+          >
+            <Icon name={`${socialLink.iconSet}:${socialLink.icon}`} class="text-2xl" />
+          </a>
+        ))
+      }
+    </div>
+  </section>
 </Pagee>

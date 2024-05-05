@@ -19,11 +19,15 @@ const isActive = Boolean(currentPath.match(pathPattern))
 <style>
   a {
     color: black;
+    font-size: 0.8rem;
   }
   a.active {
     font-weight: 700;
   }
   a:not(.active) {
     opacity: 0.5;
+  }
+  a + a {
+    margin-left: 0.75rem;
   }
 </style>
