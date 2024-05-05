@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content'
-import Pagee from '../layouts/Page.astro'
+import Page from '../layouts/Page.astro'
 const blog = await getCollection('logs')
 ---
 
-<Pagee title="Drawing">
+<Page title="Drawing">
   <p>Coming soon. I will be curating a catalog of my open source work here.</p>
-</Pagee>
+</Page>

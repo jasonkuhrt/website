@@ -1,11 +1,11 @@
 ---
 import { getCollection } from 'astro:content'
-import Pagee from '../../layouts/Page.astro'
+import Page from '../../layouts/Page.astro'
 import { format } from 'date-fns'
 const blog = await getCollection('logs')
 ---
 
-<Pagee title="logs">
+<Page title="logs">
   {
     blog.map((post) => (
       <div class="mb-6">
@@ -20,4 +20,4 @@ const blog = await getCollection('logs')
       </div>
     ))
   }
-</Pagee>
+</Page>

@@ -4,13 +4,13 @@ import Talk from '../components/Talk.astro'
 import Title from '../components/Title.astro'
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
-import Pagee from '../layouts/Page.astro'
+import Page from '../layouts/Page.astro'
 import { Icon } from 'astro-icon/components'
 
 const logs = await getCollection('logs')
 ---
 
-<Pagee>
+<Page>
   <section class="flex flex-col items-center">
     <div class="rounded-full overflow-hidden w-48 h-48">
       <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
@@ -33,4 +33,4 @@ const logs = await getCollection('logs')
       }
     </div>
   </section>
-</Pagee>
+</Page>
