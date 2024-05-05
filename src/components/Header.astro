@@ -1,0 +1,17 @@
+---
+import Image from 'astro/components/Image.astro'
+import NavLink from './NavLink.astro'
+---
+
+<header class="flex flex-col items-center mt-12">
+  <a class="opacity-100 hover:opacity-80 active:opacity-40" href="/">
+    <Image class="" src="/images/logo-black.png" alt="Logo of Jason Kuhrt" width="40" height="40" />
+  </a>
+  <nav class="mt-2">
+    <NavLink href="/about" />
+    <NavLink href="/blog" />
+    <NavLink href="/code" />
+    <NavLink href="/photo" />
+    <NavLink href="/drawing" />
+  </nav>
+</header>

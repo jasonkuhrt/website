@@ -2,6 +2,8 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
+
+
 :root {
   --color-highlight: hsl(270, 37%, 48%);
   --color-highlight-fill: hsl(270, 100%, 97%);
@@ -71,15 +73,16 @@ p {
   margin-top: 2rem;
 }
 
-a {
+
+article a {
   border-bottom: 0.1rem dashed var(--color-hint);
 }
 
-a:hover {
+article a:hover {
   border-bottom: 0.1rem solid var(--color-base-secondary);
 }
 
-a:active {
+article a:active {
   background-color: var(--color-accent-hint);
   outline: var(--color-accent-hint) 6px solid;
 }

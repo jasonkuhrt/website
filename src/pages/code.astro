@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content'
+import Page from '../layouts/Page.astro'
+const blog = await getCollection('logs')
+---
+
+<Page title="Code">
+  <p>Coming soon. I will be curating a catalog of my drawings here.</p>
+</Page>

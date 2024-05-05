@@ -1,0 +1,30 @@
+---
+import '@fontsource/space-mono/400.css'
+import '@fontsource/space-mono/700.css'
+
+interface Props {
+  title?: string
+  constrainWidth?: boolean
+}
+const props = Astro.props
+const constrainWidth = props.constrainWidth ?? true
+
+import Navigation from '../components/Header.astro'
+
+import BaseHead from '../components/BaseHead.astro'
+import { siteTitle, siteDescription } from '../consts'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={siteTitle} description={siteDescription} />
+    <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
+  </head>
+  <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
+    <Navigation />
+    <div class="pt-20" class:list={{ 'max-w-2xl': constrainWidth }}>
+      <slot />
+    </div>
+  </body>
+</html>
