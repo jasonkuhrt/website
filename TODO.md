@@ -1,1 +1,0 @@
-- See what we can learn from https://github.com/satnaing/astro-paper
