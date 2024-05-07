@@ -7,7 +7,7 @@ interface Props {
   constrainWidth?: boolean
 }
 const props = Astro.props
-const constrainWidth = props.constrainWidth ?? true
+const constrainContent = props.constrainWidth ?? true
 
 import Navigation from '../components/Header.astro'
 
@@ -23,7 +23,7 @@ import { siteTitle, siteDescription } from '../consts'
   </head>
   <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
     <Navigation />
-    <div class="pt-20" class:list={{ 'max-w-2xl': constrainWidth }}>
+    <div class="pt-20" class:list={{ 'max-w-2xl px-10 w-full': constrainContent }}>
       <slot />
     </div>
   </body>
