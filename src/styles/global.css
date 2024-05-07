@@ -13,11 +13,24 @@
   --color-base-secondary: hsl(0, 0%, 40%);
   --color-hint: hsl(0, 0%, 89%);
   --color-white: hsl(0, 0%, 96%);
+
+  --color-dark-base-secondary: hsl(0, 0%, 80%);
+  --color-dark-hint: hsl(0, 0%, 11%);
+  --color-dark-white: hsl(0, 0%, 5%);
 }
 
 /* [data-icon] {
     font-size: 1.2rem;
 } */
+
+.dark svg {
+  filter: invert(100%)
+}
+
+.dark body {
+  background-color: var(--color-dark-white);
+  color: var(--color-dark-base-secondary);
+}
 
 html,
 body {

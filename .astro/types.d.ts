@@ -135,20 +135,20 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"logs": {
+		"writing": {
 "hybrid-esm-cjs-node-packages-using-typescript-take-2.md": {
 	id: "hybrid-esm-cjs-node-packages-using-typescript-take-2.md";
   slug: "hybrid-esm-cjs-node-packages-using-typescript-take-2";
   body: string;
-  collection: "logs";
-  data: InferEntrySchema<"logs">
+  collection: "writing";
+  data: InferEntrySchema<"writing">
 } & { render(): Render[".md"] };
 "hybrid-esm-cjs-node-packages-using-typescript.md": {
 	id: "hybrid-esm-cjs-node-packages-using-typescript.md";
   slug: "hybrid-esm-cjs-node-packages-using-typescript";
   body: string;
-  collection: "logs";
-  data: InferEntrySchema<"logs">
+  collection: "writing";
+  data: InferEntrySchema<"writing">
 } & { render(): Render[".md"] };
 };
 

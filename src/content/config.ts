@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content'
 
-const logs = defineCollection({
+const writing = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string().min(1),
@@ -9,5 +9,5 @@ const logs = defineCollection({
 })
 
 export const collections = {
-  logs,
+  writing,
 }

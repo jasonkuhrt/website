@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content'
+
+export const getStaticPaths = async () => {
+  const writing = await getCollection('writing')
+  return writing.map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
+  }))
+}
+
+import { format } from 'date-fns'
+
+const { item } = Astro.props
+const { Content } = await item.render()
+import Page from '../../layouts/Page.astro'
+---
+
+<Page title={item.data.title}>
+  <article>
+    <div class="mb-24 text-center">
+      <h1 class="mb-1 text-3xl font-bold">{item.data.title}</h1>
+      <time date-time={item.data.date} class="text-sm">
+        {format(item.data.date, 'LLLL d, yyyy')}
+      </time>
+    </div>
+    <Content />
+  </article>
+</Page>

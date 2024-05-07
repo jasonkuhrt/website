@@ -1,0 +1,79 @@
+---
+import { Icon } from 'astro-icon/components'
+---
+
+<div id="themeToggle" class="absolute top-5 right-5 flex flex-row" class="flex flex-row">
+  <button id="themeToggleConcrete" class="mr-1">
+    <Icon id="themeToggleDark" name="carbon:asleep" class="text-2xl" />
+    <Icon id="themeToggleLight" name="carbon:sun" class="text-2xl" />
+  </button>
+  <button id="themeToggleSystem">
+    <Icon name="carbon:sunrise" class="text-2xl" />
+  </button>
+</div>
+
+<style>
+  #themeToggle {
+    color: hsl(0, 0%, 10%);
+  }
+  #themeToggleConcrete {
+    opacity: 0.2;
+  }
+  #themeToggleSystem {
+    opacity: 0.2;
+  }
+  :global(.system #themeToggleSystem) {
+    opacity: 0.7;
+  }
+  :global(.dark #themeToggleDark) {
+    display: none;
+  }
+  :global(.light #themeToggleLight) {
+    display: none;
+  }
+</style>
+
+<script is:inline>
+  const getSystemTheme = () => (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+
+  const getLocalStorageTheme = () => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme')
+    }
+    return null
+  }
+
+  const getTheme = () => {
+    const concreteTheme = getLocalStorageTheme()
+    if (concreteTheme) return { isSystem: false, theme: concreteTheme }
+    return { isSystem: true, theme: getSystemTheme() }
+  }
+
+  const setThemeClass = (theme, isSystem) => {
+    document.documentElement.classList.remove('dark', 'system', 'light')
+    document.documentElement.classList.add(theme)
+    if (isSystem) {
+      document.documentElement.classList.add('system')
+    }
+  }
+
+  const getCurrentTheme = () => {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+  }
+
+  const handleClickConcrete = () => {
+    const theme = getCurrentTheme() === 'dark' ? 'light' : 'dark'
+    typeof localStorage !== 'undefined' && localStorage.setItem('theme', theme)
+    setThemeClass(theme, false)
+  }
+
+  const handleClickSystem = () => {
+    typeof localStorage !== 'undefined' && localStorage.removeItem('theme')
+    setThemeClass(getSystemTheme(), true)
+  }
+
+  document.getElementById('themeToggleConcrete').addEventListener('click', handleClickConcrete)
+  document.getElementById('themeToggleSystem').addEventListener('click', handleClickSystem)
+  const { theme, isSystem } = getTheme()
+  setThemeClass(theme, isSystem)
+</script>
