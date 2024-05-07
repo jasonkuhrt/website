@@ -9,11 +9,10 @@ interface Props {
 const props = Astro.props
 const constrainContent = props.constrainWidth ?? true
 
-import Navigation from '../components/Header.astro'
+import Header from '../components/Header.astro'
 
 import BaseHead from '../components/BaseHead.astro'
 import { siteTitle, siteDescription } from '../consts'
-import ThemeIcon from '../components/ThemeIcon.astro'
 ---
 
 <!doctype html>
@@ -23,8 +22,7 @@ import ThemeIcon from '../components/ThemeIcon.astro'
     <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
   </head>
   <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
-    <Navigation />
-    <ThemeIcon />
+    <Header />
     <div class="pt-20" class:list={{ 'max-w-2xl px-10 w-full': constrainContent }}>
       <slot />
     </div>

@@ -1,12 +1,14 @@
 ---
 import NavLink from './NavLink.astro'
 import Logo from './Logo.astro'
+import ThemeControl from './ThemeControl.astro'
 ---
 
 <header class="flex flex-col items-center mt-12">
   <a class="opacity-100 hover:opacity-80 active:opacity-40" href="/">
     <Logo width={40} height={40} />
   </a>
+  <ThemeControl />
   <nav class="mt-2">
     <NavLink href="/about" />
     <NavLink href="/writing" />
