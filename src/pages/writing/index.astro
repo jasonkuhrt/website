@@ -8,12 +8,12 @@ const writing = await getCollection('writing')
 <Page title="writing">
   {
     writing.map((post) => (
-      <div class="mb-6">
-        <time date-time={post.data.date} class="block text-sm text-slate-600">
-          {format(post.data.date, 'LLLL dd, yyyy')}
+      <div class="mb-6 flex flex-row">
+        <time date-time={post.data.date} class="flex-shrink-0 block text-sm text-right w-20">
+          {format(post.data.date, 'LLL dd yyyy')}
         </time>
-        <h2 class="text-lg">
-          <a href={`/writing/${post.slug}`} class="text-blue-700 hover:text-blue-900">
+        <h2 class="text-lg ml-12">
+          <a href={`/writing/${post.slug}`} class="w-60">
             {post.data.title}
           </a>
         </h2>
@@ -21,3 +21,13 @@ const writing = await getCollection('writing')
     ))
   }
 </Page>
+
+<style>
+  time {
+    opacity: 0.66;
+    padding-top: 0.375rem;
+  }
+  h2:hover {
+    color: black;
+  }
+</style>

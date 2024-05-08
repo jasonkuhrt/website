@@ -17,12 +17,26 @@ const { Content } = await item.render()
 
 <Page title={item.data.title}>
   <article>
-    <div class="mb-24 text-center">
+    <div class="mb-20 text-center">
       <h1 class="mb-1 text-3xl font-bold">{item.data.title}</h1>
       <time date-time={item.data.date} class="text-sm">
         {format(item.data.date, 'LLLL dd, yyyy')}
       </time>
     </div>
-    <Content />
+    <div class="prose dark:prose-invert">
+      <Content />
+    </div>
   </article>
 </Page>
+
+<style>
+  .prose {
+    max-width: 65ch;
+  }
+  article {
+    margin-top: 4rem;
+  }
+  h1 {
+    line-height: 3rem;
+  }
+</style>

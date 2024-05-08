@@ -1,9 +1,3 @@
-/* @tailwind base; */
-/* @tailwind components; */
-/* @tailwind utilities; */
-
-
-
 :root {
   --color-highlight: hsl(270, 37%, 48%);
   --color-highlight-fill: hsl(270, 100%, 97%);
@@ -18,10 +12,6 @@
   --color-dark-hint: hsl(0, 0%, 11%);
   --color-dark-white: hsl(0, 0%, 5%);
 }
-
-/* [data-icon] {
-    font-size: 1.2rem;
-} */
 
 .dark svg {
   filter: invert(100%)
@@ -60,11 +50,9 @@ h1 {
 }
 
 h2 {
-  margin-top: 3rem;
   font-weight: 700;
   font-size: 1.2rem;
   color: var(--color-base-primary);
-  text-align: center;
 }
 
 ul {
@@ -84,49 +72,4 @@ li {
 
 p {
   margin-top: 2rem;
-}
-
-
-article a {
-  border-bottom: 0.1rem dashed var(--color-hint);
-}
-
-article a:hover {
-  border-bottom: 0.1rem solid var(--color-base-secondary);
-}
-
-article a:active {
-  background-color: var(--color-accent-hint);
-  outline: var(--color-accent-hint) 6px solid;
-}
-
-li > p {
-  margin-top: 0;
-}
-
-p > code {
-  border-radius: 0.25rem;
-  padding: 0.2rem 0.5rem;
-  margin-left: -0.25rem;
-  margin-right: -0.25rem;
-  background-color: var(--color-highlight-fill);
-  color: var(--color-highlight);
-}
-
-pre {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.333rem;
-  padding: 1.25rem 1.5rem;
-  background-color: var(--color-white);
-  font-size: 0.9rem;
-  overflow: scroll;
-}
-
-li pre {
-  margin-left: 1rem;
-}
-
-hr {
-  margin-top: 1rem;
 }
