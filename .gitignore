@@ -30,9 +30,5 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# vercel
-.vercel
-
-
-# Contentlayer
-.contentlayer
+.astro
+dist
