@@ -13,7 +13,7 @@ const writing = await getCollection('writing')
           {format(post.data.date, 'LLL dd yyyy')}
         </time>
         <h2 class="text-lg ml-12">
-          <a href={`/writing/${post.slug}`} class="w-60">
+          <a href={`/writing/${post.id}`} class="w-60">
             {post.data.title}
           </a>
         </h2>

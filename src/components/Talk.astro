@@ -7,52 +7,64 @@ interface Props {
     recording?: string
     info?: string
     twitter?: string
+    repo?: string
   }
-};
+}
 
-const props = Astro.props;
+const props = Astro.props
 import { Icon } from 'astro-icon/components'
 ---
 
 <div class="flex flex-col md:flex-row text-sm hover:bg-[#fcfcfc] p-2">
-      <div class="p-3 align-top">
-        <div class="md:w-96">
-          <div>{props.title}</div>
-          <div class="opacity-40">@ {props.venue}</div>
-        </div>
-      </div>
-      <div class="p-3 align-top">{props.date}</div>
-      <div class="p-3 align-top">
-        <div class="flex space-x-2">
-          {props.links?.info ? (
-            <a class="opacity-20 hover:opacity-100" href={props.links.info}>
-            <Icon name='fa6-brands:meetup'/>
-            </a>
-          ) : (
-            <div class="opacity-10">
-            <Icon name='fa6-brands:meetup'/>
-            </div>
-          )}
-          {props.links?.recording ? (
-            <a
-              class="opacity-20 hover:opacity-100"
-              href={props.links.recording}
-            >
-            <Icon name='carbon:play-filled'/>
-            </a>
-          ) : (
-            <div class="opacity-10">
-            <Icon name='carbon:video'/>
-            </div>
-          )}
-          {props.links?.twitter && (
-            <a
-              class="opacity-20 hover:opacity-100"
-              href={props.links?.twitter}
-            >
-            <Icon name='carbon:logo-twitter'/>
-            </a>
-          )}
-        </div>
-      </div>
+  <div class="p-3 align-top">
+    <div class="md:w-96">
+      <div>{props.title}</div>
+      <div class="opacity-40">@ {props.venue}</div>
     </div>
+  </div>
+  <div class="p-3 align-top">{props.date}</div>
+  <div class="p-3 align-top">
+    <div class="flex space-x-2">
+      {
+        props.links?.repo ? (
+          <a class="opacity-20 hover:opacity-100" href={props.links.repo}>
+            <Icon name="fa6-brands:github-alt" />
+          </a>
+        ) : (
+          <div class="opacity-10">
+            <Icon name="fa6-brands:github-alt" />
+          </div>
+        )
+      }
+      {
+        props.links?.info ? (
+          <a class="opacity-20 hover:opacity-100" href={props.links.info}>
+            <Icon name="fa6-brands:meetup" />
+          </a>
+        ) : (
+          <div class="opacity-10">
+            <Icon name="fa6-brands:meetup" />
+          </div>
+        )
+      }
+      {
+        props.links?.recording ? (
+          <a class="opacity-20 hover:opacity-100" href={props.links.recording}>
+            <Icon name="carbon:play-filled" />
+          </a>
+        ) : (
+          <div class="opacity-10">
+            <Icon name="carbon:video" />
+          </div>
+        )
+      }
+      {
+        props.links?.twitter && (
+          <a class="opacity-20 hover:opacity-100" href={props.links?.twitter}>
+            <Icon name="carbon:logo-twitter" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+</div>
