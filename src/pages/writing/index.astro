@@ -3,11 +3,12 @@ import { getCollection } from 'astro:content'
 import Page from '../../layouts/Page.astro'
 import { format } from 'date-fns'
 const writing = await getCollection('writing')
+const posts = writing.sort((a, b) => (a.data.date.getTime() > b.data.date.getTime() ? -1 : 1))
 ---
 
 <Page title="writing">
   {
-    writing.map((post) => (
+    posts.map((post) => (
       <div class="mb-6 flex flex-row">
         <time date-time={post.data.date} class="flex-shrink-0 block text-sm text-right w-20">
           {format(post.data.date, 'LLL dd yyyy')}
