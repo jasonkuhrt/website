@@ -119,9 +119,9 @@ interface ConfigDefaults extends Config {
 // Note: we can improve the type of our runtime default
 // config by using our new explicit defaults type.
 
-const defaultConfig: Config = {
-  foo: 'bar',
-	qux: 1
+const defaultConfig: ConfigDefaults = {
+  foo: 'some_default_foo',
+	qux: 99
 }
 
 declare const create:
@@ -215,7 +215,7 @@ declare const create:
         ? ConfigDefaults 
 //        ^^^^^^^^^^^^^^ | If the user provided no arguments then we
 //                       | can just return the default type as-is.
-        : WithDefaults<ConfigInit, ConfigDefaults>
+        : WithDefaults<$ConfigInit, ConfigDefaults>
 //        ^^^^^^^^^^^... | Otherwise, like before, we apply
 //                       | the defaults to the inferred type
 //                       | of value given by the user.
@@ -236,6 +236,41 @@ type config3 = { foo: 'baz'; qux: 99 }
 ```
 
 And that's it!
+
+Here's the code in full:   
+
+```ts
+interface Config {
+  foo: string
+  qux: number
+}
+
+type ConfigInit = Partial<Config>
+
+const defaultConfig: Config = {
+  foo: 'bar',
+  qux: 1
+}
+
+const create =
+  <const $ConfigInit extends ConfigInit>
+    (configInit?: $ConfigInit):
+      ConfigInit extends $ConfigInit
+        ? ConfigDefaults 
+        : WithDefaults<$ConfigInit, ConfigDefaults> => {
+          return {
+            ...defaultConfig,
+            ...configInit,
+          } as any
+        }
+
+const config0 = create()
+const config1 = create({})
+const config2 = create({ qux: 2 })
+const config3 = create({ foo: 'baz' })
+```
+
+And here's a [TypeScript playground link](https://www.typescriptlang.org/play/?#code/C4TwDgpgBAyglgWzAGzgMxAHgCoD4oC8UA3lANoD6UcAdlANYQgD2aU2AugFzuUdQBfKADISAgFDjQkKAHU4wABYARCGgCGAV2TAAzpgAkASRphNwKBAAewCDQAmuqMwBGAKwgBjYABooB1Q1tPUsbO0dndy9gfCJicShyAwBpJmo6RhY2ALUtHV1uBMT-VJBQ2wcnTNZ-EzMLAH5a03MyFKZ+Hhyg-LbSjnEJcVpbACcNT2gAYWYaNDgAc0C8kOsKiJm5xZIitGZmHgByXWYECAp7XOCKPeZDooBHTSseAE5XwclPWd0LS57gJt5gseEDtnFdvsjiczhcrjobvtDj5Hs83h8hiMION1JMoGCFjtErceL9RrQFqiXlAaJoEC5sZ8pOBprNgSYFIQoAAFdSjYBwdTITAE3BfH4WTyjCDqWyEIqYb40X7+AkcixrcJONU0BRi4pQAAUSvZuuADS6OoUAEouEUDVaNWFKqq2Yt1faDVAmgTlsEnJ6DTx4EhUBhMPIlH78oZHX5ffC9LhYvh4l6vdLgJpRnQ0+mvQA6Iv-FYElH5wtFk3us3liuCKDqJzqGggQPFIZKlXVhYABi5UpltkN1vEXclboWAEYB9LZRBDcQBKPx1AewAmWdDhekJ7UzfLscSteTgDMW-ni6gJKghxc6gAXodBNagA).
 
 Thank's for reading.
 
