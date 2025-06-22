@@ -1,3 +1,6 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
 :root {
   --color-highlight: hsl(270, 37%, 48%);
   --color-highlight-fill: hsl(270, 100%, 97%);

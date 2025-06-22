@@ -3,12 +3,13 @@ import { socialLinks } from '../consts'
 import { Image } from 'astro:assets'
 import Page from '../layouts/Page.astro'
 import { Icon } from 'astro-icon/components'
+import avatarImage from '../assets/images/avatar.jpg'
 ---
 
 <Page>
   <section class="flex flex-col items-center">
     <div class="rounded-full overflow-hidden w-48 h-48">
-      <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
+      <Image src={avatarImage} alt="Profile picture of Jason Kuhrt" width={192} height={192} />
     </div>
 
     <h1 class="mt-5">Jason Kuhrt</h1>

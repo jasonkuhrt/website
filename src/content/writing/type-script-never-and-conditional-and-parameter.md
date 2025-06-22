@@ -7,7 +7,7 @@ I was surprised by something in TypeScript today regarding the combination of:
 
 1. Type Conditional
 2. Type Parameter
-3. Never Type 
+3. Never Type
 
 Here are some basic sub/super type tests with never:
 
@@ -26,47 +26,48 @@ But something happens when a type parameter is introduced which I did not expect
 
 ```ts
 namespace check_is_never_extends_parameter {
-	type $<p> = never extends p ? true : false
+  type $<p> = never extends p ? true : false
 
-	type is_never_extends = $<1> //           never extends 1 ? true : false
-	// true
+  type is_never_extends = $<1> //           never extends 1 ? true : false
+  // true
 
-	type is_never_extends_never = $<never> // never extends never ? true : false
-	// true
+  type is_never_extends_never = $<never> // never extends never ? true : false
+  // true
 }
 
 namespace check_is_parameter_extends_never {
-	type $<p> = p extends never ? true : false
+  type $<p> = p extends never ? true : false
 
-	type is_never_extends_never = $<never> // never extends never ? true : false
-	// never <------------------------------------------------------------------ ???
+  type is_never_extends_never = $<never> // never extends never ? true : false
+  // never <------------------------------------------------------------------ ???
 
-	type is_1_extends_never = $<1> //         1 extends never ? true : false
-	// false
+  type is_1_extends_never = $<1> //         1 extends never ? true : false
+  // false
 }
 
 namespace check_is_1_extends_parameter {
-	type $<p> = 1 extends p ? true : false
+  type $<p> = 1 extends p ? true : false
 
-	type is_1_extends_never = $<never> // 1 extends never ? true : false
-	// false
+  type is_1_extends_never = $<never> // 1 extends never ? true : false
+  // false
 
-	type is_1_extends_1 = $<1> //         1 extends 1 ? true : false
-	// true
+  type is_1_extends_1 = $<1> //         1 extends 1 ? true : false
+  // true
 }
 
 namespace check_is_parameter_extends_1 {
-	type $<p> = p extends 1 ? true : false
+  type $<p> = p extends 1 ? true : false
 
-	type is_1_extends_never = $<never> // 1 extends never ? true : false
-	// never <---------------------------------------------------------- ???
+  type is_1_extends_never = $<never> // 1 extends never ? true : false
+  // never <---------------------------------------------------------- ???
 
-	type is_1_extends_1 = $<1> //         1 extends 1 ? true : false
-	// true
+  type is_1_extends_1 = $<1> //         1 extends 1 ? true : false
+  // true
 }
 ```
 
 The difference is that:
+
 1. `never` given as a type argument
 2. ... to a conditional type
 3. ... where the respective parameter is referenced in the sub-type-position of the conditional (`x (<-- sub-type position) extends y (<-- super-type position)`)

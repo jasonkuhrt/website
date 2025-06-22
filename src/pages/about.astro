@@ -5,13 +5,14 @@ import Title from '../components/Title.astro'
 import { Image } from 'astro:assets'
 import Page from '../layouts/Page.astro'
 import { Icon } from 'astro-icon/components'
+import avatarImage from '../assets/images/avatar.jpg'
 ---
 
 <Page>
   <div class="space-y-20">
     <section class="flex flex-col items-center">
       <div class="rounded-full overflow-hidden w-48 h-48">
-        <Image src="/images/avatar2@1x.jpg" alt="Profile picture of Jason Kuhrt" width="200" height="200" />
+        <Image src={avatarImage} alt="Profile picture of Jason Kuhrt" width={192} height={192} />
       </div>
       <h1 class="mt-5">Jason Kuhrt</h1>
       <div class="flex mt-3 space-x-5 text-xl">
