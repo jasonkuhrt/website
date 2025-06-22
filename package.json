@@ -13,23 +13,23 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/mdx": "^4.0.2",
-    "@astrojs/rss": "^4.0.10",
-    "@astrojs/sitemap": "^3.2.1",
-    "@astrojs/tailwind": "^5.1.3",
-    "@fontsource/space-mono": "^5.1.1",
-    "@iconify-json/carbon": "^1.2.4",
-    "@iconify-json/fa6-brands": "^1.2.3",
-    "@tailwindcss/typography": "^0.5.15",
-    "astro": "^5.0.5",
-    "astro-icon": "^1.1.4",
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.4.1",
+    "@astrojs/tailwind": "^6.0.2",
+    "@fontsource/space-mono": "^5.2.7",
+    "@iconify-json/carbon": "^1.2.10",
+    "@iconify-json/fa6-brands": "^1.2.5",
+    "@tailwindcss/typography": "^0.5.16",
+    "astro": "^5.10.0",
+    "astro-icon": "^1.1.5",
     "date-fns": "^4.1.0",
-    "tailwindcss": "^3.4.16"
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
-    "prettier": "^3.4.2",
+    "prettier": "^3.5.3",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.3"
   }
 }
