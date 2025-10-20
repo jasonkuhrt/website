@@ -1,34 +1,42 @@
 ---
 import { getCollection } from 'astro:content'
 import Page from '../../layouts/Page.astro'
+import Section from '../../components/Section.astro'
 import { format } from 'date-fns'
+
 const writing = await getCollection('writing')
 const posts = writing.sort((a, b) => (a.data.date.getTime() > b.data.date.getTime() ? -1 : 1))
 ---
 
-<Page title="writing">
-  {
-    posts.map((post) => (
-      <div class="mb-6 flex flex-row">
-        <time date-time={post.data.date} class="flex-shrink-0 block text-sm text-right w-20">
-          {format(post.data.date, 'LLL dd yyyy')}
-        </time>
-        <h2 class="text-lg ml-12">
-          <a href={`/writing/${post.id}`} class="w-60">
-            {post.data.title}
-          </a>
-        </h2>
+<Page title="writing" constrainWidth={false}>
+  <Section spacing="xl">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <div class="space-y-8">
+          {
+            posts.map((post) => (
+              <article class="group">
+                <a
+                  href={`/writing/${post.id}`}
+                  class="block border-b border-gray-200 dark:border-gray-800 pb-8 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+                >
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:gap-6">
+                    <time
+                      datetime={post.data.date.toISOString()}
+                      class="text-sm text-gray-500 dark:text-gray-400 font-mono flex-shrink-0 mb-2 sm:mb-0 sm:w-32"
+                    >
+                      {format(post.data.date, 'LLL dd yyyy')}
+                    </time>
+                    <h2 class="text-xl font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {post.data.title}
+                    </h2>
+                  </div>
+                </a>
+              </article>
+            ))
+          }
+        </div>
       </div>
-    ))
-  }
+    </div>
+  </Section>
 </Page>
-
-<style>
-  time {
-    opacity: 0.66;
-    padding-top: 0.375rem;
-  }
-  h2:hover {
-    color: black;
-  }
-</style>

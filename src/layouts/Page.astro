@@ -1,6 +1,7 @@
 ---
 import '@fontsource/space-mono/400.css'
 import '@fontsource/space-mono/700.css'
+import { ViewTransitions } from 'astro:transitions'
 
 interface Props {
   title?: string
@@ -19,11 +20,17 @@ import { siteTitle, siteDescription } from '../consts'
 <html lang="en">
   <head>
     <BaseHead title={siteTitle} description={siteDescription} />
+    <ViewTransitions />
     <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
   </head>
   <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
     <Header />
-    <div class="pt-20" class:list={{ 'max-w-3xl px-10 w-full': constrainContent }}>
+    <div
+      class="pt-20"
+      class:list={{ 'max-w-3xl px-10 w-full': constrainContent }}
+      transition:name="main-content"
+      transition:animate="slide"
+    >
       <slot />
     </div>
   </body>

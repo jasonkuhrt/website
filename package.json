@@ -37,7 +37,7 @@
     "@iconify-json/carbon": "^1.2.10",
     "@iconify-json/fa6-brands": "^1.2.5",
     "@tailwindcss/typography": "^0.5.16",
-    "astro": "^5.10.0",
+    "astro": "^5.14.6",
     "astro-icon": "^1.1.5",
     "date-fns": "^4.1.0"
   },

@@ -1,7 +1,18 @@
 ---
 import Page from '../layouts/Page.astro'
+import Section from '../components/Section.astro'
 ---
 
-<Page title="Code">
-  <p>Not ready yet. I will be curating a catalog of my drawings here.</p>
+<Page title="Code" constrainWidth={false}>
+  <Section spacing="xl">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <div class="border border-gray-200 dark:border-gray-800 rounded-lg p-12 text-center">
+          <p class="text-lg text-gray-600 dark:text-gray-400">
+            Coming soon – a curated collection of my open source projects and technical work.
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
 </Page>

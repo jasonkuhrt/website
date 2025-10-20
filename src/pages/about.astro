@@ -1,127 +1,160 @@
 ---
 import { socialLinks } from '../consts'
 import Talk from '../components/Talk.astro'
-import Title from '../components/Title.astro'
 import { Image } from 'astro:assets'
 import Page from '../layouts/Page.astro'
+import Section from '../components/Section.astro'
 import { Icon } from 'astro-icon/components'
 import avatarImage from '../assets/images/avatar.jpg'
 ---
 
-<Page>
-  <div class="space-y-20">
-    <section class="flex flex-col items-center">
-      <div class="rounded-full overflow-hidden w-48 h-48">
-        <Image src={avatarImage} alt="Profile picture of Jason Kuhrt" width={192} height={192} />
-      </div>
-      <h1 class="mt-5">Jason Kuhrt</h1>
-      <div class="flex mt-3 space-x-5 text-xl">
-        {
-          socialLinks.map((socialLink) => (
-            <a
-              rel="me"
-              href={socialLink.href}
-              title={socialLink.title}
-              class="opacity-30 hover:opacity-90"
-              target="_blank"
-            >
-              <Icon name={`${socialLink.iconSet}:${socialLink.icon}`} class="text-2xl" />
-            </a>
-          ))
-        }
-      </div>
-    </section>
+<Page constrainWidth={false}>
+  <!-- Hero Section -->
+  <Section spacing="lg">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <div class="flex flex-col items-center text-center mb-12">
+          <div class="rounded-full overflow-hidden w-32 h-32 mb-6 ring-1 ring-gray-200 dark:ring-gray-800">
+            <Image
+              src={avatarImage}
+              alt="Profile picture of Jason Kuhrt"
+              width={128}
+              height={128}
+              class="object-cover"
+            />
+          </div>
+          <h1 class="text-4xl font-bold mb-4">Jason Kuhrt</h1>
+          <div class="flex gap-4">
+            {
+              socialLinks.map((socialLink) => (
+                <a
+                  rel="me"
+                  href={socialLink.href}
+                  title={socialLink.title}
+                  class="flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
+                  target="_blank"
+                >
+                  <Icon name={`${socialLink.iconSet}:${socialLink.icon}`} class="text-xl" />
+                </a>
+              ))
+            }
+          </div>
+        </div>
 
-    <section>
-      <p>
-        Hey! 👋
-        <br />
-        <br /> I am a software engineer passionate about system design, developer experience, static typing, and
-        functional programming. Educated in design theory, practice, and social responsibility, I discovered programming
-        through open source community and tools like Wordpress, Node.js, and GitHub. Over a decade later I find
-        myself in love with TypeScript and working at Prisma, leading development on the Prisma Data Platform Control
-        Plane.
-        <br />
-        <br />
-        In my personal life, I sometimes work on open source projects, but closest to my heart are the backpacking
-        trips I take with my boys across the beautiful rugged Canadian landscape. 🏔🇨🇦
-      </p>
-    </section>
-
-    <section class="mt-20 w-full">
-      <Title text="Talks" />
-      <div class="w-full">
-        <Talk
-          title="Discovering Graffle and Some of its TypeScript Techniques"
-          venue="Montreal TypeScript Meetup"
-          date="November 2024"
-          links={{
-            info: 'https://www.meetup.com/typescript-montreal/events/302867057/?eventOrigin=your_events',
-            repo: 'https://github.com/graffle-js/tech-talk-2024-11',
-          }}
-        />
-        <Talk
-          title="Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge"
-          venue="Berlin TypeScript Meetup #9"
-          date="August 2022"
-          links={{
-            info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
-            recording: `https://www.youtube.com/watch?v=JWvy7JXE6vw`,
-            twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
-          }}
-        />
-        <Talk
-          title="Diving into the new Nexus Prisma"
-          venue="Berlin GraphQL Meetup #25"
-          date="February 2022"
-          links={{
-            info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
-            recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
-            twitter: 'https://twitter.com/prisma/status/1492136994834628613',
-          }}
-        />
-        <Talk
-          title="Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond"
-          venue="GraphQL Radio"
-          date="August 2022"
-          links={{
-            recording:
-              'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
-            twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
-          }}
-        />
-        <Talk
-          title="Introduction to Nexus"
-          venue="SF Node Meetup"
-          date="February 2021"
-          links={{
-            info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
-            recording: 'https://www.youtube.com/watch?v=WUz5JulzSDA',
-            twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
-          }}
-        />
-        <Talk
-          title="Nexus Schema in the Context of Building a Small API"
-          venue="Node.js Wroclaw Meetup #8"
-          date="November 2020"
-          links={{
-            info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
-            recording:
-              'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
-            twitter: 'https://twitter.com/prisma/status/1328653494010736646',
-          }}
-        />
-        <Talk
-          title="Building a type-safe GraphQL server with Nexus and Prisma"
-          venue="Prisma Day"
-          date="June 2020"
-          links={{
-            info: 'https://www.prisma.io/day-2020/',
-            recording: 'https://www.youtube.com/watch?v=oFk4rxz_KO8&feature=youtu.be',
-            twitter: 'https://twitter.com/JasonKuhrt/status/1274421971997134851',
-          }}
-        />
+        <!-- Bio -->
+        <div class="prose prose-gray dark:prose-invert max-w-none">
+          <p class="text-lg leading-relaxed">
+            Hey! I am a software engineer passionate about system design, developer experience, static typing,
+            and functional programming. Educated in design theory, practice, and social responsibility, I
+            discovered programming through open source community and tools like Wordpress, Node.js, and
+            GitHub. Over a decade later I find myself in love with TypeScript and working at Prisma, leading
+            development on the Prisma Data Platform Control Plane.
+          </p>
+          <p class="text-lg leading-relaxed">
+            In my personal life, I sometimes work on open source projects, but closest to my heart are the
+            backpacking trips I take with my boys across the beautiful rugged Canadian landscape.
+          </p>
+        </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </Section>
+
+  <!-- Talks Section -->
+  <Section spacing="xl">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8">Talks</h2>
+        <div class="space-y-4">
+          <Talk
+            title="Imagining the Future of GraphQL Documentation Tooling"
+            venue="GraphQLConf 2025"
+            date="September 2025"
+            links={{
+              info: 'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
+              repo: 'https://github.com/jasonkuhrt/tech-talk-2025-polen',
+            }}
+          />
+          <Talk
+            title="Hello Graffle! A Modular Type Safe GraphQL Client"
+            venue="GraphQLConf 2025"
+            date="September 2025"
+            links={{
+              info: 'https://graphqlconf2025.sched.com/event/26zPj',
+              repo: 'https://github.com/graffle-js/tech-talk-2025-gql-conf',
+            }}
+          />
+          <Talk
+            title="Discovering Graffle and Some of its TypeScript Techniques"
+            venue="Montreal TypeScript Meetup"
+            date="November 2024"
+            links={{
+              info: 'https://www.meetup.com/typescript-montreal/events/302867057/?eventOrigin=your_events',
+              repo: 'https://github.com/graffle-js/tech-talk-2024-11',
+            }}
+          />
+          <Talk
+            title="Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge"
+            venue="Berlin TypeScript Meetup #9"
+            date="August 2022"
+            links={{
+              info: 'https://www.meetup.com/typescript-berlin/events/287592005/',
+              recording: `https://www.youtube.com/watch?v=JWvy7JXE6vw`,
+              twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
+            }}
+          />
+          <Talk
+            title="Diving into the new Nexus Prisma"
+            venue="Berlin GraphQL Meetup #25"
+            date="February 2022"
+            links={{
+              info: 'https://www.meetup.com/graphql-berlin/events/283094727/',
+              recording: 'https://youtu.be/srkTmlFNOyw?t=2046',
+              twitter: 'https://twitter.com/prisma/status/1492136994834628613',
+            }}
+          />
+          <Talk
+            title="Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond"
+            venue="GraphQL Radio"
+            date="August 2022"
+            links={{
+              recording:
+                'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
+              twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
+            }}
+          />
+          <Talk
+            title="Introduction to Nexus"
+            venue="SF Node Meetup"
+            date="February 2021"
+            links={{
+              info: 'https://www.meetup.com/sfnode/events/hdgjmryccdbpb/',
+              recording: 'https://www.youtube.com/watch?v=WUz5JulzSDA',
+              twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
+            }}
+          />
+          <Talk
+            title="Nexus Schema in the Context of Building a Small API"
+            venue="Node.js Wroclaw Meetup #8"
+            date="November 2020"
+            links={{
+              info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
+              recording:
+                'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
+              twitter: 'https://twitter.com/prisma/status/1328653494010736646',
+            }}
+          />
+          <Talk
+            title="Building a type-safe GraphQL server with Nexus and Prisma"
+            venue="Prisma Day"
+            date="June 2020"
+            links={{
+              info: 'https://www.prisma.io/day-2020/',
+              recording: 'https://www.youtube.com/watch?v=oFk4rxz_KO8&feature=youtu.be',
+              twitter: 'https://twitter.com/JasonKuhrt/status/1274421971997134851',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  </Section>
 </Page>

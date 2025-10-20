@@ -1,0 +1,27 @@
+---
+interface Props {
+  span?: number | { base?: number; md?: number; lg?: number }
+  start?: number
+  class?: string
+}
+
+const { span = 12, start, class: className } = Astro.props
+
+// Handle responsive spans
+const spanClasses =
+  typeof span === 'number'
+    ? `col-span-${span}`
+    : [
+        span.base && `col-span-${span.base}`,
+        span.md && `md:col-span-${span.md}`,
+        span.lg && `lg:col-span-${span.lg}`,
+      ]
+        .filter(Boolean)
+        .join(' ')
+
+const startClass = start ? `col-start-${start}` : ''
+---
+
+<div class:list={[spanClasses, startClass, className]}>
+  <slot />
+</div>

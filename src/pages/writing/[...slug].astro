@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import Page from '../../layouts/Page.astro'
+import Section from '../../components/Section.astro'
 import { format } from 'date-fns'
 import { render } from 'astro:content'
 
@@ -16,28 +17,26 @@ const { item } = Astro.props
 const { Content } = await render(item)
 ---
 
-<Page title={item.data.title}>
-  <article>
-    <div class="mb-20 text-center">
-      <h1 class="mb-1 text-3xl font-bold">{item.data.title}</h1>
-      <time date-time={item.data.date} class="text-sm">
-        {format(item.data.date, 'LLLL dd, yyyy')}
-      </time>
-    </div>
-    <div class="prose dark:prose-invert">
-      <Content />
-    </div>
-  </article>
-</Page>
+<Page title={item.data.title} constrainWidth={false}>
+  <Section spacing="xl">
+    <div class="container">
+      <article class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12 pb-8 border-b border-gray-200 dark:border-gray-800">
+          <h1 class="text-4xl font-bold mb-4 leading-tight">{item.data.title}</h1>
+          <time
+            datetime={item.data.date.toISOString()}
+            class="text-sm text-gray-500 dark:text-gray-400 font-mono"
+          >
+            {format(item.data.date, 'LLLL dd, yyyy')}
+          </time>
+        </header>
 
-<style>
-  .prose {
-    max-width: 65ch;
-  }
-  article {
-    margin-top: 4rem;
-  }
-  h1 {
-    line-height: 3rem;
-  }
-</style>
+        <!-- Content -->
+        <div class="prose prose-lg prose-gray dark:prose-invert max-w-none">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </Section>
+</Page>

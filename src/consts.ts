@@ -20,22 +20,10 @@ export const socialLinks: SocialLink[] = [
     iconSet: 'carbon',
   },
   {
-    href: 'https://mastodon.social/@jasonkuhrt',
-    title: 'Mastodon',
-    icon: 'logo-mastodon',
-    iconSet: 'carbon',
-  },
-  {
-    href: 'https://twitter.com/jasonkuhrt',
-    title: 'twitter.com/jasonkuhrt',
-    icon: 'logo-twitter',
-    iconSet: 'carbon',
-  },
-  {
-    href: 'https://instagram.com/jasonkuhrt',
-    title: 'instagram.com/jasonkuhrt',
-    icon: 'logo-instagram',
-    iconSet: 'carbon',
+    href: 'https://bsky.app/profile/kuhrt.me',
+    title: 'Bluesky',
+    icon: 'bluesky',
+    iconSet: 'fa6-brands',
   },
   {
     href: 'mailto:jasonkuhrt@me.com',
