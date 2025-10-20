@@ -1,0 +1,104 @@
+---
+import type { Photo } from '../data/photographing/types'
+import PhotoCell from './PhotoCell.astro'
+import { Image } from 'astro:assets'
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  photos: Photo[]
+}
+
+const { photos } = Astro.props
+---
+
+<div class="photo-grid">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {
+      photos.map((photo) => (
+        <div
+          class="photo-item"
+          data-photo-id={photo.id}
+          data-has-series={photo.type === 'series' ? 'true' : 'false'}
+        >
+          {photo.type === 'series' ? (
+            // Series - expandable
+            <button type="button" class="series-toggle w-full text-left" data-photo-id={photo.id}>
+              <PhotoCell photo={photo} />
+            </button>
+          ) : (
+            // Single photo or video - not expandable
+            <PhotoCell photo={photo} />
+          )}
+
+          {/* Expanded series items (hidden by default) */}
+          {photo.type === 'series' && photo.media.length > 1 && (
+            <div class="series-expanded hidden mt-4 space-y-4" data-series-id={photo.id}>
+              {photo.media.slice(1).map((mediaItem, index) => (
+                <div class="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+                  {mediaItem.type === 'image' ? (
+                    <img
+                      src={mediaItem.path}
+                      alt={`${photo.caption || 'Photo'} - ${index + 2}`}
+                      class="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <video src={mediaItem.path} class="h-full w-full object-cover" controls />
+                  )}
+                </div>
+              ))}
+
+              {/* Caption and date for the series */}
+              {photo.caption && (
+                <div class="text-sm text-gray-700 dark:text-gray-300">
+                  <p class="mb-2">{photo.caption}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    {new Date(photo.date).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
+
+              {/* Collapse button */}
+              <button
+                type="button"
+                class="series-collapse w-full py-2 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-sm transition-colors"
+                data-photo-id={photo.id}
+              >
+                Collapse
+              </button>
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  // Handle series expansion/collapse
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.series-toggle')
+    const collapseButtons = document.querySelectorAll('.series-collapse')
+
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const photoId = button.getAttribute('data-photo-id')
+        const expandedDiv = document.querySelector(`[data-series-id="${photoId}"]`)
+
+        if (expandedDiv) {
+          expandedDiv.classList.toggle('hidden')
+        }
+      })
+    })
+
+    collapseButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const photoId = button.getAttribute('data-photo-id')
+        const expandedDiv = document.querySelector(`[data-series-id="${photoId}"]`)
+
+        if (expandedDiv) {
+          expandedDiv.classList.add('hidden')
+        }
+      })
+    })
+  })
+</script>

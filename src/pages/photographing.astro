@@ -1,7 +1,30 @@
 ---
 import Page from '../layouts/Page.astro'
+import PhotoGrid from '../components/PhotoGrid.astro'
+import photoData from '../data/photographing/photos.json'
+import type { PhotoCollection } from '../data/photographing/types'
+
+const data = photoData as PhotoCollection
+const { photos } = data
 ---
 
-<Page title="Photo">
-  <p>Not ready yet. I will be curating a catalog of my photography here.</p>
+<Page title="Photographing" constrainWidth={false}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-4">Photography</h1>
+      {
+        photos.length === 0 ? (
+          <p class="text-gray-600 dark:text-gray-400">
+            No photos yet. Use the import script to add photos from Instagram export, or add them manually.
+          </p>
+        ) : (
+          <p class="text-gray-600 dark:text-gray-400">
+            {photos.length} {photos.length === 1 ? 'photo' : 'photos'}
+          </p>
+        )
+      }
+    </div>
+
+    {photos.length > 0 && <PhotoGrid photos={photos} />}
+  </div>
 </Page>
