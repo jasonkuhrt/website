@@ -35,6 +35,12 @@ import { Icon } from 'astro-icon/components'
   /* Smooth transition for icon changes */
   .theme-icon {
     transition: opacity 0.2s ease;
+    color: #666;
+  }
+
+  /* Ensure visibility in dark mode */
+  :global(.dark) .theme-icon {
+    color: #999;
   }
 </style>
 
@@ -73,12 +79,19 @@ import { Icon } from 'astro-icon/components'
     applyTheme(nextMode)
   }
 
-  // Initialize theme
-  const storedMode = getStoredThemeMode()
-  applyTheme(storedMode)
+  const initButton = () => {
+    const button = document.getElementById('themeToggle')
+    if (button && !button.hasAttribute('data-initialized')) {
+      button.addEventListener('click', cycleTheme)
+      button.setAttribute('data-initialized', 'true')
+    }
+  }
 
-  // Add click handler
-  document.getElementById('themeToggle').addEventListener('click', cycleTheme)
+  // Initialize button on load
+  initButton()
+
+  // Re-initialize button after view transitions
+  document.addEventListener('astro:page-load', initButton)
 
   // Listen for system theme changes when in system mode
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {

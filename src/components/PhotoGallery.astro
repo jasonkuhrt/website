@@ -1,0 +1,91 @@
+---
+// Photos organized by category
+const professionalPhotos = ['1.jpeg', '2.jpg', '3.jpg', '4.jpg', '5.jpeg']
+const hikingPhotos = ['1.jpeg', '2.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '8.jpeg', '9.jpeg']
+
+// Single fixed layout: 4 photos in a 4x2 grid
+// [colStart, colEnd, rowStart, rowEnd]
+const gridPositions = [
+  [1, 3, 1, 3], // large: cols 1-2, rows 1-2
+  [3, 5, 1, 2], // wide: cols 3-4, row 1
+  [3, 4, 2, 3], // square: col 3, row 2
+  [4, 5, 2, 3], // square: col 4, row 2
+]
+
+// Combine all photos for server-side rendering
+const allPhotos = [
+  ...professionalPhotos.map((p) => ({ path: `web-res/professional/${p}`, category: 'professional' })),
+  ...hikingPhotos.map((p) => ({ path: `web-res/hiking/${p}`, category: 'hiking' })),
+]
+---
+
+<div class="photo-gallery" id="photo-gallery">
+  {
+    allPhotos.map((photo) => (
+      <div class="photo-item" data-category={photo.category}>
+        <img src={`/bio/${photo.path}`} alt="Photo from Jason Kuhrt" loading="lazy" />
+      </div>
+    ))
+  }
+</div>
+
+<!-- Inline script runs synchronously - no jitter -->
+<script is:inline define:vars={{ gridPositions }}>
+  {
+    const gallery = document.getElementById('photo-gallery')
+    const allPhotos = Array.from(gallery.querySelectorAll('.photo-item'))
+    const professional = allPhotos.filter((p) => p.dataset.category === 'professional')
+    const hiking = allPhotos.filter((p) => p.dataset.category === 'hiking')
+
+    // Shuffle helper
+    function shuffle(arr) {
+      const a = [...arr]
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[a[i], a[j]] = [a[j], a[i]]
+      }
+      return a
+    }
+
+    // Pick 4 photos with even split (2 from each category)
+    const selectedPro = shuffle(professional).slice(0, 2)
+    const selectedHike = shuffle(hiking).slice(0, 2)
+    const selected = shuffle([...selectedPro, ...selectedHike])
+
+    // Hide all, then show and position selected 4
+    allPhotos.forEach((p) => (p.style.display = 'none'))
+    selected.forEach((p, i) => {
+      const [colStart, colEnd, rowStart, rowEnd] = gridPositions[i]
+      p.style.gridColumn = `${colStart} / ${colEnd}`
+      p.style.gridRow = `${rowStart} / ${rowEnd}`
+      p.style.display = 'block'
+    })
+  }
+</script>
+
+<style>
+  .photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 200px);
+    gap: 1px;
+    width: 100%;
+  }
+
+  .photo-gallery :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-gallery :global(.photo-item) {
+    overflow: hidden;
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .photo-gallery {
+      grid-template-rows: repeat(2, 150px);
+    }
+  }
+</style>

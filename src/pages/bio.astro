@@ -1,27 +1,26 @@
 ---
 import { socialLinks } from '../consts'
-import { Image } from 'astro:assets'
 import Page from '../layouts/Page.astro'
 import Section from '../components/Section.astro'
 import { Icon } from 'astro-icon/components'
-import avatarImage from '../assets/images/avatar.jpg'
+import PhotoGallery from '../components/PhotoGallery.astro'
 ---
 
 <Page constrainWidth={false}>
+  <!-- Photo Gallery Section -->
+  <Section spacing="xl">
+    <div class="container">
+      <div class="max-w-7xl mx-auto">
+        <PhotoGallery />
+      </div>
+    </div>
+  </Section>
+
   <!-- Hero Section -->
   <Section spacing="lg">
     <div class="container">
       <div class="max-w-3xl mx-auto">
         <div class="flex flex-col items-center text-center mb-12">
-          <div class="rounded-full overflow-hidden w-32 h-32 mb-6 ring-1 ring-gray-200 dark:ring-gray-800">
-            <Image
-              src={avatarImage}
-              alt="Profile picture of Jason Kuhrt"
-              width={128}
-              height={128}
-              class="object-cover"
-            />
-          </div>
           <h1 class="text-4xl font-bold mb-4">Jason Kuhrt</h1>
           <div class="flex gap-4">
             {
