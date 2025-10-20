@@ -209,12 +209,7 @@ li {
   margin-right: auto;
 }
 
-/* Grid System */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-columns), 1fr);
-  gap: var(--grid-gap);
-}
+/* Grid System - Tailwind grid utilities are used instead */
 
 @media (max-width: 768px) {
   :root {

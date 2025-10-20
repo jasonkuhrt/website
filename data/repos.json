@@ -1,0 +1,38 @@
+[
+  {
+    "name": "polen",
+    "description": "🌺 A framework for delightful GraphQL developer portals",
+    "stargazerCount": 19,
+    "forkCount": 2,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "pushedAt": "2025-10-05T16:56:47Z",
+    "url": "https://github.com/jasonkuhrt/polen"
+  },
+  {
+    "name": "graffle",
+    "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
+    "stargazerCount": 6058,
+    "forkCount": 308,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "pushedAt": "2025-10-19T04:00:17Z",
+    "url": "https://github.com/graffle-js/graffle"
+  },
+  {
+    "name": "oak",
+    "description": "⚡️ CLI building blocks & framework for the TypeScript era.",
+    "stargazerCount": 80,
+    "forkCount": 1,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "pushedAt": "2025-10-20T21:10:10Z",
+    "url": "https://github.com/jasonkuhrt/oak"
+  }
+]

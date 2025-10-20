@@ -15,7 +15,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "prepare": "husky"
+    "prepare": "husky",
+    "fetch-repos": "GITHUB_TOKEN=$(gh auth token) pnpm dlx tsx scripts/fetch-repos.ts"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
