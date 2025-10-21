@@ -45,68 +45,78 @@ const allPhotos = [
 <!-- Inline script runs synchronously - no jitter -->
 <script is:inline define:vars={{ gridPositions }}>
   {
-    const gallery = document.getElementById('photo-gallery')
-    const allPhotos = Array.from(gallery.querySelectorAll('.photo-item'))
-    const professional = allPhotos.filter((p) => p.dataset.category === 'professional')
-    const hiking = allPhotos.filter((p) => p.dataset.category === 'hiking')
+    function initPhotoGallery() {
+      const gallery = document.getElementById('photo-gallery')
+      if (!gallery) return
 
-    // Shuffle helper
-    function shuffle(arr) {
-      const a = [...arr]
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[a[i], a[j]] = [a[j], a[i]]
+      const allPhotos = Array.from(gallery.querySelectorAll('.photo-item'))
+      const professional = allPhotos.filter((p) => p.dataset.category === 'professional')
+      const hiking = allPhotos.filter((p) => p.dataset.category === 'hiking')
+
+      // Shuffle helper
+      function shuffle(arr) {
+        const a = [...arr]
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[a[i], a[j]] = [a[j], a[i]]
+        }
+        return a
       }
-      return a
+
+      // Group photos by group number
+      function groupByGroupNum(photos) {
+        const groups = {}
+        photos.forEach((photo) => {
+          const group = photo.dataset.group
+          if (!groups[group]) groups[group] = []
+          groups[group].push(photo)
+        })
+        return groups
+      }
+
+      // Select N photos from a category, one per group
+      function selectFromCategory(photos, count) {
+        const grouped = groupByGroupNum(photos)
+        const groupKeys = Object.keys(grouped)
+        const selectedGroups = shuffle(groupKeys).slice(0, count)
+
+        // From each selected group, pick one random photo
+        return selectedGroups.map((groupKey) => {
+          const groupPhotos = grouped[groupKey]
+          return groupPhotos[Math.floor(Math.random() * groupPhotos.length)]
+        })
+      }
+
+      // Randomize photos function
+      function randomizePhotos() {
+        // Pick 4 photos with even split (2 from each category)
+        // Ensure only one photo per group number
+        const selectedPro = selectFromCategory(professional, 2)
+        const selectedHike = selectFromCategory(hiking, 2)
+        const selected = shuffle([...selectedPro, ...selectedHike])
+
+        // Hide all, then show and position selected 4
+        allPhotos.forEach((p) => (p.style.display = 'none'))
+        selected.forEach((p, i) => {
+          const [colStart, colEnd, rowStart, rowEnd] = gridPositions[i]
+          p.style.gridColumn = `${colStart} / ${colEnd}`
+          p.style.gridRow = `${rowStart} / ${rowEnd}`
+          p.style.display = 'block'
+        })
+      }
+
+      // Randomize on load
+      randomizePhotos()
+
+      // Add click handler to re-randomize on click
+      gallery.addEventListener('click', randomizePhotos)
     }
 
-    // Group photos by group number
-    function groupByGroupNum(photos) {
-      const groups = {}
-      photos.forEach((photo) => {
-        const group = photo.dataset.group
-        if (!groups[group]) groups[group] = []
-        groups[group].push(photo)
-      })
-      return groups
-    }
+    // Initialize on page load
+    initPhotoGallery()
 
-    // Select N photos from a category, one per group
-    function selectFromCategory(photos, count) {
-      const grouped = groupByGroupNum(photos)
-      const groupKeys = Object.keys(grouped)
-      const selectedGroups = shuffle(groupKeys).slice(0, count)
-
-      // From each selected group, pick one random photo
-      return selectedGroups.map((groupKey) => {
-        const groupPhotos = grouped[groupKey]
-        return groupPhotos[Math.floor(Math.random() * groupPhotos.length)]
-      })
-    }
-
-    // Randomize photos function
-    function randomizePhotos() {
-      // Pick 4 photos with even split (2 from each category)
-      // Ensure only one photo per group number
-      const selectedPro = selectFromCategory(professional, 2)
-      const selectedHike = selectFromCategory(hiking, 2)
-      const selected = shuffle([...selectedPro, ...selectedHike])
-
-      // Hide all, then show and position selected 4
-      allPhotos.forEach((p) => (p.style.display = 'none'))
-      selected.forEach((p, i) => {
-        const [colStart, colEnd, rowStart, rowEnd] = gridPositions[i]
-        p.style.gridColumn = `${colStart} / ${colEnd}`
-        p.style.gridRow = `${rowStart} / ${rowEnd}`
-        p.style.display = 'block'
-      })
-    }
-
-    // Randomize on load
-    randomizePhotos()
-
-    // Add click handler to re-randomize on click
-    gallery.addEventListener('click', randomizePhotos)
+    // Re-initialize after view transitions
+    document.addEventListener('astro:page-load', initPhotoGallery)
   }
 </script>
 
