@@ -48,7 +48,7 @@ const { photos } = Astro.props
 
 <script>
   // Handle series expansion/collapse in grid flow
-  document.addEventListener('DOMContentLoaded', () => {
+  function initPhotoGrid() {
     const container = document.getElementById('photo-grid-container')
     if (!container) return
 
@@ -192,5 +192,11 @@ const { photos } = Astro.props
         }
       })
     })
-  })
+  }
+
+  // Initialize on page load
+  initPhotoGrid()
+
+  // Re-initialize after view transitions
+  document.addEventListener('astro:page-load', initPhotoGrid)
 </script>
