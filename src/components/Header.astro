@@ -1,14 +1,14 @@
 ---
 import NavLink from './NavLink.astro'
 import Logo from './Logo.astro'
-import ThemeControl from './ThemeControl.astro'
+import ThemeControl from './ThemeControl.svelte'
 ---
 
 <header class="flex flex-col items-center mt-12" transition:name="header" transition:animate="none">
   <a class="opacity-100 hover:opacity-80 active:opacity-40" href="/">
     <Logo width={40} height={40} />
   </a>
-  <ThemeControl />
+  <ThemeControl client:load />
   <nav class="mt-2">
     <NavLink href="/writing" />
     <NavLink href="/speaking" />

@@ -35,13 +35,16 @@
     "@astrojs/mdx": "^4.3.0",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.4.1",
+    "@astrojs/svelte": "^7.2.0",
     "@fontsource/space-mono": "^5.2.7",
     "@iconify-json/carbon": "^1.2.10",
     "@iconify-json/fa6-brands": "^1.2.5",
     "@tailwindcss/typography": "^0.5.16",
     "astro": "^5.14.6",
     "astro-icon": "^1.1.5",
-    "date-fns": "^4.1.0"
+    "date-fns": "^4.1.0",
+    "lucide-svelte": "^0.546.0",
+    "svelte": "^5.41.1"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.70",
