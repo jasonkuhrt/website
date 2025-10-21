@@ -1,8 +1,6 @@
 ---
 import type { Photo } from '../data/photographing/types'
 import PhotoCell from './PhotoCell.astro'
-import { Image } from 'astro:assets'
-import { Icon } from 'astro-icon/components'
 
 interface Props {
   photos: Photo[]
@@ -12,60 +10,35 @@ const { photos } = Astro.props
 ---
 
 <div class="photo-grid">
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <div id="photo-grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px">
     {
       photos.map((photo) => (
         <div
           class="photo-item"
           data-photo-id={photo.id}
-          data-has-series={photo.type === 'series' ? 'true' : 'false'}
+          data-photo-type={photo.type}
+          data-media-count={photo.media.length}
+          data-caption={photo.caption || ''}
+          data-date={photo.date}
         >
+          {/* Store media data for client-side expansion */}
+          {photo.type === 'series' && (
+            <script
+              is:inline
+              type="application/json"
+              data-series-media={photo.id}
+              set:html={JSON.stringify(photo.media)}
+            />
+          )}
+
           {photo.type === 'series' ? (
             // Series - expandable
-            <button type="button" class="series-toggle w-full text-left" data-photo-id={photo.id}>
+            <button type="button" class="series-toggle block w-full text-left" data-photo-id={photo.id}>
               <PhotoCell photo={photo} />
             </button>
           ) : (
             // Single photo or video - not expandable
             <PhotoCell photo={photo} />
-          )}
-
-          {/* Expanded series items (hidden by default) */}
-          {photo.type === 'series' && photo.media.length > 1 && (
-            <div class="series-expanded hidden mt-4 space-y-4" data-series-id={photo.id}>
-              {photo.media.slice(1).map((mediaItem, index) => (
-                <div class="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
-                  {mediaItem.type === 'image' ? (
-                    <img
-                      src={mediaItem.path}
-                      alt={`${photo.caption || 'Photo'} - ${index + 2}`}
-                      class="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <video src={mediaItem.path} class="h-full w-full object-cover" controls />
-                  )}
-                </div>
-              ))}
-
-              {/* Caption and date for the series */}
-              {photo.caption && (
-                <div class="text-sm text-gray-700 dark:text-gray-300">
-                  <p class="mb-2">{photo.caption}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
-                    {new Date(photo.date).toLocaleDateString()}
-                  </p>
-                </div>
-              )}
-
-              {/* Collapse button */}
-              <button
-                type="button"
-                class="series-collapse w-full py-2 px-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-sm transition-colors"
-                data-photo-id={photo.id}
-              >
-                Collapse
-              </button>
-            </div>
           )}
         </div>
       ))
@@ -74,29 +47,148 @@ const { photos } = Astro.props
 </div>
 
 <script>
-  // Handle series expansion/collapse
+  // Handle series expansion/collapse in grid flow
   document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('photo-grid-container')
+    if (!container) return
+
     const toggleButtons = document.querySelectorAll('.series-toggle')
-    const collapseButtons = document.querySelectorAll('.series-collapse')
 
     toggleButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const photoId = button.getAttribute('data-photo-id')
-        const expandedDiv = document.querySelector(`[data-series-id="${photoId}"]`)
-
-        if (expandedDiv) {
-          expandedDiv.classList.toggle('hidden')
+      button.addEventListener('click', (e) => {
+        // Don't toggle if clicking on video or its controls
+        const target = e.target as HTMLElement
+        if (target && (target.tagName === 'VIDEO' || target.closest('video'))) {
+          return
         }
-      })
-    })
 
-    collapseButtons.forEach((button) => {
-      button.addEventListener('click', () => {
+        e.preventDefault()
         const photoId = button.getAttribute('data-photo-id')
-        const expandedDiv = document.querySelector(`[data-series-id="${photoId}"]`)
+        if (!photoId) return
 
-        if (expandedDiv) {
-          expandedDiv.classList.add('hidden')
+        const photoItem = button.closest('.photo-item') as any
+        if (!photoItem) return
+
+        // Check if already expanded
+        const existingExpanded = container.querySelectorAll(`[data-expanded-from="${photoId}"]`)
+        if (existingExpanded.length > 0) {
+          // Collapse: clear dimming effect first
+          if (photoItem._hoverLeave) {
+            photoItem._hoverLeave()
+          }
+          // Remove all expanded items
+          existingExpanded.forEach((el) => el.remove())
+          photoItem.removeAttribute('data-expanded')
+          // Remove hover listeners from series icon
+          if (photoItem._seriesIcon && photoItem._hoverEnter && photoItem._hoverLeave) {
+            photoItem._seriesIcon.removeEventListener('mouseenter', photoItem._hoverEnter)
+            photoItem._seriesIcon.removeEventListener('mouseleave', photoItem._hoverLeave)
+          }
+          return
+        }
+
+        // Expand: get media data
+        const mediaScript = photoItem.querySelector(`script[data-series-media="${photoId}"]`)
+        if (!mediaScript) return
+
+        const media = JSON.parse(mediaScript.textContent || '[]')
+        const caption = photoItem.getAttribute('data-caption')
+        const date = photoItem.getAttribute('data-date')
+
+        // Mark as expanded
+        photoItem.setAttribute('data-expanded', 'true')
+
+        // Create grid cells for remaining media items (skip first as it's already shown)
+        const remainingMedia = media.slice(1)
+        const fragment = document.createDocumentFragment()
+
+        remainingMedia.forEach((mediaItem: any, index: number) => {
+          const cell = document.createElement('div')
+          cell.className = 'photo-item aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800'
+          cell.setAttribute('data-expanded-from', photoId)
+
+          if (mediaItem.type === 'image') {
+            const img = document.createElement('img')
+            img.src = mediaItem.path
+            img.alt = `${caption || 'Photo'} - ${index + 2}`
+            img.className = 'block h-full w-full object-cover'
+            cell.appendChild(img)
+          } else {
+            const video = document.createElement('video')
+            video.src = mediaItem.path
+            video.className = 'block h-full w-full object-cover'
+            video.controls = true
+            cell.appendChild(video)
+          }
+
+          fragment.appendChild(cell)
+        })
+
+        // Add caption/date cell if caption exists
+        if (caption) {
+          const captionCell = document.createElement('div')
+          captionCell.className = 'photo-item bg-gray-50 dark:bg-gray-900 p-4 flex flex-col justify-center'
+          captionCell.setAttribute('data-expanded-from', photoId)
+
+          const captionText = document.createElement('p')
+          captionText.className = 'text-sm text-gray-700 dark:text-gray-300 mb-2'
+          captionText.textContent = caption
+
+          const dateText = document.createElement('p')
+          dateText.className = 'text-xs text-gray-500 dark:text-gray-400'
+          dateText.textContent = new Date(date || '').toLocaleDateString()
+
+          captionCell.appendChild(captionText)
+          captionCell.appendChild(dateText)
+          fragment.appendChild(captionCell)
+        }
+
+        // Add hover effect to dim other photos when hovering over expanded series
+        const hoverEnter = () => {
+          const allPhotoItems = container.querySelectorAll('.photo-item')
+          allPhotoItems.forEach((item) => {
+            const htmlItem = item as HTMLElement
+            // Don't dim the original photo or any of its expanded items
+            const isOriginal = item === photoItem
+            const isExpanded = item.getAttribute('data-expanded-from') === photoId
+
+            if (!isOriginal && !isExpanded) {
+              htmlItem.style.opacity = '0.1'
+              htmlItem.style.transition = 'opacity 0.2s'
+            }
+          })
+        }
+
+        const hoverLeave = () => {
+          const allPhotoItems = container.querySelectorAll('.photo-item')
+          allPhotoItems.forEach((item) => {
+            const htmlItem = item as HTMLElement
+            htmlItem.style.opacity = '1'
+          })
+        }
+
+        // Insert all new cells after the current photo item
+        let insertAfter = photoItem
+        const children = Array.from(fragment.children)
+        children.forEach((child) => {
+          insertAfter.after(child)
+          insertAfter = child
+        })
+
+        // Add hover listeners only to the series icon
+        const seriesIcon = photoItem.querySelector('.series-icon')
+        if (seriesIcon) {
+          seriesIcon.addEventListener('mouseenter', hoverEnter)
+          seriesIcon.addEventListener('mouseleave', hoverLeave)
+          seriesIcon.addEventListener('click', hoverEnter)
+
+          // Store references for cleanup
+          photoItem._hoverEnter = hoverEnter
+          photoItem._hoverLeave = hoverLeave
+          photoItem._seriesIcon = seriesIcon
+
+          // Apply dimming effect immediately on expansion
+          hoverEnter()
         }
       })
     })

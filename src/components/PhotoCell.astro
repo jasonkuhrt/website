@@ -17,40 +17,27 @@ const hasMultiple = photo.media.length > 1
 const isVideo = photo.type === 'video'
 ---
 
-<div class="photo-cell group relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+<div class="photo-cell group relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800">
   {
     firstMedia.type === 'image' ? (
-      <img
+      <Image
         src={firstMedia.path}
         alt={photo.caption || 'Photo'}
-        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        width={800}
+        height={800}
+        class="block h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
       />
     ) : (
-      <video
-        src={firstMedia.path}
-        class="h-full w-full object-cover"
-        controls={expanded}
-        poster={firstMedia.path.replace(/\.(mp4|mov)$/i, '.jpg')}
-      />
+      <video src={firstMedia.path} class="block h-full w-full object-cover" controls />
     )
   }
-
-  <!-- Overlay indicators -->
-  <div
-    class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-  >
-    <div class="absolute bottom-0 left-0 right-0 p-4">
-      {photo.caption && <p class="text-white text-sm line-clamp-2 mb-2">{photo.caption}</p>}
-      <p class="text-white/80 text-xs">
-        {new Date(photo.date).toLocaleDateString()}
-      </p>
-    </div>
-  </div>
 
   <!-- Series/Video indicators -->
   {
     hasMultiple && photo.type === 'series' && (
-      <div class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2">
+      <div class="series-icon absolute top-2 right-2 bg-black/60 text-white rounded-full p-2">
         <Icon name="carbon:image-copy" class="w-4 h-4" />
       </div>
     )
@@ -58,7 +45,7 @@ const isVideo = photo.type === 'video'
 
   {
     isVideo && (
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white rounded-full p-4">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white rounded-full p-4 pointer-events-none">
         <Icon name="carbon:play-filled" class="w-8 h-8" />
       </div>
     )

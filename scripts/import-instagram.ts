@@ -14,11 +14,17 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Photo, PhotoCollection } from '../src/data/photographing/types.js'
 
+interface InstagramMediaItem {
+  uri: string
+  creation_timestamp?: number
+  title?: string
+}
+
 interface InstagramPost {
   caption?: string
   taken_at?: string
   creation_timestamp?: number
-  media?: Array<{ uri: string }>
+  media?: InstagramMediaItem[]
   uri?: string
   title?: string
 }
@@ -113,21 +119,28 @@ const copyMediaFiles = (sourcePaths: string[], photoId: string, exportDir: strin
 
 // Process posts
 const processPost = (post: InstagramPost, exportDir: string): Photo | null => {
-  const date = parseInstagramDate(post)
-  const photoId = generatePhotoId(date)
-  const caption = post.caption || post.title || ''
+  // Get media array - could be directly on post or need to look for uri
+  const mediaItems = post.media || []
 
-  // Get media paths
-  const mediaPaths: string[] = []
-
-  if (post.media && post.media.length > 0) {
-    mediaPaths.push(...post.media.map((m) => m.uri))
-  } else if (post.uri) {
-    mediaPaths.push(post.uri)
+  if (mediaItems.length === 0) {
+    console.warn(`  ⚠️  No media found for post`)
+    return null
   }
 
+  // Use the first media item's timestamp for the date
+  const firstMedia = mediaItems[0]
+  const date = firstMedia.creation_timestamp
+    ? new Date(firstMedia.creation_timestamp * 1000).toISOString()
+    : new Date().toISOString()
+
+  const photoId = generatePhotoId(date)
+  const caption = firstMedia.title || post.caption || ''
+
+  // Get media paths
+  const mediaPaths = mediaItems.map((m) => m.uri).filter(Boolean)
+
   if (mediaPaths.length === 0) {
-    console.warn(`  ⚠️  No media found for post at ${date}`)
+    console.warn(`  ⚠️  No media paths found for post at ${date}`)
     return null
   }
 
@@ -181,12 +194,18 @@ for (const jsonFile of jsonFiles) {
   console.log(`Processing: ${path.basename(jsonFile)}`)
 
   const content = fs.readFileSync(jsonFile, 'utf-8')
-  const data: InstagramExport = JSON.parse(content)
+  const data = JSON.parse(content)
 
-  const posts = [...(data.photos || []), ...(data.videos || [])]
+  // Handle both array format and object format
+  let posts: InstagramPost[] = []
+  if (Array.isArray(data)) {
+    posts = data
+  } else if (typeof data === 'object') {
+    posts = [...(data.photos || []), ...(data.videos || [])]
+  }
 
   for (const post of posts) {
-    const photo = processPost(post, path.dirname(jsonFile))
+    const photo = processPost(post, exportPath)
 
     if (photo) {
       allPhotos.push(photo)
