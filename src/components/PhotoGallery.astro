@@ -1,7 +1,9 @@
 ---
 // Photos organized by category
-const professionalPhotos = ['1.jpeg', '2.jpg', '3.jpg', '4.jpg', '5.jpeg']
-const hikingPhotos = ['1.jpeg', '2.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '8.jpeg', '9.jpeg']
+// Naming convention: <num>[-<char>].<ext>
+// Photos with same <num> are in same group (only one per group should be shown)
+const professionalPhotos = ['1.jpeg', '2-a.jpg', '2-b.jpg', '4.jpg', '5.jpeg']
+const hikingPhotos = ['1.jpeg', '2.jpeg', '4-a.jpeg', '4-b.jpeg', '6.jpeg', '8.jpeg', '9.jpeg']
 
 // Single fixed layout: 4 photos in a 4x2 grid
 // [colStart, colEnd, rowStart, rowEnd]
@@ -12,17 +14,28 @@ const gridPositions = [
   [4, 5, 2, 3], // square: col 4, row 2
 ]
 
+// Extract group number from filename (e.g., "2-a.jpg" -> "2", "4.jpeg" -> "4")
+const getGroupNum = (filename: string) => filename.split(/[-\.]/)[0]
+
 // Combine all photos for server-side rendering
 const allPhotos = [
-  ...professionalPhotos.map((p) => ({ path: `web-res/professional/${p}`, category: 'professional' })),
-  ...hikingPhotos.map((p) => ({ path: `web-res/hiking/${p}`, category: 'hiking' })),
+  ...professionalPhotos.map((p) => ({
+    path: `web-res/professional/${p}`,
+    category: 'professional',
+    group: getGroupNum(p),
+  })),
+  ...hikingPhotos.map((p) => ({
+    path: `web-res/hiking/${p}`,
+    category: 'hiking',
+    group: getGroupNum(p),
+  })),
 ]
 ---
 
 <div class="photo-gallery" id="photo-gallery">
   {
     allPhotos.map((photo) => (
-      <div class="photo-item" data-category={photo.category}>
+      <div class="photo-item" data-category={photo.category} data-group={photo.group}>
         <img src={`/bio/${photo.path}`} alt="Photo from Jason Kuhrt" loading="lazy" />
       </div>
     ))
@@ -47,19 +60,53 @@ const allPhotos = [
       return a
     }
 
-    // Pick 4 photos with even split (2 from each category)
-    const selectedPro = shuffle(professional).slice(0, 2)
-    const selectedHike = shuffle(hiking).slice(0, 2)
-    const selected = shuffle([...selectedPro, ...selectedHike])
+    // Group photos by group number
+    function groupByGroupNum(photos) {
+      const groups = {}
+      photos.forEach((photo) => {
+        const group = photo.dataset.group
+        if (!groups[group]) groups[group] = []
+        groups[group].push(photo)
+      })
+      return groups
+    }
 
-    // Hide all, then show and position selected 4
-    allPhotos.forEach((p) => (p.style.display = 'none'))
-    selected.forEach((p, i) => {
-      const [colStart, colEnd, rowStart, rowEnd] = gridPositions[i]
-      p.style.gridColumn = `${colStart} / ${colEnd}`
-      p.style.gridRow = `${rowStart} / ${rowEnd}`
-      p.style.display = 'block'
-    })
+    // Select N photos from a category, one per group
+    function selectFromCategory(photos, count) {
+      const grouped = groupByGroupNum(photos)
+      const groupKeys = Object.keys(grouped)
+      const selectedGroups = shuffle(groupKeys).slice(0, count)
+
+      // From each selected group, pick one random photo
+      return selectedGroups.map((groupKey) => {
+        const groupPhotos = grouped[groupKey]
+        return groupPhotos[Math.floor(Math.random() * groupPhotos.length)]
+      })
+    }
+
+    // Randomize photos function
+    function randomizePhotos() {
+      // Pick 4 photos with even split (2 from each category)
+      // Ensure only one photo per group number
+      const selectedPro = selectFromCategory(professional, 2)
+      const selectedHike = selectFromCategory(hiking, 2)
+      const selected = shuffle([...selectedPro, ...selectedHike])
+
+      // Hide all, then show and position selected 4
+      allPhotos.forEach((p) => (p.style.display = 'none'))
+      selected.forEach((p, i) => {
+        const [colStart, colEnd, rowStart, rowEnd] = gridPositions[i]
+        p.style.gridColumn = `${colStart} / ${colEnd}`
+        p.style.gridRow = `${rowStart} / ${rowEnd}`
+        p.style.display = 'block'
+      })
+    }
+
+    // Randomize on load
+    randomizePhotos()
+
+    // Add click handler to re-randomize on click
+    gallery.addEventListener('click', randomizePhotos)
   }
 </script>
 
@@ -70,12 +117,19 @@ const allPhotos = [
     grid-template-rows: repeat(2, 200px);
     gap: 1px;
     width: 100%;
+    cursor: pointer;
   }
 
   .photo-gallery :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+
+  .photo-gallery:hover :global(img) {
+    filter: grayscale(0%);
   }
 
   .photo-gallery :global(.photo-item) {

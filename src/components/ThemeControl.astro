@@ -4,13 +4,13 @@ import { Icon } from 'astro-icon/components'
 
 <button
   id="themeToggle"
-  class="absolute top-5 right-5 p-2 rounded-lg transition-all hover:bg-gray-200 dark:hover:bg-gray-800"
+  class="absolute top-5 right-5 p-2 rounded-lg transition-all hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
   aria-label="Toggle theme"
   title="Toggle theme (Light/Dark/System)"
 >
-  <Icon name="carbon:sun" class="theme-icon theme-icon-light text-xl" />
-  <Icon name="carbon:asleep" class="theme-icon theme-icon-dark text-xl" />
-  <Icon name="carbon:screen" class="theme-icon theme-icon-system text-xl" />
+  <Icon name="lucide:sun" class="theme-icon theme-icon-light text-xl" />
+  <Icon name="lucide:moon" class="theme-icon theme-icon-dark text-xl" />
+  <Icon name="lucide:monitor" class="theme-icon theme-icon-system text-xl" />
 </button>
 
 <style>
@@ -35,12 +35,6 @@ import { Icon } from 'astro-icon/components'
   /* Smooth transition for icon changes */
   .theme-icon {
     transition: opacity 0.2s ease;
-    color: #666;
-  }
-
-  /* Ensure visibility in dark mode */
-  :global(.dark) .theme-icon {
-    color: #999;
   }
 </style>
 

@@ -1,9 +1,108 @@
 ---
-import { socialLinks } from '../consts'
+import { socialLinks, talks } from '../consts'
 import Page from '../layouts/Page.astro'
 import Section from '../components/Section.astro'
 import { Icon } from 'astro-icon/components'
 import PhotoGallery from '../components/PhotoGallery.astro'
+import Timeline from '../components/Timeline.astro'
+import linkedinData from '../../data/linkedin.json'
+
+// Transform data into tagged union timeline events
+const experienceEvents = linkedinData.experience.map((exp) => ({
+  type: 'experience' as const,
+  ...exp,
+}))
+
+const educationEvents = linkedinData.education.map((edu) => ({
+  type: 'education' as const,
+  ...edu,
+}))
+
+const achievementEvents = linkedinData.achievements.map((ach) => ({
+  type: 'achievement' as const,
+  ...ach,
+}))
+
+const speakingEvents = talks.map((talk) => ({
+  type: 'speaking' as const,
+  ...talk,
+}))
+
+const personalEvents = [
+  {
+    type: 'personal' as const,
+    title: 'My first son Roman is born',
+    date: 'July 2011',
+  },
+  {
+    type: 'personal' as const,
+    title: 'Move to NYC',
+    date: 'March 2014',
+  },
+  {
+    type: 'personal' as const,
+    title: 'Move back to Montreal',
+    date: 'July 2015',
+  },
+  {
+    type: 'personal' as const,
+    title: 'My second son Willem is born',
+    date: 'March 2016',
+  },
+  {
+    type: 'personal' as const,
+    title: 'First Rocky Mountains Expedition',
+    date: 'July 2023',
+  },
+  {
+    type: 'personal' as const,
+    title: 'ADHD positive assessment',
+    date: 'December 2023',
+  },
+  {
+    type: 'personal' as const,
+    title: 'Second Rocky Mountains Expedition',
+    date: 'August 2025',
+  },
+]
+
+// Combine and sort all events chronologically
+const allEvents = [
+  ...experienceEvents,
+  ...educationEvents,
+  ...achievementEvents,
+  ...speakingEvents,
+  ...personalEvents,
+]
+
+// Parse dates for sorting (handle both "YYYY" and "MMM YYYY" formats)
+const parseDate = (dateStr: string): Date => {
+  if (dateStr === 'Present') return new Date()
+
+  // Try parsing "MMM YYYY" format first
+  const monthYear = dateStr.match(/^([A-Za-z]+)\s+(\d{4})$/)
+  if (monthYear) {
+    return new Date(`${monthYear[1]} 1, ${monthYear[2]}`)
+  }
+
+  // Try parsing "YYYY" format
+  const year = dateStr.match(/^\d{4}$/)
+  if (year) {
+    return new Date(`${dateStr}-01-01`)
+  }
+
+  return new Date(dateStr)
+}
+
+const getStartDate = (event: (typeof allEvents)[0]): Date => {
+  if (event.type === 'achievement' || event.type === 'speaking' || event.type === 'personal') {
+    return parseDate(event.date)
+  }
+  return parseDate(event.startDate)
+}
+
+// Sort by start date descending (most recent first)
+allEvents.sort((a, b) => getStartDate(b).getTime() - getStartDate(a).getTime())
 ---
 
 <Page constrainWidth={false}>
@@ -21,7 +120,12 @@ import PhotoGallery from '../components/PhotoGallery.astro'
     <div class="container">
       <div class="max-w-3xl mx-auto">
         <div class="flex flex-col items-center text-center mb-12">
-          <h1 class="text-4xl font-bold mb-4">Jason Kuhrt</h1>
+          <h1 class="text-4xl font-bold mb-4">{linkedinData.name.first} {linkedinData.name.last}</h1>
+          <p class="text-gray-600 dark:text-gray-400 mb-2">{linkedinData.headline}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-500 mb-6">
+            <Icon name="lucide:map-pin" class="inline-block w-4 h-4 mr-1" />
+            {linkedinData.location}
+          </p>
           <div class="flex gap-4">
             {
               socialLinks.map((socialLink) => (
@@ -42,17 +146,19 @@ import PhotoGallery from '../components/PhotoGallery.astro'
         <!-- Bio -->
         <div class="prose prose-gray dark:prose-invert max-w-none">
           <p class="text-lg leading-relaxed">
-            Hey! I am a software engineer passionate about system design, developer experience, static typing,
-            and functional programming. Educated in design theory, practice, and social responsibility, I
-            discovered programming through open source community and tools like Wordpress, Node.js, and
-            GitHub. Over a decade later I find myself in love with TypeScript and working at Prisma, leading
-            development on the Prisma Data Platform Control Plane.
-          </p>
-          <p class="text-lg leading-relaxed">
-            In my personal life, I sometimes work on open source projects, but closest to my heart are the
-            backpacking trips I take with my boys across the beautiful rugged Canadian landscape.
+            {linkedinData.summary}
           </p>
         </div>
+      </div>
+    </div>
+  </Section>
+
+  <!-- Timeline -->
+  <Section spacing="lg">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100">Timeline</h2>
+        <Timeline items={allEvents} />
       </div>
     </div>
   </Section>

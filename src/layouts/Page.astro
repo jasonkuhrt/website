@@ -17,7 +17,7 @@ import { siteTitle, siteDescription } from '../consts'
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
   <head>
     <BaseHead title={siteTitle} description={siteDescription} />
     <script is:inline>
@@ -47,7 +47,7 @@ import { siteTitle, siteDescription } from '../consts'
     <ViewTransitions />
     <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
   </head>
-  <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
+  <body class="flex items-center flex-col mb-[50vh]">
     <Header />
     <div
       class="pt-20"

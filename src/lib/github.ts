@@ -1,4 +1,4 @@
-import cachedRepos from '../../data/repos.json'
+import cachedData from '../../data/repos.json'
 
 export interface GitHubRepo {
   name: string
@@ -11,6 +11,28 @@ export interface GitHubRepo {
   } | null
   pushedAt: string
   url: string
+  repositoryTopics: {
+    nodes: Array<{
+      topic: {
+        name: string
+      }
+    }>
+  }
+  latestRelease: {
+    tagName: string
+    publishedAt: string
+    url: string
+  } | null
+  defaultBranchRef: {
+    target: {
+      commitUrl: string
+    }
+  } | null
+}
+
+export interface GitHubData {
+  fetchedAt: string
+  repos: GitHubRepo[]
 }
 
 /**
@@ -20,5 +42,12 @@ export interface GitHubRepo {
  * This avoids needing GitHub API access during builds (e.g., in CI).
  */
 export const getRepoData = (): GitHubRepo[] => {
-  return cachedRepos as GitHubRepo[]
+  return (cachedData as GitHubData).repos
+}
+
+/**
+ * Get the timestamp when repository data was last fetched.
+ */
+export const getRepoDataFetchedAt = (): string => {
+  return (cachedData as GitHubData).fetchedAt
 }

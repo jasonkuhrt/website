@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+@variant dark (&:where(.dark, .dark *));
+
 /**
  * Design System - Inspired by Vercel/Geist, Linear, Arc Browser
  * Grid-based, minimal, clean aesthetic

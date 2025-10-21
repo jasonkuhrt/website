@@ -1,38 +1,122 @@
-[
-  {
-    "name": "polen",
-    "description": "🌺 A framework for delightful GraphQL developer portals",
-    "stargazerCount": 19,
-    "forkCount": 2,
-    "primaryLanguage": {
-      "name": "TypeScript",
-      "color": "#3178c6"
+{
+  "fetchedAt": "2025-10-21T00:24:38.564Z",
+  "repos": [
+    {
+      "name": "polen",
+      "description": "🌺 A framework for delightful GraphQL developer portals",
+      "stargazerCount": 19,
+      "forkCount": 2,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-05T16:56:47Z",
+      "url": "https://github.com/jasonkuhrt/polen",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "developer-portal"
+            }
+          },
+          {
+            "topic": {
+              "name": "framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.10.0",
+        "publishedAt": "2025-07-14T18:28:29Z",
+        "url": "https://github.com/jasonkuhrt/polen/releases/tag/0.10.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/polen/commit/1c7dc1460f2998f35a067b42bc28c0767b63bfc4"
+        }
+      }
     },
-    "pushedAt": "2025-10-05T16:56:47Z",
-    "url": "https://github.com/jasonkuhrt/polen"
-  },
-  {
-    "name": "graffle",
-    "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
-    "stargazerCount": 6058,
-    "forkCount": 308,
-    "primaryLanguage": {
-      "name": "TypeScript",
-      "color": "#3178c6"
+    {
+      "name": "graffle",
+      "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
+      "stargazerCount": 6058,
+      "forkCount": 308,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-19T04:00:17Z",
+      "url": "https://github.com/graffle-js/graffle",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql-client"
+            }
+          },
+          {
+            "topic": {
+              "name": "nodejs"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          },
+          {
+            "topic": {
+              "name": "lightweight"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "graphql-request@7.3.1",
+        "publishedAt": "2025-10-18T20:40:58Z",
+        "url": "https://github.com/graffle-js/graffle/releases/tag/graphql-request%407.3.1"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/graffle-js/graffle/commit/f22874706e2befe5ec522195d0917a1a3b4db934"
+        }
+      }
     },
-    "pushedAt": "2025-10-19T04:00:17Z",
-    "url": "https://github.com/graffle-js/graffle"
-  },
-  {
-    "name": "oak",
-    "description": "⚡️ CLI building blocks & framework for the TypeScript era.",
-    "stargazerCount": 80,
-    "forkCount": 1,
-    "primaryLanguage": {
-      "name": "TypeScript",
-      "color": "#3178c6"
-    },
-    "pushedAt": "2025-10-20T21:10:10Z",
-    "url": "https://github.com/jasonkuhrt/oak"
-  }
-]
+    {
+      "name": "oak",
+      "description": "⚡️ CLI building blocks & framework for the TypeScript era.",
+      "stargazerCount": 80,
+      "forkCount": 1,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-20T21:10:10Z",
+      "url": "https://github.com/jasonkuhrt/oak",
+      "repositoryTopics": {
+        "nodes": []
+      },
+      "latestRelease": {
+        "tagName": "@molt/command@0.9.0",
+        "publishedAt": "2023-09-16T16:58:27Z",
+        "url": "https://github.com/jasonkuhrt/oak/releases/tag/%40molt/command%400.9.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/oak/commit/be8bbf745ca59a0dd82cc4062a8e3e2cf0f0038a"
+        }
+      }
+    }
+  ]
+}

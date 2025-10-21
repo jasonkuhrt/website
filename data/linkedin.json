@@ -1,0 +1,197 @@
+{
+  "name": {
+    "first": "Jason",
+    "last": "Kuhrt"
+  },
+  "birthDate": "Jan 13, 1987",
+  "headline": "Working in open source, open to opportunities.",
+  "summary": "I am developer passionate about system design, developer experience, static typing and functional programming. Educated in design theory, practice, and social responsibility I fell into programming through the portal of open source, Node.js, and GitHub. Over a decade later I have found myself in love with TypeScript and at Prisma leading development on the Prisma Data Platform Control Plane. In my personal life I work on various personal and open source projects but closest to my heart are the backpacking trips I take my two boys on across our beautiful rugged Canadian wilderness! 🏔 🇨🇦",
+  "location": "Montreal, Quebec, Canada",
+  "industry": "Research Services",
+  "experience": [
+    {
+      "title": "Software Engineer",
+      "company": "The Guild Software",
+      "location": "Montreal, Quebec, Canada · Remote",
+      "startDate": "Dec 2024",
+      "endDate": "Present",
+      "description": ""
+    },
+    {
+      "title": "Tech Lead",
+      "company": "Prisma",
+      "location": "Montreal, Quebec, Canada · Remote",
+      "startDate": "Jan 2021",
+      "endDate": "Aug 2024",
+      "description": "TypeScript · System Architecture · Mentoring · GraphQL · Cloudflare"
+    },
+    {
+      "title": "Prisma Labs Lead",
+      "company": "Prisma",
+      "location": "Montreal, Canada Area",
+      "startDate": "Sep 2019",
+      "endDate": "Jan 2021",
+      "description": ""
+    },
+    {
+      "title": "Software Engineer",
+      "company": "Dialogue",
+      "location": "Montreal, Canada Area · On-site",
+      "startDate": "Apr 2018",
+      "endDate": "Aug 2019",
+      "description": "Python · FastAPI · Amazon Web Services (AWS) · Kubernetes · DevOps"
+    },
+    {
+      "title": "Tech Lead",
+      "company": "SSENSE",
+      "location": "Montreal",
+      "startDate": "Oct 2016",
+      "endDate": "Apr 2018",
+      "description": "Principal Architect Edge System · Principal Architect Experimentation System · R&D GraphQL · Architecture diagrams, documentation · Work with kubernetes, Deployments, CD, Cron · Manage teams, shepherd major releases, vendor analysis, load testing · Led sprint planning, review, backlog refinement"
+    },
+    {
+      "title": "Lead Platform Architect",
+      "company": "littleBits",
+      "location": "Montreal / New York",
+      "startDate": "May 2013",
+      "endDate": "Jan 2016",
+      "description": "Built the realtime distributed cloud system that powers the cloudBit. Built micro-service cloud platform, designed APIs, collaborated on product development, maintained service availability. Technologies: TLS Server, HTTPS API, WebSocket API, Redis, RethinkDB, Elastic Search, AWS/GCP, Docker/Kubernetes, OAuth 2"
+    },
+    {
+      "title": "Senior Frontend Engineer",
+      "company": "Kenzan Media",
+      "location": "Montreal, Canada Area",
+      "startDate": "Mar 2013",
+      "endDate": "May 2013",
+      "description": "Developed modular UI components and implemented hardest UI views. Implemented 300 page webapp (Angular.js) for Optimum. Developed scalable CSS architecture (BEM), UI component library"
+    },
+    {
+      "title": "Senior Frontend Engineer",
+      "company": "Presstube Inc",
+      "location": "Montreal, Canada Area",
+      "startDate": "Nov 2012",
+      "endDate": "Mar 2013",
+      "description": "Architected frontend stack for large team. Grunt for build, LESS for CSS, Angular for client MVC, Karma for testing. Built custom build process for scalable component development"
+    },
+    {
+      "title": "Designer / Frontend Engineer",
+      "company": "Taking Root",
+      "location": "Montreal, Canada Area",
+      "startDate": "Jul 2012",
+      "endDate": "Nov 2012",
+      "description": "Designed + Built CO2R web app showcasing carbon footprint reduction impact supporting reforestation and community development in Nicaragua"
+    },
+    {
+      "title": "Art Director / Frontend Engineer",
+      "company": "Artfox",
+      "location": "Montreal, Canada Area",
+      "startDate": "Jul 2011",
+      "endDate": "May 2012",
+      "description": "Brainstormed platform features · Designed/Implemented UI Views · Designed brand touch-points (newsletter, documents)"
+    },
+    {
+      "title": "Graphic Designer",
+      "company": "Kenneth Dean, Prof., McGill University",
+      "location": "Montreal, Canada Area",
+      "startDate": "Nov 2010",
+      "endDate": "Feb 2011",
+      "description": "Designed poster/website/jewel-case for film Bored in Heaven - a documentary exploring ritualistic tradition renaissance in south-east China"
+    },
+    {
+      "title": "UI Designer / Frontend Engineer",
+      "company": "TANK",
+      "location": "Montreal, Canada Area",
+      "startDate": "Nov 2010",
+      "endDate": "Jan 2011",
+      "description": "Built modular CSS system. Designed UI views"
+    },
+    {
+      "title": "UI/X Designer / Frontend Engineer",
+      "company": "Bluesponge",
+      "location": "Montreal, Canada Area",
+      "startDate": "Sep 2010",
+      "endDate": "Oct 2010",
+      "description": "Designed/Built microsite prototype for CCA Journeys - digital experience for exhibition on global movement research"
+    },
+    {
+      "title": "Intern UI/X Designer / Fullstack Engineer",
+      "company": "Icograda",
+      "location": "Montreal, Canada Area",
+      "startDate": "May 2009",
+      "endDate": "Sep 2009",
+      "description": "Designed/Built Icograda's Biennial Review - reimagined printed booklet as digital platform for World Design Congress"
+    },
+    {
+      "title": "Graphic Designer",
+      "company": "Concordia University",
+      "location": "Montreal, Canada Area",
+      "startDate": "Aug 2008",
+      "endDate": "Oct 2008",
+      "description": "Designed/Built poster/microsite for Portfolio Day in Montreal"
+    },
+    {
+      "title": "Graphic Designer Intern",
+      "company": "Icograda",
+      "location": "Montreal, Canada Area",
+      "startDate": "May 2007",
+      "endDate": "Sep 2007",
+      "description": "Designed poster for the World Design Congress 2007"
+    },
+    {
+      "title": "Graphic Designer",
+      "company": "time's thievish progress to eternity FILMS",
+      "location": "Montreal, Canada Area",
+      "startDate": "Oct 2007",
+      "endDate": "Oct 2013",
+      "description": "Designed poster for Montreal Stories 1944 · Designed/Built poster/microsite for At the Bottom of the Hill · Designed poster/package for Woman in Car · Designed/Built website for filmmaker Vanya Rose"
+    }
+  ],
+  "education": [
+    {
+      "institution": "Concordia University",
+      "degree": "BFA, Design",
+      "startDate": "2005",
+      "endDate": "2010",
+      "description": "President, Concordia Design Students · Council Member, Fine Arts, Concordia Student Union · Exchange to Bremen (Germany) at Master-level studies · Golden Key Honour Society Member · Graduating project \"Sousveillance\" included in the Canadian Art and Surveillance database"
+    },
+    {
+      "institution": "HSB Hochschule Bremen – City University of Applied Sciences",
+      "degree": "Design",
+      "startDate": "2007",
+      "endDate": "2008",
+      "description": "Exchange program"
+    }
+  ],
+  "achievements": [
+    {
+      "title": "Founding Member",
+      "issuer": "littleBits",
+      "date": "Jul 2015",
+      "description": "Recognized as a Founding Member for joining littleBits when it was a small startup in May 2013. Principal role in building the Cloud Platform from scratch"
+    },
+    {
+      "title": "Special Selection",
+      "issuer": "Art & Surveillance",
+      "date": "Jun 2015",
+      "description": "\"Sousveillance\" selected for inclusion in a curated gallery of Canadian Artworks that tackle the topic of Surveillance"
+    },
+    {
+      "title": "Special Selection",
+      "issuer": "Justseeds",
+      "date": "Oct 2012",
+      "description": "\"Wall\" selected for inclusion in the Justseeds collection, an Artists' Cooperative"
+    },
+    {
+      "title": "Special Invitation",
+      "issuer": "Golden Key Honour Society",
+      "date": "Nov 2010",
+      "description": "Admitted into the Golden Key Honour Society following the completion of BFA"
+    },
+    {
+      "title": "Semi-finalist, Adobe Design Achievement Awards",
+      "issuer": "Adobe",
+      "date": "Jun 2008",
+      "description": "Poster design for the World Design Congress (2007) was a semi-finalist in the 2008 Adobe Design Achievement Awards"
+    }
+  ]
+}

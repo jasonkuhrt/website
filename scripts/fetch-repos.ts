@@ -15,6 +15,23 @@ interface GitHubRepo {
   } | null
   pushedAt: string
   url: string
+  repositoryTopics: {
+    nodes: Array<{
+      topic: {
+        name: string
+      }
+    }>
+  }
+  latestRelease: {
+    tagName: string
+    publishedAt: string
+    url: string
+  } | null
+  defaultBranchRef: {
+    target: {
+      commitUrl: string
+    }
+  } | null
 }
 
 interface GraphQLResponse {
@@ -38,6 +55,25 @@ const fetchRepoData = async (token: string): Promise<GitHubRepo[]> => {
       }
       pushedAt
       url
+      repositoryTopics(first: 10) {
+        nodes {
+          topic {
+            name
+          }
+        }
+      }
+      latestRelease {
+        tagName
+        publishedAt
+        url
+      }
+      defaultBranchRef {
+        target {
+          ... on Commit {
+            commitUrl
+          }
+        }
+      }
     }
   `,
     )
@@ -96,11 +132,17 @@ const main = async () => {
   try {
     const repos = await fetchRepoData(token)
 
+    const data = {
+      fetchedAt: new Date().toISOString(),
+      repos,
+    }
+
     const outputPath = join(process.cwd(), 'data', 'repos.json')
-    writeFileSync(outputPath, JSON.stringify(repos, null, 2))
+    writeFileSync(outputPath, JSON.stringify(data, null, 2))
 
     console.log(`✓ Successfully fetched ${repos.length} repositories`)
     console.log(`✓ Data saved to ${outputPath}`)
+    console.log(`✓ Fetched at: ${data.fetchedAt}`)
     console.log('\nRepositories:')
     repos.forEach((repo) => {
       console.log(`  - ${repo.name} (⭐ ${repo.stargazerCount})`)

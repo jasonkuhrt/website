@@ -2,6 +2,8 @@
 import Page from '../layouts/Page.astro'
 import Section from '../components/Section.astro'
 import RepoCard from '../components/RepoCard.astro'
+import GitHubProfileCard from '../components/GitHubProfileCard.astro'
+import RepoRefreshTimer from '../components/RepoRefreshTimer.astro'
 import { getRepoData } from '../lib/github.js'
 
 const repos = getRepoData()
@@ -12,7 +14,11 @@ const repos = getRepoData()
     <div class="container">
       <div class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <GitHubProfileCard />
           {repos.map((repo) => <RepoCard repo={repo} />)}
+        </div>
+        <div class="mt-6 flex justify-end">
+          <RepoRefreshTimer />
         </div>
       </div>
     </div>
