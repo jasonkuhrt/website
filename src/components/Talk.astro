@@ -15,7 +15,7 @@ const props = Astro.props
 import { Icon } from 'astro-icon/components'
 ---
 
-<div class="flex flex-col md:flex-row text-sm hover:bg-[#fcfcfc] p-2">
+<div class="flex flex-col md:flex-row text-sm hover:bg-gray-50 dark:hover:bg-gray-800 p-2">
   <div class="p-3 align-top">
     <div class="md:w-96">
       <div>{props.title}</div>
@@ -27,41 +27,41 @@ import { Icon } from 'astro-icon/components'
     <div class="flex space-x-2">
       {
         props.links?.repo ? (
-          <a class="opacity-20 hover:opacity-100" href={props.links.repo}>
-            <Icon name="fa6-brands:github-alt" />
+          <a class="opacity-20 dark:opacity-40 hover:opacity-100" href={props.links.repo}>
+            <Icon name="lucide:github" />
           </a>
         ) : (
-          <div class="opacity-10">
-            <Icon name="fa6-brands:github-alt" />
+          <div class="opacity-10 dark:opacity-20">
+            <Icon name="lucide:github" />
           </div>
         )
       }
       {
         props.links?.info ? (
-          <a class="opacity-20 hover:opacity-100" href={props.links.info}>
-            <Icon name="fa6-brands:meetup" />
+          <a class="opacity-20 dark:opacity-40 hover:opacity-100" href={props.links.info}>
+            <Icon name="lucide:link" />
           </a>
         ) : (
-          <div class="opacity-10">
-            <Icon name="fa6-brands:meetup" />
+          <div class="opacity-10 dark:opacity-20">
+            <Icon name="lucide:link" />
           </div>
         )
       }
       {
         props.links?.recording ? (
-          <a class="opacity-20 hover:opacity-100" href={props.links.recording}>
-            <Icon name="carbon:play-filled" />
+          <a class="opacity-20 dark:opacity-40 hover:opacity-100" href={props.links.recording}>
+            <Icon name="lucide:play" />
           </a>
         ) : (
-          <div class="opacity-10">
-            <Icon name="carbon:video" />
+          <div class="opacity-10 dark:opacity-20">
+            <Icon name="lucide:video" />
           </div>
         )
       }
       {
         props.links?.twitter && (
-          <a class="opacity-20 hover:opacity-100" href={props.links?.twitter}>
-            <Icon name="carbon:logo-twitter" />
+          <a class="opacity-20 dark:opacity-40 hover:opacity-100" href={props.links?.twitter}>
+            <Icon name="lucide:twitter" />
           </a>
         )
       }

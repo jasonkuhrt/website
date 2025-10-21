@@ -15,7 +15,9 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "prepare": "husky"
+    "prepare": "husky",
+    "fetch-repos": "GITHUB_TOKEN=$(gh auth token) pnpm dlx tsx scripts/fetch-repos.ts",
+    "optimize-photos": "bash scripts/optimize-photos.sh"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
@@ -42,6 +44,7 @@
     "date-fns": "^4.1.0"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.70",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tailwindcss/vite": "^4.1.10",
     "@typescript-eslint/eslint-plugin": "^8.34.1",

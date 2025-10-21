@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+@variant dark (&:where(.dark, .dark *));
+
 /**
  * Design System - Inspired by Vercel/Geist, Linear, Arc Browser
  * Grid-based, minimal, clean aesthetic
@@ -209,12 +211,7 @@ li {
   margin-right: auto;
 }
 
-/* Grid System */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-columns), 1fr);
-  gap: var(--grid-gap);
-}
+/* Grid System - Tailwind grid utilities are used instead */
 
 @media (max-width: 768px) {
   :root {

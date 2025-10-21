@@ -1,16 +1,24 @@
 ---
 import Page from '../layouts/Page.astro'
 import Section from '../components/Section.astro'
+import RepoCard from '../components/RepoCard.astro'
+import GitHubProfileCard from '../components/GitHubProfileCard.astro'
+import RepoRefreshTimer from '../components/RepoRefreshTimer.astro'
+import { getRepoData } from '../lib/github.js'
+
+const repos = getRepoData()
 ---
 
 <Page title="Code" constrainWidth={false}>
   <Section spacing="xl">
     <div class="container">
-      <div class="max-w-3xl mx-auto">
-        <div class="border border-gray-200 dark:border-gray-800 rounded-lg p-12 text-center">
-          <p class="text-lg text-gray-600 dark:text-gray-400">
-            Coming soon – a curated collection of my open source projects and technical work.
-          </p>
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <GitHubProfileCard />
+          {repos.map((repo) => <RepoCard repo={repo} />)}
+        </div>
+        <div class="mt-6 flex justify-end">
+          <RepoRefreshTimer />
         </div>
       </div>
     </div>

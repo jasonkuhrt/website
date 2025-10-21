@@ -1,0 +1,52 @@
+---
+import { getRepoDataFetchedAt } from '../lib/github.js'
+
+const fetchedAt = getRepoDataFetchedAt()
+---
+
+<div
+  class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2"
+  data-fetched-at={fetchedAt}
+  id="refresh-timer"
+>
+  <span class="opacity-60">Data refreshes in:</span>
+  <span id="countdown" class="font-mono">calculating...</span>
+</div>
+
+<script is:inline>
+  {
+    function updateCountdown() {
+      const timer = document.getElementById('refresh-timer')
+      const countdown = document.getElementById('countdown')
+      if (!timer || !countdown) return
+
+      const fetchedAt = new Date(timer.dataset.fetchedAt)
+      const nextRefresh = new Date(fetchedAt.getTime() + 24 * 60 * 60 * 1000) // 24 hours later
+      const now = new Date()
+      const diff = nextRefresh.getTime() - now.getTime()
+
+      if (diff <= 0) {
+        countdown.textContent = 'refreshing soon...'
+        return
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+      countdown.textContent = `${hours}h ${minutes}m ${seconds}s`
+    }
+
+    // Update immediately
+    updateCountdown()
+
+    // Update every second
+    setInterval(updateCountdown, 1000)
+
+    // Re-initialize after page transitions
+    document.addEventListener('astro:page-load', () => {
+      updateCountdown()
+      setInterval(updateCountdown, 1000)
+    })
+  }
+</script>

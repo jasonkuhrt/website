@@ -17,13 +17,37 @@ import { siteTitle, siteDescription } from '../consts'
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
   <head>
     <BaseHead title={siteTitle} description={siteDescription} />
+    <script is:inline>
+      // Immediately apply theme before page renders to prevent flash
+      ;(function () {
+        function applyThemeClasses() {
+          const getSystemTheme = () =>
+            window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          const storedMode = localStorage.getItem('themeMode') || 'system'
+
+          document.documentElement.classList.remove('dark', 'light', 'system')
+
+          if (storedMode === 'system') {
+            document.documentElement.classList.add('system', getSystemTheme())
+          } else {
+            document.documentElement.classList.add(storedMode)
+          }
+        }
+
+        // Apply immediately
+        applyThemeClasses()
+
+        // Re-apply after view transitions swap HTML
+        document.addEventListener('astro:after-swap', applyThemeClasses)
+      })()
+    </script>
     <ViewTransitions />
     <title>Kuhrt{props.title ? `– ${props.title}` : ''}</title>
   </head>
-  <body class="flex items-center flex-col" style={{ marginBottom: '50vh' }}>
+  <body class="flex items-center flex-col mb-[50vh]">
     <Header />
     <div
       class="pt-20"

@@ -4,13 +4,13 @@ import { Icon } from 'astro-icon/components'
 
 <button
   id="themeToggle"
-  class="absolute top-5 right-5 p-2 rounded-lg transition-all hover:bg-gray-200 dark:hover:bg-gray-800"
+  class="absolute top-5 right-5 p-2 rounded-lg transition-all hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
   aria-label="Toggle theme"
   title="Toggle theme (Light/Dark/System)"
 >
-  <Icon name="carbon:sun" class="theme-icon theme-icon-light text-xl" />
-  <Icon name="carbon:asleep" class="theme-icon theme-icon-dark text-xl" />
-  <Icon name="carbon:screen" class="theme-icon theme-icon-system text-xl" />
+  <Icon name="lucide:sun" class="theme-icon theme-icon-light text-xl" />
+  <Icon name="lucide:moon" class="theme-icon theme-icon-dark text-xl" />
+  <Icon name="lucide:monitor" class="theme-icon theme-icon-system text-xl" />
 </button>
 
 <style>
@@ -73,12 +73,19 @@ import { Icon } from 'astro-icon/components'
     applyTheme(nextMode)
   }
 
-  // Initialize theme
-  const storedMode = getStoredThemeMode()
-  applyTheme(storedMode)
+  const initButton = () => {
+    const button = document.getElementById('themeToggle')
+    if (button && !button.hasAttribute('data-initialized')) {
+      button.addEventListener('click', cycleTheme)
+      button.setAttribute('data-initialized', 'true')
+    }
+  }
 
-  // Add click handler
-  document.getElementById('themeToggle').addEventListener('click', cycleTheme)
+  // Initialize button on load
+  initButton()
+
+  // Re-initialize button after view transitions
+  document.addEventListener('astro:page-load', initButton)
 
   // Listen for system theme changes when in system mode
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
