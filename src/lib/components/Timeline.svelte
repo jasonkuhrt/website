@@ -585,7 +585,7 @@
 
         <!-- Content -->
         <div class="leading-8 flex items-start gap-2">
-          <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400 flex-shrink-0 pt-0.5" />
+          <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400 flex-shrink-0 pt-1" />
           <div class="flex-1 min-w-0">
             {#if item.type === 'experience'}
               <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
