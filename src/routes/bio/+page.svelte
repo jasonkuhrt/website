@@ -7,6 +7,7 @@
   import Timeline from '$lib/components/Timeline.svelte'
   import { iconComponents } from '$lib/utils/icons'
   import linkedinData from '$lib/data/linkedin.json'
+  import personalEventsData from '$lib/data/personal-events.json'
 
   // Transform data into tagged union timeline events
   const experienceEvents = linkedinData.experience.map((exp) => ({
@@ -29,43 +30,10 @@
     ...talk,
   }))
 
-  const personalEvents = [
-    {
-      type: 'personal' as const,
-      title: 'My first son Roman is born',
-      date: 'July 2011',
-    },
-    {
-      type: 'personal' as const,
-      title: 'Move to NYC',
-      date: 'March 2014',
-    },
-    {
-      type: 'personal' as const,
-      title: 'Move back to Montreal',
-      date: 'July 2015',
-    },
-    {
-      type: 'personal' as const,
-      title: 'My second son Willem is born',
-      date: 'March 2016',
-    },
-    {
-      type: 'personal' as const,
-      title: 'First Rocky Mountains Expedition',
-      date: 'July 2023',
-    },
-    {
-      type: 'personal' as const,
-      title: 'ADHD positive assessment',
-      date: 'December 2023',
-    },
-    {
-      type: 'personal' as const,
-      title: 'Second Rocky Mountains Expedition',
-      date: 'August 2025',
-    },
-  ]
+  const personalEvents = personalEventsData.map((event) => ({
+    type: 'personal' as const,
+    ...event,
+  }))
 
   // Combine and sort all events chronologically
   const allEvents = [

@@ -13,8 +13,14 @@
     Play,
     Video,
     Twitter,
+    Baby,
+    MapPin,
+    Home,
+    Mountain,
+    Brain,
   } from 'lucide-svelte'
   import { onMount } from 'svelte'
+  import type { ComponentType } from 'svelte'
 
   type TimelineEvent =
     | {
@@ -58,6 +64,7 @@
         title: string
         date: string
         description?: string
+        icon?: string
       }
 
   interface Props {
@@ -65,6 +72,16 @@
   }
 
   let { items }: Props = $props()
+
+  // Icon lookup map for personal event icons
+  const iconMap: Record<string, ComponentType> = {
+    Baby,
+    MapPin,
+    Home,
+    Mountain,
+    Brain,
+    Heart, // Fallback default
+  }
 
   // Event types constant
   const eventTypes = ['experience', 'education', 'achievement', 'speaking', 'personal'] as const
@@ -87,7 +104,7 @@
       .trim()
   }
 
-  const getItemId = (item: TimelineEvent, index: number): string => {
+  const getItemId = (item: TimelineEvent): string => {
     switch (item.type) {
       case 'experience':
         return `exp-${slugify(item.company)}-${slugify(item.startDate)}`
@@ -117,8 +134,8 @@
     }
   }
 
-  const getNodeIconComponent = (type: TimelineEvent['type']) => {
-    switch (type) {
+  const getNodeIconComponent = (item: TimelineEvent) => {
+    switch (item.type) {
       case 'experience':
         return Briefcase
       case 'education':
@@ -128,7 +145,7 @@
       case 'speaking':
         return Presentation
       case 'personal':
-        return Heart
+        return item.icon && iconMap[item.icon] ? iconMap[item.icon] : Heart
     }
   }
 
@@ -216,8 +233,6 @@
     }
 
     const dates = items.map(getItemDate)
-    const minDate = Math.min(...dates.map((d) => d.getTime()))
-    const maxDate = Math.max(...dates.map((d) => d.getTime()))
     const pixelsPerDay = 1
 
     timelineItems.forEach((item, index) => {
@@ -343,7 +358,16 @@
 <div class="mb-8 flex justify-between items-start flex-wrap gap-4">
   <div class="flex gap-2 flex-wrap items-center">
     {#each eventTypes as eventType (eventType)}
-      {@const IconComponent = getNodeIconComponent(eventType)}
+      {@const IconComponent =
+        eventType === 'personal'
+          ? Heart
+          : eventType === 'experience'
+            ? Briefcase
+            : eventType === 'education'
+              ? GraduationCap
+              : eventType === 'achievement'
+                ? Award
+                : Presentation}
       <button
         type="button"
         class="timeline-filter px-2 py-1 rounded text-xs transition-opacity flex items-center gap-1.5"
@@ -380,14 +404,17 @@
   <div
     class="fixed inset-0 bg-black/20 dark:bg-black/40 z-40"
     onclick={() => (showHelpOverlay = false)}
+    onkeydown={(e) => e.key === 'Enter' && (showHelpOverlay = false)}
     role="button"
     tabindex="0"
   >
     <div
       class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 max-w-md z-50 border border-gray-200 dark:border-gray-700"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
+      tabindex="-1"
     >
       <div class="flex justify-between items-start mb-4">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Timeline Filters</h3>
@@ -490,7 +517,7 @@
     </g>
   </svg>
 
-  {#each items as item, index (getItemId(item, index))}
+  {#each items as item, index (getItemId(item))}
     {@const isSingleDate =
       item.type === 'achievement' || item.type === 'speaking' || item.type === 'personal'}
     {@const startDate = isSingleDate ? item.date : item.startDate}
@@ -498,6 +525,7 @@
     {@const itemId = getItemId(item, index)}
     {@const nodeColor = getNodeColor(item.type)}
     {@const isVisible = filters.has(item.type)}
+    {@const IconComponent = getNodeIconComponent(item)}
 
     <div
       id={itemId}
@@ -524,16 +552,22 @@
           aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
           onclick={(e) => handleNodeLinkClick(e, itemId)}
         >
-          <svg width="32" height="32" viewBox="0 0 32 32" class="timeline-node-circle transition-transform">
-            <circle
-              cx="16"
-              cy="16"
-              r="14"
-              fill={nodeColor}
-              class="timeline-node-outer-ring transition-opacity"
-            />
-            <circle cx="16" cy="16" r="8" fill={nodeColor} />
-          </svg>
+          <div class="relative w-8 h-8">
+            <svg width="32" height="32" viewBox="0 0 32 32" class="timeline-node-circle transition-transform">
+              <circle
+                cx="16"
+                cy="16"
+                r="14"
+                fill={nodeColor}
+                class="timeline-node-outer-ring transition-opacity"
+              />
+              <circle cx="16" cy="16" r="8" fill={nodeColor} />
+            </svg>
+            <!-- Icon overlay -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <IconComponent class="w-3.5 h-3.5 text-white" />
+            </div>
+          </div>
         </a>
 
         <!-- Content -->
