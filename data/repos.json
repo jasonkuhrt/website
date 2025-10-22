@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2025-10-21T00:24:38.564Z",
+  "fetchedAt": "2025-10-22T02:01:05.700Z",
   "repos": [
     {
       "name": "polen",
@@ -45,7 +45,7 @@
     {
       "name": "graffle",
       "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
-      "stargazerCount": 6058,
+      "stargazerCount": 6060,
       "forkCount": 308,
       "primaryLanguage": {
         "name": "TypeScript",
@@ -102,7 +102,7 @@
         "name": "TypeScript",
         "color": "#3178c6"
       },
-      "pushedAt": "2025-10-20T21:10:10Z",
+      "pushedAt": "2025-10-22T01:05:48Z",
       "url": "https://github.com/jasonkuhrt/oak",
       "repositoryTopics": {
         "nodes": []
