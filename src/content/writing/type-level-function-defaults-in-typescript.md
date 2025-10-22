@@ -83,7 +83,9 @@ Note: From now on we will work with type declarations for `create` as the runtim
 In order to track the literal type of value given by user we must move our type to a parameter constraint. We also use `const` to make TypeScript infer _the most specific type_ from the given value (e.g. `'foo'` get inferred as the string literal `'foo'` instead of `string`):
 
 ```ts
-declare const create: <const $ConfigInit extends ConfigInit>(configInit?: $ConfigInit) => $ConfigInit
+declare const create: <const $ConfigInit extends ConfigInit>(
+  configInit?: $ConfigInit,
+) => $ConfigInit
 
 const config = create({ foo: 'baz' })
 ```
@@ -102,12 +104,13 @@ We fix that by by passing the inferred type to a utility type that will supply t
 
 ```ts
 type WithDefaults<$Input extends object, $Defaults extends object> = {
-  [$Key in keyof $Defaults]: $Key extends keyof $Input ? $Input[$Key] : $Defaults[$Key]
+  [$Key in keyof $Defaults]: $Key extends keyof $Input ? $Input[$Key] :
+    $Defaults[$Key]
 }
 
-// Note: `extends Config` is not needed but
+// Note: "extends Config" is not needed but
 // does help ensure that the type is a subtype
-// of `Config` which it should be.
+// of Config which it should be.
 
 interface ConfigDefaults extends Config {
   foo: 'some_default_foo'
@@ -203,15 +206,14 @@ Here's how it looks:
 ```ts
 declare const create: <const $ConfigInit extends ConfigInit = {}>(
   configInit?: $ConfigInit,
-) => ConfigInit extends $ConfigInit
-  ? //    ^^^^^^^^^^ | IMPORTANT: This is NOT the type parameter, but
-    //               | the constraint. As stated above we check if its
-    //               | _assignable_ to the type parameter indicating that
-    //               | it did not change at all.
-    ConfigDefaults
-  : //        ^^^^^^^^^^^^^^ | If the user provided no arguments then we
-    //                       | can just return the default type as-is.
-    WithDefaults<$ConfigInit, ConfigDefaults>
+) => ConfigInit extends $ConfigInit ? //    ^^^^^^^^^^ | IMPORTANT: This is NOT the type parameter, but
+  //               | the constraint. As stated above we check if its
+  //               | _assignable_ to the type parameter indicating that
+  //               | it did not change at all.
+  ConfigDefaults :
+  //        ^^^^^^^^^^^^^^ | If the user provided no arguments then we
+  //                       | can just return the default type as-is.
+  WithDefaults<$ConfigInit, ConfigDefaults>
 //        ^^^^^^^^^^^... | Otherwise, like before, we apply
 //                       | the defaults to the inferred type
 //                       | of value given by the user.
@@ -222,7 +224,7 @@ const config2 = create({ qux: 2 })
 const config3 = create({ foo: 'baz' })
 ```
 
-Now every case works how we want <3.
+Now every case works how we want &lt;3.
 
 ```ts
 type config0 = { foo: 'some_default_foo'; qux: 99 }
@@ -250,7 +252,8 @@ const defaultConfig: Config = {
 
 const create = <const $ConfigInit extends ConfigInit>(
   configInit?: $ConfigInit,
-): ConfigInit extends $ConfigInit ? ConfigDefaults : WithDefaults<$ConfigInit, ConfigDefaults> => {
+): ConfigInit extends $ConfigInit ? ConfigDefaults :
+  WithDefaults<$ConfigInit, ConfigDefaults> => {
   return {
     ...defaultConfig,
     ...configInit,

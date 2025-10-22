@@ -71,9 +71,7 @@ for (const photo of photoData.photos) {
     }
   } else {
     notFound++
-    if (notFound <= 10) {
-      console.log(`  ${photo.id} - No match (${photoDate})`)
-    }
+    if (notFound <= 10) console.log(`  ${photo.id} - No match (${photoDate})`)
   }
 }
 

@@ -6,9 +6,9 @@
  * Reads EXIF dates from numbered files and matches to Instagram photos by date.
  */
 
+import { execSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { execSync } from 'node:child_process'
 import type { PhotoCollection } from '../src/data/photographing/types.js'
 
 const PHOTOS_APP_DIR = path.join(process.cwd(), 'data/numbered')
@@ -35,7 +35,7 @@ const getExifTimestamp = (filePath: string): Date | null => {
 
     const [, year, month, day, hour, minute, second] = match
     return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`)
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -60,11 +60,8 @@ for (const filename of numberedFiles) {
   const fullPath = path.join(PHOTOS_APP_DIR, filename)
   const timestamp = getExifTimestamp(fullPath)
 
-  if (timestamp) {
-    filesWithDates.push({ filename, fullPath, timestamp, used: false })
-  } else {
-    console.log(`⚠️  No EXIF date: ${filename}`)
-  }
+  if (timestamp) filesWithDates.push({ filename, fullPath, timestamp, used: false })
+  else console.log(`⚠️  No EXIF date: ${filename}`)
 }
 
 console.log(`Found ${filesWithDates.length} numbered files with EXIF dates\n`)
@@ -98,9 +95,7 @@ for (const photo of photoData.photos) {
     continue
   }
 
-  if (matches.length < mediaCount) {
-    console.log(`   ⚠️  Only found ${matches.length}/${mediaCount} files`)
-  }
+  if (matches.length < mediaCount) console.log(`   ⚠️  Only found ${matches.length}/${mediaCount} files`)
 
   // Use the first N matches for this photo's media items
   const filesToUse = matches.slice(0, mediaCount)
@@ -123,7 +118,9 @@ for (const photo of photoData.photos) {
     if (sourceSize > targetSize * 1.1) {
       fs.copyFileSync(file.fullPath, targetPath)
       console.log(
-        `   ✓ ${file.filename} → ${i + 1}.jpg (${Math.round(targetSize / 1024)}KB → ${Math.round(sourceSize / 1024)}KB)`,
+        `   ✓ ${file.filename} → ${i + 1}.jpg (${Math.round(targetSize / 1024)}KB → ${
+          Math.round(sourceSize / 1024)
+        }KB)`,
       )
       upgraded++
     } else {
@@ -134,9 +131,7 @@ for (const photo of photoData.photos) {
     file.used = true
   }
 
-  if (filesToUse.length < mediaCount) {
-    notFound += mediaCount - filesToUse.length
-  }
+  if (filesToUse.length < mediaCount) notFound += mediaCount - filesToUse.length
 }
 
 console.log('\n✨ EXIF Date Matching Complete!')

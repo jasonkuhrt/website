@@ -94,26 +94,19 @@ const fetchRepoData = async (token: string): Promise<GitHubRepo[]> => {
     body: JSON.stringify({ query }),
   })
 
-  if (!response.ok) {
-    throw new Error(`GitHub API request failed with status ${response.status}: ${response.statusText}`)
-  }
+  if (!response.ok) throw new Error(`GitHub API request failed with status ${response.status}: ${response.statusText}`)
 
   const result = (await response.json()) as GraphQLResponse
 
-  if (result.errors) {
+  if (result.errors)
     throw new Error(`GitHub GraphQL API returned errors: ${result.errors.map((e) => e.message).join(', ')}`)
-  }
 
-  if (!result.data) {
-    throw new Error('GitHub GraphQL API returned no data')
-  }
+  if (!result.data) throw new Error('GitHub GraphQL API returned no data')
 
   // Convert the aliased response object to an array
   const repos = Object.values(result.data).filter((repo): repo is GitHubRepo => repo !== null)
 
-  if (repos.length === 0) {
-    throw new Error('No repositories found in GitHub API response')
-  }
+  if (repos.length === 0) throw new Error('No repositories found in GitHub API response')
 
   return repos
 }

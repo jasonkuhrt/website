@@ -7,9 +7,9 @@
  * exports with original high-res Photos app versions.
  */
 
+import { execSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { execSync } from 'node:child_process'
 import type { PhotoCollection } from '../src/data/photographing/types.js'
 
 const PHOTOS_APP_DIR = path.join(process.cwd(), 'data/from-photos-app')
@@ -42,7 +42,7 @@ const getExifTimestamp = (filePath: string): Date | null => {
 
     const [, year, month, day, hour, minute, second] = match
     return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`)
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -57,9 +57,7 @@ for (const filename of photosAppFiles) {
   const fullPath = path.join(PHOTOS_APP_DIR, filename)
   const timestamp = getExifTimestamp(fullPath)
 
-  if (timestamp) {
-    photosAppIndex.push({ filename, fullPath, timestamp })
-  }
+  if (timestamp) photosAppIndex.push({ filename, fullPath, timestamp })
 }
 
 console.log(`Found ${photosAppIndex.length} Photos app images with EXIF timestamps`)
@@ -106,9 +104,7 @@ for (const photo of photoData.photos) {
     }
   } else {
     notFound++
-    if (notFound <= 5) {
-      console.log(`  ${photo.id} - No match found (${photo.date})`)
-    }
+    if (notFound <= 5) console.log(`  ${photo.id} - No match found (${photo.date})`)
   }
 }
 

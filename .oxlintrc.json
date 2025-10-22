@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "rules": {},
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/.svelte-kit",
+    "**/build",
+    "**/dist",
+    "**/.git",
+    "pnpm-lock.yaml"
+  ]
+}

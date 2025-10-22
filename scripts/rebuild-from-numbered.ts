@@ -7,9 +7,9 @@
  * keeps Instagram videos (not in Photos app).
  */
 
+import { execSync } from 'node:child_process'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
-import { execSync } from 'node:child_process'
 import type { Photo, PhotoCollection } from '../src/data/photographing/types.js'
 
 const NUMBERED_DIR = path.join(process.cwd(), 'data/numbered')
@@ -39,7 +39,7 @@ const getExifTimestamp = (filePath: string): Date | null => {
 
     const [, year, month, day, hour, minute, second] = match
     return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`)
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -88,9 +88,9 @@ for (const filename of numberedFiles) {
   }
 
   // Check if this belongs to current group (same date within 1 second)
-  if (currentGroup && Math.abs(timestamp.getTime() - currentGroup.date.getTime()) <= 1000) {
+  if (currentGroup && Math.abs(timestamp.getTime() - currentGroup.date.getTime()) <= 1000)
     currentGroup.files.push(fullPath)
-  } else {
+  else {
     // Start new group
     if (currentGroup) groups.push(currentGroup)
     currentGroup = { date: timestamp, files: [fullPath], caption: '' }
@@ -121,9 +121,7 @@ for (const group of groups) {
   const photoDir = path.join(PUBLIC_DIR, photoId)
 
   // Create directory and copy files
-  if (!fs.existsSync(photoDir)) {
-    fs.mkdirSync(photoDir, { recursive: true })
-  }
+  if (!fs.existsSync(photoDir)) fs.mkdirSync(photoDir, { recursive: true })
 
   const media = group.files.map((filePath, index) => {
     const destPath = path.join(photoDir, `${index + 1}.jpg`)

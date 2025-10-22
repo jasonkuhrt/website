@@ -51,7 +51,8 @@ export const talks: Talk[] = [
     venue: 'GraphQLConf 2025',
     date: 'September 2025',
     links: {
-      info: 'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
+      info:
+        'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
       repo: 'https://github.com/jasonkuhrt/tech-talk-2025-polen',
     },
   },
@@ -120,8 +121,7 @@ export const talks: Talk[] = [
     date: 'November 2020',
     links: {
       info: 'https://www.meetup.com/node-js-wroclaw/events/274063640/',
-      recording:
-        'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
+      recording: 'https://www.youtube.com/watch?v=Ocr5m5ZsDfE&list=PLyBCIdozqa-QddgDTh4IiiiE3qCywqKpt&index=1',
       twitter: 'https://twitter.com/prisma/status/1328653494010736646',
     },
   },

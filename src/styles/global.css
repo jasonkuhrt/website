@@ -176,6 +176,70 @@ code {
   font-size: 0.9em;
 }
 
+/* Inline code */
+:not(pre) > code {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-800);
+  font-size: 0.875em;
+}
+
+.dark :not(pre) > code {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-200);
+}
+
+/* Code blocks */
+pre {
+  overflow-x: auto;
+  padding: var(--spacing-4);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  margin: var(--spacing-4) 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+pre code {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* Shiki theme override for better integration */
+pre.shiki,
+pre.shiki span {
+  font-family: var(--font-mono);
+}
+
+/* Shiki syntax highlighting colors */
+pre.shiki span {
+  color: var(--shiki-light);
+}
+
+.dark pre.shiki span {
+  color: var(--shiki-dark);
+}
+
+/* Twoslash styles */
+.twoslash-hover {
+  position: relative;
+}
+
+.twoslash-popup-container {
+  position: absolute;
+  z-index: 50;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  padding: var(--spacing-2);
+  box-shadow: var(--shadow-md);
+  font-size: 0.875rem;
+  max-width: 400px;
+}
+
 /* Selection */
 ::selection {
   background: var(--color-accent-light);
@@ -194,24 +258,48 @@ li {
   margin-top: var(--spacing-1);
 }
 
-/* Utility Classes */
+/* Layout System */
+
+/* Main layout wrapper - centers all content with standard padding */
+.layout-wrapper {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Container variants - use these in pages */
 .container {
   width: 100%;
   max-width: var(--grid-max-width);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--spacing-3);
-  padding-right: var(--spacing-3);
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
 }
 
-.content-container {
+.container-content {
   width: 100%;
   max-width: var(--content-max-width);
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Grid System - Tailwind grid utilities are used instead */
+/* Full-bleed: breaks out to viewport edges */
+.container-full {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* Wide: wider than content but has max-width */
+.container-wide {
+  width: 100%;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 @media (max-width: 768px) {
   :root {

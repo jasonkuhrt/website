@@ -1,15 +1,7 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "strictNullChecks": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@layouts/*": ["./src/layouts/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@content/*": ["./src/content/*"],
-      "@styles/*": ["./src/styles/*"]
-    }
+    "strict": true,
+    "strictNullChecks": true
   }
 }
