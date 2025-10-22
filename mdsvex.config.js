@@ -14,7 +14,9 @@ const config = {
         defaultColor: false,
       })
 
-      return `{@html \`${html}\` }`
+      // Escape backticks and backslashes in HTML to prevent template literal syntax errors
+      const escapedHtml = html.replace(/\\/g, '\\\\').replace(/`/g, '\\`')
+      return `{@html \`${escapedHtml}\` }`
     },
   },
 }

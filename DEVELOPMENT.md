@@ -111,10 +111,64 @@ This script:
 2. Optimizes all `hi-res/` photos to `web-res/` (max 1200px width, 85% quality)
 3. Uses macOS `sips` tool for image processing
 
+## Testing
+
+This project uses Playwright for end-to-end testing to ensure the website works correctly across all pages and features.
+
+### Test Structure
+
+Tests are located in `tests/e2e/` and organized by feature:
+
+- `homepage.spec.ts` - Homepage functionality and navigation
+- `writing.spec.ts` - Writing page with three-column layout (Essays, Logs, TIL)
+- `posts.spec.ts` - Individual post pages (essays, logs, TIL entries)
+- `navigation.spec.ts` - Site-wide navigation
+
+### Running Tests
+
+```bash
+# Run all tests headlessly
+pnpm test
+
+# Run tests with UI (interactive mode)
+pnpm test:ui
+
+# Run tests in debug mode
+pnpm test:debug
+```
+
+### Test Requirements
+
+**CRITICAL**: All tests MUST pass before considering any task complete. This applies to:
+
+- New features or content additions
+- Bug fixes
+- UI/styling changes
+- Configuration updates
+
+The test suite acts as a sanity check to ensure:
+
+- All pages load without errors
+- Navigation works correctly
+- Content is accessible
+- Code blocks render properly (especially posts with backticks)
+- Images load in essays
+
+### Writing New Tests
+
+When adding new pages or features:
+
+1. Add corresponding test cases to the appropriate spec file
+2. Verify tests pass locally before committing
+3. Follow existing test patterns for consistency
+
 ## Development Scripts
 
 - `pnpm dev` - Start development server
 - `pnpm build` - Build for production
+- `pnpm test` - Run Playwright tests
+- `pnpm test:ui` - Run tests with interactive UI
+- `pnpm test:debug` - Run tests in debug mode
 - `pnpm fetch-repos` - Manually refresh GitHub repository data
 - `pnpm optimize-photos` - Optimize hi-res photos to web-res
 - `pnpm check` - Run all checks (format, types, lint)

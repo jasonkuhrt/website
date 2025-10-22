@@ -23,7 +23,7 @@
         </time>
       </header>
 
-      <div class="prose prose-lg dark:prose-invert max-w-none">
+      <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:mt-12">
         <Content />
       </div>
     </article>

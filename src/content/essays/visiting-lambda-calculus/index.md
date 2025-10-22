@@ -1,0 +1,281 @@
+---
+title: 'Visiting Lambda Calculus'
+date: 2018-12-09
+---
+
+Lambda Calculus is a model of computation. Like Turing Machines it formalizes the concept of effective computability thereby determining which problems or classes of problems can be solved. It was devised in the 1930s by Alonzo Church as part of his work into the foundations of mathematics.
+
+## Matter
+
+The following three rules can unambiguously specify the syntax rules of lambda calculus:
+
+1. A variable e.g. `x` is a valid lambda-term (`variable`)
+2. Given a variable e.g. `v` and another valid lambda-term e.g. `o` then e.g. `(λv.o)` is a valid lambda-term (`abstraction`)
+3. Given two lambda-terms e.g. `i` and `o` then `io` is a valid lambda-term (`application`)
+
+But this doesn't help understand what parts are what. Lambda calculus consists of combining `lambda terms` and performing reducing operations upon them. There are three types of terms: `expressions`, `variables`, and `abstractions`.
+
+### Variables
+
+Variables on their own they have neither meaning nor value. They are names for both logical values and parameters. Examples of variables are:
+
+```
+a
+^
+var as a value
+```
+
+```
+(λv.v)a
+  ^ ^ ^
+  | | |
+  | | | var as an input (a kind of value)
+  | | var as a value
+  | var as a parameter
+```
+
+### Abstractions
+
+Abstractions are anonymous functions that take a single input. They syntactically have two parts: a head denoted with a lambda `λ` and a body denoted with a period `.`. The head contains a variable which in this position is referred to as a `parameter`. The body contains an expression.
+
+```
+(λv .v)
+ ^^ ^^
+ |/ |/
+ |  | body
+ |
+ | head
+```
+
+Abstractions can be applied to an expression (more detail soon). Abstractions are so-named because their job is to generalize concrete instances of problems by using variables to make possible different inputs.
+
+### Expressions
+
+Expressions are a superset of lambda terms in that they can be variables, abstractions, or combinations thereof. Examples of expressions:
+
+```
+z
+```
+
+```
+(λo.o)
+```
+
+```
+(λo.(λi.i)x)
+```
+
+## Reducing Matter
+
+There are two reduction operations: beta-reduction and alpha-conversion. We recurse these operations on an expression until eventual termination or we've reached an infinite loop. If termination is reached we say the remaining expression has reached its `beta-normal-form`.
+
+### β-Reduction
+
+The process of applying an abstraction is `beta reduction`. Two things happen to an abstraction when it is applied:
+
+1. All parameter instances in the body are replaced with the input. This sub-process is referred to as `binding`. We say the abstraction's parameter is bound to the input.
+2. The head is removed.
+
+Here is an example of executing this process:
+
+```
+step 1 ==> (λv.v)x
+step 2 ==> λx.v
+step 3 ==> λx.x
+step 4 ==> x
+```
+
+This is verbose, and so once understood ought be abbreviated to:
+
+```
+step 1 ==> (λv.v)x
+step 2 ==> x
+```
+
+Beta reduction is the repeated process of application until there are either no more abstractions or no more inputs. For example the following expressions are all beta reduced as far as they can be:
+
+```
+z
+```
+
+```
+λv.v
+```
+
+```
+λa.λn.n
+```
+
+```
+a(λn.n)
+```
+
+### Left Associative
+
+`Association` refers to how things are grouped. This concept must be addressed by beta reduction otherwise reducing multiple applications would be ambiguous. For example given the following expression:
+
+```
+(λa.a)(λn.n)(λo.o)
+```
+
+Is the correct reduction:
+
+```
+(λa.a)(λn.n)(λo.o)
+(λa.a)(λ(λo.o).n)
+(λa.a)(λ(λo.o).(λo.o))
+(λa.a)(λo.o)
+(λ(λo.o).a)
+(λ(λo.o).(λo.o))
+λo.o
+```
+
+or:
+
+```
+(λa.a)(λn.n)(λo.o)
+(λ(λn.n).a)(λo.o)
+(λ(λn.n).(λn.n))(λo.o)
+(λn.n)(λo.o)
+(λ(λo.o).n)
+(λ(λo.o).(λo.o))
+λo.o
+```
+
+Beta reduction is `left associative` so the latter is correct, but not the former. Left associativity means that the following are semantically identical:
+
+```
+(λa.a)(λn.n)(λo.o)
+```
+
+```
+((λa.a)(λn.n))(λo.o)
+```
+
+While the following are not _not_ semantically identical:
+
+```
+(λa.a)(λn.n)(λo.o)
+```
+
+```
+(λa.a)((λn.n)(λo.o))
+```
+
+## Free Variables
+
+Free variables are variables that are not bound by an abstraction. This means a variable within the abstraction whose name is not found in the head of the abstraction or any ancestor abstraction enclosing this one. For example in the following variables `o` and `e` are both free:
+
+```
+(λu.oe)
+```
+
+As they are here too:
+
+```
+(λi.(λu.oe))
+```
+
+However here they are bound by the grandparent and great-grandparent abstractions:
+
+```
+(λo.(λe.(λi.(λu.oe))))
+```
+
+When applying an abstraction with free variables the head is eliminated as normal but said free variables do not get replaced. Therefore the input is effectively discarded. For example in the following application variable `c` is discarded:
+
+```
+(λx.i)
+(λx.i)c
+(λ[x:=c].i)
+i
+```
+
+## Alpha Equivalence
+
+What is the difference between the following:
+
+```
+(λu.u)
+```
+
+```
+(λi.i)
+```
+
+```
+(λo.o)
+```
+
+The answer is that there is no difference because parameter names do not affect semantics. This kind of equivalence is called `alpha  equivalence`.
+
+However when a body contains free variables then alpha equivalence is not possible. This makes sense because the free variables could potential refer to different expressions.
+
+## Capture-Avoiding Substitutions
+
+When doing substitutions it may seem that the variable names in the substitution do not matter but as we have seen with with alpha equivalence we must take care with free variables. Specifically when substituting we must be careful not to accidently transform free variables into bound ones.
+
+Consider this expression:
+
+```
+((λa.(λe.a))(λo.e))i
+```
+
+And see if you can spot the bug in the following reduction of it:
+
+```
+((λe.(λo.e))o)i
+(λe[e:=o].(λo.e))i
+(λo.o)i
+i
+```
+
+What has gone wrong here? ...The constant function `(λo.e)` morphed into the identity function `(λo.o)`! Here's a version with the bug fixed:
+
+```
+((λe.(λo.e))o)i
+(λe[e:=z].(λo.e))i
+(λo.z)i
+z
+```
+
+Any time substituting an expression would lead to a free variable being captured we must rename the free variable. That can mean renaming a standalone variable or a variable inside an abstraction
+
+A case with free variable being within an abstraction as input:
+
+Wrong:
+
+```
+(λo.(λe.o))(λu.e)i
+(λo[o=(λu.e)].(λe.o))i
+(λe.(λu.e))i
+        ^ Bug, this was free, is now bound
+(λe[e:=i].(λu.e))
+       ^ This i should have become discarded
+(λu.i)
+    ^ But nope
+```
+
+Correct:
+
+```
+(λo.(λe.o))(λu.e)i
+(λo[o=(λu.z)].(λe.o))i
+          ^ Rename...
+(λe.(λu.z))i
+        ^ ...to stay free
+(λe[e:=i].(λu.z))
+       ^ Unlike before this i is correctly discarded
+(λu.z)
+```
+
+## Appendix A: Breaking down the name
+
+"Lambda" is the 11th letter in the Greek alphabet and looks like: "λ" lowercase or "Λ" uppercase. It existed in ancient Greek times. It is somehow related to the Phoenician letter called Lamed. It influenced at least the Latin letter L and the Cyrillic letter El "л". Today its upper and lowercase forms are also used as a symbol for many different things, e.g. the radioactive decay constant in nuclear physics.
+
+"Calculus" is a method of calculation or reasoning.
+
+## References
+
+- [Capture-Avoiding Substitutions](https://stackoverflow.com/questions/11239262/what-is-meant-by-capture-avoiding-substitutions)
+- [Lambda Calculus on Wikipedia](https://en.wikipedia.org/wiki/Lambda_calculus)

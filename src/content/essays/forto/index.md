@@ -1,0 +1,207 @@
+---
+title: 'Forto: The layout engine powering React Popover'
+date: 2018-03-01
+---
+
+![Zones diagram](./zones.png)
+
+This is a technical document regarding Forto, the layout engine powering react-popover. If you are generally curious about what react-popover is, why it exists, etc. then you may want to read a [recent article detailing its back-story](/writing/essays/react-popover-history).
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [The Algorithm](#the-algorithm)
+  - [Phase 1: Calculate the optimal zone](#phase-1-calculate-the-optimal-zone)
+  - [Phase 2: Position the Popover](#phase-2-position-the-popover)
+  - [Phase 3: Position the Tip](#phase-3-position-the-tip)
+- [Conclusion](#conclusion)
+- [Appendices](#appendices)
+- [Glossary](#glossary)
+
+## Introduction
+
+Forto is a two dimensional layout system. It is specifically designed to find the optimal position of Popover in relation to Target and Frame. Forto only needs minimal knowledge of these components to function correctly: Their coordinates, dimensions, and (for Tip only) directionality. The following diagram is an introductory view of these components and how the system works toward a final result.
+
+![Introduction diagram](./introduction.png)
+
+Forto has its roots in a project that began as a quick idea and hasty implementation almost two years ago. It is ad hoc in that it lacks any formal methods such as mathematical proofs. It is also not a general layout system (e.g. [Flex](https://www.w3.org/TR/css-flexbox-1)) but rather purpose built. These limitations arise from my practical limits in resources and knowledge. I do not claim my system is innovative or better than X. I am in awe at systems like [Constraint Cascading Style Sheets for the Web](http://constraints.cs.washington.edu/web/ccss-uwtr.pdf) and [Cassowary](http://overconstrained.io/). Forto is just my humble contribution to this vast world. If you have an idea about how to improve Forto, I would welcome your contributions on Github!
+
+## The Algorithm
+
+### Phase 1: Calculate the optimal zone
+
+The first major action Forto takes is to determine which zone to position Popover within. This calculation is separated into three steps: Measure how each zone fits the popover; Rank each fit to find the optimal zone; Determine if the difference between new zone and old zone merits a change.
+
+##### Step 1: Measure
+
+Measuring a zone produces what I call a zone _fit_. By default all zones are eligible for consideration but the user is able to limit this to one of the following subsets: vertical, horizontal, before, after, top, bottom, left, right.
+
+For each eligible zone Forto subtracts Popover's height and width from that of zone. When doing this we must also ensure that Tip's main length is added to Popover's main length (See [appendix b](#appendix-b-factoring-in-tips-main-length-an-interesting-edge-case) for a deep dive on what can happen if we don't do this). The result is knowing how much spare space each zone would have along either dimension after fitting Popover.
+
+##### Step 2: Rank
+
+Forto groups the zones into first or second class. First class zones are those whose fit is positive on both dimensions. Second class zones are those whose fit is negative on one or both dimensions.
+
+If there are first class zones then Forto picks the one with the greatest area. The only exception is if the user has specified a preferred zone which is in the first class set and whose threshold of not having another zone of n-percent greater area is met; In which case the preferred zone is used (even if it does not have the greatest area).
+
+Otherwise if there are only second class zones, pick the one with least percentage area cropped (exceeding Frame bounds). Again the only exception is if the user has specified a preferred zone. The same logic applies as before but here the threshold is about not having another zone of n-percent _less_ area cropped.
+
+##### Step 3: Threshold
+
+With a zone selected Forto checks if between that zone and the previous zone **as measured now** there exists sufficient improvement to warrant rezoning. If so Forto will proceed with the selected zone, otherwise with the previous zone.
+
+- Proceed with selected zone:
+  - If initial render (since the there is no previous zone)
+  - If it's the same zone as previous
+  - If it's first class and previous zone is second class
+- Otherwise check if selected zone has a sufficiently greater fit than previous zone. If yes then proceed with selected zone, otherwise proceed with previous zone.
+
+_Note: For a discussion on why rezone thresholds are useful see [appendix c](#appendix-c-the-usefulness-of-rezone-thresholds)._
+
+##### An Example
+
+In the following diagram (see [zone measure diagram](#zone-measure-diagram) in glossary for how to read these) see how the measuring and ranking play out. Interestingly, the right zone has greater remaining length available than the bottom zone yet it's ranked lower. This is because the right zone would have Popover exceed frame bounds while the bottom would not. The right zone is an example of second class.
+
+![Zone measure diagram](./zone-measure.png)
+
+### Phase 2: Position the Popover
+
+#### Pursue cross-axis center alignment
+
+With the optimal zone found Forto can now calculate the best position for Popover within it. Forto seeks the position of Popover that would see its cross-axis center matched to the that of Target _within Frame_.
+
+![Positioning diagram](./positioning.png)
+
+#### Handle cropped Targets
+
+Target _within Frame_ means that any Target length outside the Frame bounds is ignored when calculating Target center.
+
+![Positioning in frame center diagram](./positioning-in-frame-center.png)
+
+This approach to centering generally produces more harmonious results in the author's opinion. However should use-cases arise where absolute center is more desirable I think support for configuration here would be relatively easy.
+
+#### Handle cropped Popovers
+
+As we just saw a hint of above in the diagram, if matching cross-axis centers would cause Popover to exceed Frame bounds then one of several strategies may be applied. Exactly which one depends upon what the user has chosen ahead of time.
+
+##### Mode Bounded
+
+Position Popover up to the Frame bounds but not beyond them.
+
+![Positioning bounded diagram](./positioning-bounded.png)
+
+##### Mode Unbounded
+
+Frame bounds are ignored. Note that Popover is still positioned to the Target's in-Frame center; It may turn out that in this mode absolute center is actually more desirable, but I'm not sure. Maybe my opinion will change with feedback and examples from real-world usage.
+
+![Positioning unbounded diagram](./positioning-unbounded.png)
+
+### Phase 3: Position the Tip
+
+With the Popover's optimal position found within the optimal zone Forto can now proceed with the last step: position the Tip. To do this correctly Forto assumes that Tip is pointing upward at zero degrees rotation. Its layout rules are as follows:
+
+1. Face the target.
+2. Along main-axis: position between Popover and Target.
+3. Along cross-axis: position centered between the two nearest cross-sides amongst Target and Popover:
+
+![Tip centering diagram](./tip-centering.png)
+
+## Conclusion
+
+At this point the optimal position of Popover as governed by our ruleset has been reached. Should the dimensions of any component change (including Popover itself), or should the coordinates of Target or Frame change, then Forto will need to run again to find Popover's revised optimal position.
+
+### Future Work
+
+One current limitation of Forto is that it only supports rectangular shaped components. Support for arbitrarily shapes would probably greatly increase Forto's complexity, though it sure sounds like a fun challenge :). It wouldn't surprise me if I were to find relevant algorithm(s) for the arising problems from mature graphics-heavy industries like video games.
+
+Another limitation is that Tip is a "hardcoded" idea. Forto would become considerably more general if it could be factored out somehow. It would be easy enough to add a configuration option to simply disable Tip, but while pragmatic that's not my ideal. Instead I would prefer to make Forto fully unaware of Tip, yet somehow make it easy to _compose_ the idea of Tip into an instance of this system. Such a solution would probably tend toward a general layout solver (e.g. [GSS](https://gridstylesheets.org)) in which case my ideal solution would be, at best, a long-term goal.
+
+One meta improvement that interests me is to enhance some of the diagrams I've created for this document into interactive visualizations a la [Bret Victor's essays](http://worrydream.com/#!2/LadderOfAbstraction). Forto is a fairly nuanced system that can lead to many different results depending upon the arrangement. As such, static diagrams cannot capture the gamut of scenarios or provide live feedback on how changes to the inputs affect the output.
+
+## Appendices
+
+### Appendix A: Examples
+
+![Examples diagram](./examples.png)
+
+### Appendix B: Factoring in Tip's main length, an interesting edge case
+
+Observe that Tip length affects either height or width of Popover depending upon the orientation of a zone. As such zones of opposite orientation manifest slightly different Popover dimensions. If not handled right this can trigger an infinite layout loop between two second-class zones of opposite orientation. This could happen when said change in dimension would affect the percentage of Popover cropped and in turn lead to always another zone appearing superior than the current one. The following diagram helps illustrate this:
+
+![Infinite loop diagram](./infini-loop.png)
+
+1. Popover positioned via either initial render or some previous lead up. Dimensions change because of Tip movement
+2. A new optimal zone in first class is detected
+3. Popover positioned. Dimensions change because of Tip movement
+4. A new optimal zone in first class is detected; Go to 1
+
+As we saw Forto gets around this by adding the Tip's main-axis length to Popover's main-axis length when calculating a zone's rank. Therefore in actuality the scenario from before, corrected, looks like:
+
+![Infinite loop fixed diagram](./infini-loop-fixed.png)
+
+1. Popover positioned via either initial render or some previous lead up
+2. Some change triggers a layout scan, another zone is closely ranked but given that its in the same class and has a fit as bad or worse than current position, the latter is maintained.
+
+Its worth pointing out that rezone thresholds could mask this problem in some cases but they would never amount to a general solution nor would they ever help the class-upgrade case diagramed here (remember Popovers are always rezoned if it means a class-upgrade).
+
+### Appendix C: The usefulness of rezone thresholds
+
+Rezone thresholds are useful in at least two ways. First, in preventing rezoning jitter which stems from cases where the set of zones are tightly ranked and so correspondingly tiny fluctuations in the arrangement would likely alter rankings. Second, to balance the needs of ideal layout with that of user experience where the presumption is that an occasionally rezoning Popover may be jarring to the user and therefore undesirable.
+
+A minimal threshold is enough to guard against jitter. In the following diagram you can imagine the Target might be some kind of draggable, while the Frame might be some kind of scrollable. Without thresholds jitter in either would propagate to the Popover.
+
+![Change threshold 0 diagram](./change-threshold-0.png)
+
+A large threshold can limit rezones in the face of correspondingly sized changes to the arrangement. In the following diagram you can see how Popover will not rezone until there is another zone three times greater in area.
+
+![Change threshold 75 diagram](./change-threshold-75.png)
+
+An "infinite" threshold can disable most rezones altogether. In the following diagram you can see how there is no rezone until not doing so would mean being outside the Frame bounds (AKA a class-upgrade is available).
+
+![Change threshold 100 diagram](./change-threshold-100.png)
+
+## Glossary
+
+### Components
+
+**Target** – A rectangular thing. The aim of Popover.
+
+**Frame** – The rectangular thing that Popover should remain within.
+
+**Popover** – The rectangular thing Forto is optimally positioning in relation to Target and Frame.
+
+**Tip** – A visual cue reflecting Popover's aim. It is positioned relative to Popover and Target.
+
+### Layout
+
+![Anatomy layout diagram](./anatomy-layout.png)
+
+**Arrangement** – The current position and dimensions of Target, Frame, and Popover.
+
+**Main/Cross Axes** – Relative axes whose concrete orientation depend upon Popover's position relative to Target. The main-axis is along the orientation containing Popover adjacent to Target while the cross-axis is along that which does not cross through both Target and Popover.
+
+**Before/After Sides** – A slightly more general way to think about rectangle sides. _Before_ refers to top or left. _After_ refers to bottom or right.
+
+**Zone** – A rectangle between the inner Frame and outer Target. There are four zones between Target and Frame since there are four sides to a rectangle which both Target and Frame are.
+
+**Zone Fit** – How well a given zone fits the Popover. Determined by subtracting the Popover's dimensions from that of zone's.
+
+**Rezone** – Move the Popover from one zone to another due to changes in the arrangement.
+
+**First Class Zone** – A zone whose fit is positive on both dimensions.
+
+**Second Class Zone** – A zone whose fit is negative on one or both dimensions.
+
+**Rezone thresholds** – A technique to control rezone frequency.
+
+**Preferred Zones** – A user configurable option that tweaks the algorithm to prefer particular zones during ranking. The preference is specified as a threshold of how much better can other zones be while preferring these ones. The zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default Forto prefers no zones and just picks whichever is top ranked.
+
+**Eligible Zones** – A user configurable option instructing Forto about which zones Popover can be positioned within. The eligible zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default all zones are eligible.
+
+**Mode Bounded** – Popover will always try to stay within Frame bounds.
+
+**Mode Unbounded** – Popover will ignore Frame bounds.
+
+### Zone Measure Diagram
+
+![Zone measure legend diagram](./zone-measure-legend.png)
