@@ -20,6 +20,8 @@
   } from 'lucide-svelte'
   import { onMount } from 'svelte'
   import type { ComponentType } from 'svelte'
+  import YouTubeIcon from '$lib/components/icons/YouTubeIcon.svelte'
+  import TwitterIcon from '$lib/components/icons/TwitterIcon.svelte'
 
   type TimelineEvent =
     | {
@@ -585,25 +587,37 @@
         <!-- Content -->
         <div class="leading-8">
           {#if item.type === 'experience'}
-            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
+            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
+              <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              {item.title}
+            </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.company}</div>
             {#if item.description}
               <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
             {/if}
           {:else if item.type === 'education'}
-            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.degree}</div>
+            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
+              <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              {item.degree}
+            </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.institution}</div>
             {#if item.description}
               <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
             {/if}
           {:else if item.type === 'achievement'}
-            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
+            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
+              <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              {item.title}
+            </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.issuer}</div>
             {#if item.description}
               <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
             {/if}
           {:else if item.type === 'speaking'}
-            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
+            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
+              <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              {item.title}
+            </div>
             <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-3">@ {item.venue}</div>
             <div class="flex gap-2">
               {#if item.links.repo}
@@ -635,13 +649,19 @@
                 </div>
               {/if}
               {#if item.links.recording}
+                {@const isYouTube =
+                  item.links.recording.includes('youtube.com') || item.links.recording.includes('youtu.be')}
                 <a
                   class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
                   href={item.links.recording}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Play class="w-3.5 h-3.5" />
+                  {#if isYouTube}
+                    <YouTubeIcon class="w-3.5 h-3.5" />
+                  {:else}
+                    <Play class="w-3.5 h-3.5" />
+                  {/if}
                 </a>
               {:else}
                 <div class="opacity-10 dark:opacity-20">
@@ -655,13 +675,13 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <X class="w-3.5 h-3.5" />
+                  <TwitterIcon class="w-3.5 h-3.5" />
                 </a>
               {/if}
             </div>
           {:else if item.type === 'personal'}
             <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
-              <IconComponent class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400" />
               {item.title}
             </div>
             {#if item.description}
