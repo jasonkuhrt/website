@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@fontsource/space-mono": "^5.2.7",
-    "@iconify-json/carbon": "^1.2.10",
     "@iconify-json/fa6-brands": "^1.2.5",
     "@sveltejs/adapter-cloudflare": "^4.0.0",
     "@sveltejs/kit": "^2.0.0",
@@ -51,7 +50,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
-    "@iconify-json/lucide": "^1.2.70",
+    "@iconify/svelte": "^5.0.2",
     "@opentelemetry/api": "^1.9.0",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@sveltejs/adapter-static": "^3.0.0",
@@ -76,6 +75,7 @@
     "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.46.2",
+    "unplugin-icons": "^22.5.0",
     "wrangler": "^4.44.0"
   }
 }
