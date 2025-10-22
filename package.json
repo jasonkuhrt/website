@@ -18,7 +18,10 @@
     "preview": "vite preview",
     "prepare": "husky && svelte-kit sync",
     "fetch-repos": "GITHUB_TOKEN=$(gh auth token) pnpm dlx tsx scripts/fetch-repos.ts",
-    "optimize-photos": "bash scripts/optimize-photos.sh"
+    "optimize-photos": "bash scripts/optimize-photos.sh",
+    "cf:deploy": "pnpm build && wrangler pages deploy",
+    "cf:deployments": "wrangler pages deployment list",
+    "cf:tail": "wrangler pages deployment tail"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
@@ -72,6 +75,7 @@
     "svelte-check": "^4.0.0",
     "tailwindcss": "^4.1.10",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.46.2"
+    "typescript-eslint": "^8.46.2",
+    "wrangler": "^4.44.0"
   }
 }
