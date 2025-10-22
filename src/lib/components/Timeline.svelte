@@ -517,12 +517,12 @@
     </g>
   </svg>
 
-  {#each items as item, index (getItemId(item))}
+  {#each items as item (getItemId(item))}
     {@const isSingleDate =
       item.type === 'achievement' || item.type === 'speaking' || item.type === 'personal'}
     {@const startDate = isSingleDate ? item.date : item.startDate}
     {@const endDate = isSingleDate ? null : item.endDate === 'Present' ? null : item.endDate}
-    {@const itemId = getItemId(item, index)}
+    {@const itemId = getItemId(item)}
     {@const nodeColor = getNodeColor(item.type)}
     {@const isVisible = filters.has(item.type)}
     {@const IconComponent = getNodeIconComponent(item)}
