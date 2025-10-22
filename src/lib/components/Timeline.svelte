@@ -92,9 +92,12 @@
   const DATE_COL_MOBILE = 80
   const DATE_COL_SM = 100
   const DATE_COL_MD = 140
-  const LINE_X_MOBILE = DATE_COL_MOBILE + NODE_CENTER
-  const LINE_X_SM = DATE_COL_SM + NODE_CENTER
-  const LINE_X_MD = DATE_COL_MD + NODE_CENTER
+  const GAP_MOBILE = 16 // gap-4 = 1rem
+  const GAP_SM = 24 // sm:gap-6 = 1.5rem
+  const GAP_MD = 32 // md:gap-8 = 2rem
+  const LINE_X_MOBILE = DATE_COL_MOBILE + GAP_MOBILE + NODE_CENTER
+  const LINE_X_SM = DATE_COL_SM + GAP_SM + NODE_CENTER
+  const LINE_X_MD = DATE_COL_MD + GAP_MD + NODE_CENTER
 
   // Reactive state
   let filters = $state<Set<TimelineEvent['type']>>(
