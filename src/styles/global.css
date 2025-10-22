@@ -308,12 +308,6 @@ li {
   navigation: auto;
 }
 
-/* Header stays immutable - no animation */
-::view-transition-old(header),
-::view-transition-new(header) {
-  animation: none;
-}
-
 /* GPU acceleration and smooth rendering */
 ::view-transition-group(main-content) {
   animation-duration: 100ms;

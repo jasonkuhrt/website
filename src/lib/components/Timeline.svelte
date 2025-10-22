@@ -87,7 +87,7 @@
   const eventTypes = ['experience', 'education', 'achievement', 'speaking', 'personal'] as const
 
   // Timeline positioning constants
-  const NODE_SIZE = 64 // w-16 h-16
+  const NODE_SIZE = 24 // w-6 h-6
   const NODE_CENTER = NODE_SIZE / 2
   const DATE_COL_MOBILE = 80
   const DATE_COL_SM = 100
@@ -565,21 +565,17 @@
           aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
           onclick={(e) => handleNodeLinkClick(e, itemId)}
         >
-          <div class="relative w-16 h-16">
-            <svg width="64" height="64" viewBox="0 0 64 64" class="timeline-node-circle transition-transform">
+          <div class="relative w-6 h-6">
+            <svg width="24" height="24" viewBox="0 0 24 24" class="timeline-node-circle transition-transform">
               <circle
-                cx="32"
-                cy="32"
-                r="30"
+                cx="12"
+                cy="12"
+                r="11"
                 fill={nodeColor}
                 class="timeline-node-outer-ring transition-opacity"
               />
-              <circle cx="32" cy="32" r="18" fill={nodeColor} />
+              <circle cx="12" cy="12" r="6" fill={nodeColor} />
             </svg>
-            <!-- Icon overlay -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <IconComponent class="w-6 h-6 text-white" />
-            </div>
           </div>
         </a>
 
@@ -661,7 +657,10 @@
               {/if}
             </div>
           {:else if item.type === 'personal'}
-            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
+            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
+              <IconComponent class="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              {item.title}
+            </div>
             {#if item.description}
               <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
             {/if}
