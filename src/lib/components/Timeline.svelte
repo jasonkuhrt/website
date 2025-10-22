@@ -86,6 +86,16 @@
   // Event types constant
   const eventTypes = ['experience', 'education', 'achievement', 'speaking', 'personal'] as const
 
+  // Timeline positioning constants
+  const NODE_SIZE = 64 // w-16 h-16
+  const NODE_CENTER = NODE_SIZE / 2
+  const DATE_COL_MOBILE = 80
+  const DATE_COL_SM = 100
+  const DATE_COL_MD = 140
+  const LINE_X_MOBILE = DATE_COL_MOBILE + NODE_CENTER
+  const LINE_X_SM = DATE_COL_SM + NODE_CENTER
+  const LINE_X_MD = DATE_COL_MD + NODE_CENTER
+
   // Reactive state
   let filters = $state<Set<TimelineEvent['type']>>(
     new Set(['experience', 'education', 'achievement', 'speaking', 'personal']),
@@ -265,7 +275,7 @@
         if (nodeLink) {
           const itemRect = item.getBoundingClientRect()
           const containerRect = container.getBoundingClientRect()
-          const relativeY = itemRect.top - containerRect.top + 24
+          const relativeY = itemRect.top - containerRect.top + NODE_CENTER
           visibleItems.push({ originalIndex: idx, y: relativeY })
         }
       }
@@ -444,10 +454,10 @@
       {#each items as item, index (index)}
         {#if index < items.length - 1}
           <line
-            x1="96"
-            y1={index * 180 + 24}
-            x2="96"
-            y2={(index + 1) * 180 + 24}
+            x1={LINE_X_MOBILE}
+            y1={index * 180 + NODE_CENTER}
+            x2={LINE_X_MOBILE}
+            y2={(index + 1) * 180 + NODE_CENTER}
             class="timeline-line stroke-gray-200 dark:stroke-gray-800"
             stroke-width="1"
             data-type={item.type}
@@ -456,10 +466,10 @@
         {/if}
       {/each}
       <line
-        x1="96"
-        y1={(items.length - 1) * 180 + 24}
-        x2="96"
-        y2={(items.length - 1) * 180 + 24 + 800}
+        x1={LINE_X_MOBILE}
+        y1={(items.length - 1) * 180 + NODE_CENTER}
+        x2={LINE_X_MOBILE}
+        y2={(items.length - 1) * 180 + NODE_CENTER + 800}
         class="timeline-line stroke-gray-200 dark:stroke-gray-800"
         stroke-width="1"
         opacity="0.5"
@@ -469,10 +479,10 @@
       {#each items as item, index (index)}
         {#if index < items.length - 1}
           <line
-            x1="116"
-            y1={index * 180 + 24}
-            x2="116"
-            y2={(index + 1) * 180 + 24}
+            x1={LINE_X_SM}
+            y1={index * 180 + NODE_CENTER}
+            x2={LINE_X_SM}
+            y2={(index + 1) * 180 + NODE_CENTER}
             class="timeline-line stroke-gray-200 dark:stroke-gray-800"
             stroke-width="1"
             data-type={item.type}
@@ -481,10 +491,10 @@
         {/if}
       {/each}
       <line
-        x1="116"
-        y1={(items.length - 1) * 180 + 24}
-        x2="116"
-        y2={(items.length - 1) * 180 + 24 + 800}
+        x1={LINE_X_SM}
+        y1={(items.length - 1) * 180 + NODE_CENTER}
+        x2={LINE_X_SM}
+        y2={(items.length - 1) * 180 + NODE_CENTER + 800}
         class="timeline-line stroke-gray-200 dark:stroke-gray-800"
         stroke-width="1"
         opacity="0.5"
@@ -494,10 +504,10 @@
       {#each items as item, index (index)}
         {#if index < items.length - 1}
           <line
-            x1="188"
-            y1={index * 180 + 24}
-            x2="188"
-            y2={(index + 1) * 180 + 24}
+            x1={LINE_X_MD}
+            y1={index * 180 + NODE_CENTER}
+            x2={LINE_X_MD}
+            y2={(index + 1) * 180 + NODE_CENTER}
             class="timeline-line stroke-gray-200 dark:stroke-gray-800"
             stroke-width="1"
             data-type={item.type}
@@ -506,10 +516,10 @@
         {/if}
       {/each}
       <line
-        x1="188"
-        y1={(items.length - 1) * 180 + 24}
-        x2="188"
-        y2={(items.length - 1) * 180 + 24 + 800}
+        x1={LINE_X_MD}
+        y1={(items.length - 1) * 180 + NODE_CENTER}
+        x2={LINE_X_MD}
+        y2={(items.length - 1) * 180 + NODE_CENTER + 800}
         class="timeline-line stroke-gray-200 dark:stroke-gray-800"
         stroke-width="1"
         opacity="0.5"
@@ -552,20 +562,20 @@
           aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
           onclick={(e) => handleNodeLinkClick(e, itemId)}
         >
-          <div class="relative w-12 h-12">
-            <svg width="48" height="48" viewBox="0 0 48 48" class="timeline-node-circle transition-transform">
+          <div class="relative w-16 h-16">
+            <svg width="64" height="64" viewBox="0 0 64 64" class="timeline-node-circle transition-transform">
               <circle
-                cx="24"
-                cy="24"
-                r="22"
+                cx="32"
+                cy="32"
+                r="30"
                 fill={nodeColor}
                 class="timeline-node-outer-ring transition-opacity"
               />
-              <circle cx="24" cy="24" r="14" fill={nodeColor} />
+              <circle cx="32" cy="32" r="18" fill={nodeColor} />
             </svg>
             <!-- Icon overlay -->
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <IconComponent class="w-5 h-5 text-white" />
+              <IconComponent class="w-6 h-6 text-white" />
             </div>
           </div>
         </a>
