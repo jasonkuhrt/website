@@ -95,10 +95,6 @@
   --color-accent-light: hsl(220, 100%, 15%);
 }
 
-.dark svg {
-  filter: invert(100%);
-}
-
 /* Base Styles */
 *,
 *::before,
