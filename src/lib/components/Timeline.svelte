@@ -12,7 +12,6 @@
     Link,
     Play,
     Video,
-    Twitter,
     Baby,
     MapPin,
     Home,
@@ -87,7 +86,7 @@
   const eventTypes = ['experience', 'education', 'achievement', 'speaking', 'personal'] as const
 
   // Timeline positioning constants
-  const NODE_SIZE = 24 // w-6 h-6
+  const NODE_SIZE = 32 // w-8 h-8
   const NODE_CENTER = NODE_SIZE / 2
   const DATE_COL_MOBILE = 80
   const DATE_COL_SM = 100
@@ -548,12 +547,16 @@
       style="min-height: 180px; {isVisible ? '' : 'display: none'}"
     >
       <!-- Date on left -->
-      <div class="text-right text-sm text-gray-700 dark:text-gray-400 pt-2 sm:whitespace-nowrap">
-        <span class="inline-block">{startDate}</span>
-        {#if endDate}
-          <span class="hidden sm:inline"> - </span>
-          <span class="inline-block">{endDate}</span>
-        {/if}
+      <div
+        class="text-right text-sm text-gray-700 dark:text-gray-400 sm:whitespace-nowrap flex items-start justify-end"
+      >
+        <div class="leading-8">
+          <span class="inline-block">{startDate}</span>
+          {#if endDate}
+            <span class="hidden sm:inline"> - </span>
+            <span class="inline-block">{endDate}</span>
+          {/if}
+        </div>
       </div>
 
       <!-- Timeline node and content -->
@@ -561,26 +564,26 @@
         <!-- SVG Node -->
         <a
           href={`#${itemId}`}
-          class="timeline-node-link absolute left-0 -top-2 pointer-events-auto"
+          class="timeline-node-link absolute left-0 top-0 pointer-events-auto"
           aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
           onclick={(e) => handleNodeLinkClick(e, itemId)}
         >
-          <div class="relative w-6 h-6">
-            <svg width="24" height="24" viewBox="0 0 24 24" class="timeline-node-circle transition-transform">
+          <div class="relative w-8 h-8">
+            <svg width="32" height="32" viewBox="0 0 32 32" class="timeline-node-circle transition-transform">
               <circle
-                cx="12"
-                cy="12"
-                r="11"
+                cx="16"
+                cy="16"
+                r="15"
                 fill={nodeColor}
                 class="timeline-node-outer-ring transition-opacity"
               />
-              <circle cx="12" cy="12" r="6" fill={nodeColor} />
+              <circle cx="16" cy="16" r="8" fill={nodeColor} />
             </svg>
           </div>
         </a>
 
         <!-- Content -->
-        <div class="-mt-2">
+        <div class="leading-8">
           {#if item.type === 'experience'}
             <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.title}</div>
             <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.company}</div>
@@ -652,7 +655,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Twitter class="w-3.5 h-3.5" />
+                  <X class="w-3.5 h-3.5" />
                 </a>
               {/if}
             </div>
