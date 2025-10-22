@@ -552,20 +552,20 @@
           aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
           onclick={(e) => handleNodeLinkClick(e, itemId)}
         >
-          <div class="relative w-8 h-8">
-            <svg width="32" height="32" viewBox="0 0 32 32" class="timeline-node-circle transition-transform">
+          <div class="relative w-12 h-12">
+            <svg width="48" height="48" viewBox="0 0 48 48" class="timeline-node-circle transition-transform">
               <circle
-                cx="16"
-                cy="16"
-                r="14"
+                cx="24"
+                cy="24"
+                r="22"
                 fill={nodeColor}
                 class="timeline-node-outer-ring transition-opacity"
               />
-              <circle cx="16" cy="16" r="8" fill={nodeColor} />
+              <circle cx="24" cy="24" r="14" fill={nodeColor} />
             </svg>
             <!-- Icon overlay -->
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <IconComponent class="w-3.5 h-3.5 text-white" />
+              <IconComponent class="w-5 h-5 text-white" />
             </div>
           </div>
         </a>
