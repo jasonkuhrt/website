@@ -19,6 +19,7 @@
     Brain,
   } from 'lucide-svelte'
   import { onMount } from 'svelte'
+  import { fade, fly } from 'svelte/transition'
   import type { ComponentType } from 'svelte'
   import IconYoutube from '~icons/fa6-brands/youtube'
 
@@ -540,154 +541,166 @@
     {@const isVisible = filters.has(item.type)}
     {@const IconComponent = getNodeIconComponent(item)}
 
-    <div
-      id={itemId}
-      class="timeline-item relative grid grid-cols-[80px_auto] sm:grid-cols-[100px_auto] md:grid-cols-[140px_auto] gap-4 sm:gap-6 md:gap-8 pb-12 last:pb-0 scroll-mt-8 -ml-4 pl-4 py-4 rounded transition-colors"
-      class:is-anchored={anchoredItemId === itemId}
-      data-type={item.type}
-      style="min-height: 180px; {isVisible ? '' : 'display: none'}"
-    >
-      <!-- Date on left -->
+    {#if isVisible}
       <div
-        class="text-right text-sm text-gray-700 dark:text-gray-400 sm:whitespace-nowrap flex items-start justify-end"
+        id={itemId}
+        class="timeline-item relative grid grid-cols-[80px_auto] sm:grid-cols-[100px_auto] md:grid-cols-[140px_auto] gap-4 sm:gap-6 md:gap-8 pb-12 last:pb-0 scroll-mt-8 -ml-4 pl-4 py-4 rounded transition-colors"
+        class:is-anchored={anchoredItemId === itemId}
+        data-type={item.type}
+        style="min-height: 180px;"
+        in:fly={{ y: 10, duration: 250, delay: 50 }}
+        out:fade={{ duration: 150 }}
       >
-        <div class="leading-8">
-          <span class="inline-block">{startDate}</span>
-          {#if endDate}
-            <span class="hidden sm:inline"> - </span>
-            <span class="inline-block">{endDate}</span>
-          {/if}
-        </div>
-      </div>
-
-      <!-- Timeline node and content -->
-      <div class="relative pl-10">
-        <!-- SVG Node -->
-        <a
-          href={`#${itemId}`}
-          class="timeline-node-link absolute left-0 top-0 pointer-events-auto"
-          aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
-          onclick={(e) => handleNodeLinkClick(e, itemId)}
+        <!-- Date on left -->
+        <div
+          class="text-right text-sm text-gray-700 dark:text-gray-400 sm:whitespace-nowrap flex items-start justify-end"
         >
-          <div class="relative w-8 h-8">
-            <svg width="32" height="32" viewBox="0 0 32 32" class="timeline-node-circle transition-transform">
-              <circle
-                cx="16"
-                cy="16"
-                r="15"
-                fill={nodeColor}
-                class="timeline-node-outer-ring transition-opacity"
-              />
-              <circle cx="16" cy="16" r="8" fill={nodeColor} />
-            </svg>
-          </div>
-        </a>
-
-        <!-- Content -->
-        <div class="leading-8 flex items-start gap-2">
-          <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400 flex-shrink-0 pt-1" />
-          <div class="flex-1 min-w-0">
-            {#if item.type === 'experience'}
-              <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                {item.title}
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.company}</div>
-              {#if item.description}
-                <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
-              {/if}
-            {:else if item.type === 'education'}
-              <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                {item.degree}
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.institution}</div>
-              {#if item.description}
-                <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
-              {/if}
-            {:else if item.type === 'achievement'}
-              <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                {item.title}
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.issuer}</div>
-              {#if item.description}
-                <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
-              {/if}
-            {:else if item.type === 'speaking'}
-              <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                {item.title}
-              </div>
-              <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-3">@ {item.venue}</div>
-              <div class="flex gap-2">
-                {#if item.links.repo}
-                  <a
-                    class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
-                    href={item.links.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github class="w-3.5 h-3.5" />
-                  </a>
-                {:else}
-                  <div class="opacity-10 dark:opacity-20">
-                    <Github class="w-3.5 h-3.5" />
-                  </div>
-                {/if}
-                {#if item.links.info}
-                  <a
-                    class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
-                    href={item.links.info}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Link class="w-3.5 h-3.5" />
-                  </a>
-                {:else}
-                  <div class="opacity-10 dark:opacity-20">
-                    <Link class="w-3.5 h-3.5" />
-                  </div>
-                {/if}
-                {#if item.links.recording}
-                  {@const isYouTube =
-                    item.links.recording.includes('youtube.com') || item.links.recording.includes('youtu.be')}
-                  <a
-                    class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
-                    href={item.links.recording}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {#if isYouTube}
-                      <IconYoutube class="w-3.5 h-3.5" />
-                    {:else}
-                      <Play class="w-3.5 h-3.5" />
-                    {/if}
-                  </a>
-                {:else}
-                  <div class="opacity-10 dark:opacity-20">
-                    <Video class="w-3.5 h-3.5" />
-                  </div>
-                {/if}
-                {#if item.links.twitter}
-                  <a
-                    class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
-                    href={item.links.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </a>
-                {/if}
-              </div>
-            {:else if item.type === 'personal'}
-              <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                {item.title}
-              </div>
-              {#if item.description}
-                <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
-              {/if}
+          <div class="leading-8">
+            <span class="inline-block">{startDate}</span>
+            {#if endDate}
+              <span class="hidden sm:inline"> - </span>
+              <span class="inline-block">{endDate}</span>
             {/if}
           </div>
         </div>
+
+        <!-- Timeline node and content -->
+        <div class="relative pl-10">
+          <!-- SVG Node -->
+          <a
+            href={`#${itemId}`}
+            class="timeline-node-link absolute left-0 top-0 pointer-events-auto"
+            aria-label={`Jump to ${item.type === 'experience' ? item.company : item.type === 'education' ? item.institution : item.title}`}
+            onclick={(e) => handleNodeLinkClick(e, itemId)}
+          >
+            <div class="relative w-8 h-8">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+                class="timeline-node-circle transition-transform"
+              >
+                <circle
+                  cx="16"
+                  cy="16"
+                  r="15"
+                  fill={nodeColor}
+                  class="timeline-node-outer-ring transition-opacity"
+                />
+                <circle cx="16" cy="16" r="8" fill={nodeColor} />
+              </svg>
+            </div>
+          </a>
+
+          <!-- Content -->
+          <div class="leading-8 flex items-start gap-2">
+            <IconComponent class="w-6 h-6 text-gray-600 dark:text-gray-400 flex-shrink-0 pt-1" />
+            <div class="flex-1 min-w-0">
+              {#if item.type === 'experience'}
+                <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  {item.title}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.company}</div>
+                {#if item.description}
+                  <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
+                {/if}
+              {:else if item.type === 'education'}
+                <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  {item.degree}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">
+                  @ {item.institution}
+                </div>
+                {#if item.description}
+                  <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
+                {/if}
+              {:else if item.type === 'achievement'}
+                <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  {item.title}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-2">@ {item.issuer}</div>
+                {#if item.description}
+                  <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
+                {/if}
+              {:else if item.type === 'speaking'}
+                <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  {item.title}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-3">@ {item.venue}</div>
+                <div class="flex gap-2">
+                  {#if item.links.repo}
+                    <a
+                      class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
+                      href={item.links.repo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Github class="w-3.5 h-3.5" />
+                    </a>
+                  {:else}
+                    <div class="opacity-10 dark:opacity-20">
+                      <Github class="w-3.5 h-3.5" />
+                    </div>
+                  {/if}
+                  {#if item.links.info}
+                    <a
+                      class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
+                      href={item.links.info}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Link class="w-3.5 h-3.5" />
+                    </a>
+                  {:else}
+                    <div class="opacity-10 dark:opacity-20">
+                      <Link class="w-3.5 h-3.5" />
+                    </div>
+                  {/if}
+                  {#if item.links.recording}
+                    {@const isYouTube =
+                      item.links.recording.includes('youtube.com') ||
+                      item.links.recording.includes('youtu.be')}
+                    <a
+                      class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
+                      href={item.links.recording}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {#if isYouTube}
+                        <IconYoutube class="w-3.5 h-3.5" />
+                      {:else}
+                        <Play class="w-3.5 h-3.5" />
+                      {/if}
+                    </a>
+                  {:else}
+                    <div class="opacity-10 dark:opacity-20">
+                      <Video class="w-3.5 h-3.5" />
+                    </div>
+                  {/if}
+                  {#if item.links.twitter}
+                    <a
+                      class="opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity"
+                      href={item.links.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <X class="w-3.5 h-3.5" />
+                    </a>
+                  {/if}
+                </div>
+              {:else if item.type === 'personal'}
+                <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                  {item.title}
+                </div>
+                {#if item.description}
+                  <p class="text-sm text-gray-700 dark:text-gray-300 opacity-80">{item.description}</p>
+                {/if}
+              {/if}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    {/if}
   {/each}
 </div>
 
