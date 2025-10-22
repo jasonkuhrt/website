@@ -20,8 +20,8 @@
     "fetch-repos": "GITHUB_TOKEN=$(gh auth token) pnpm dlx tsx scripts/fetch-repos.ts",
     "optimize-photos": "bash scripts/optimize-photos.sh",
     "cf:deploy": "pnpm build && wrangler pages deploy",
-    "cf:deployments": "wrangler pages deployment list",
-    "cf:tail": "wrangler pages deployment tail"
+    "cf:deployments": "wrangler pages deployment list --project-name=website",
+    "cf:tail": "wrangler pages deployment tail --project-name=website"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
