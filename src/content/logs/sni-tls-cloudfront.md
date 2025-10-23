@@ -16,8 +16,8 @@ We quickly got up to speed on SNI. It is an extension to the TLS protocol publis
 
 The following is an example of how we updated our HAProxy to use SNI. We exposed the actual host name to use as an env variable, though we will probably change this to `req.hdr(Host)` which will pull it from the client request (that is, the client request to HAProxy).
 
-```
-server hybrid_server ${HYBRID_STACK_HOST}:443 sni env(SNI_HOST) ssl verify none check cookie hybridStack
+```text
+server hybrid_server $\{HYBRID_STACK_HOST}:443 sni env(SNI_HOST) ssl verify none check cookie hybridStack
 ```
 
 With great relief (to us) this worked. Our many test curls aimed at HAProxy finally started to return `200` status codes. One issue remained however. We had to disable `check` (periodic layer 4 health checks made by HAProxy to the backend servers). We had a problem where at boot HAProxy would say the backend servers were down because they failed the "SSL handshake". What was going on?!
