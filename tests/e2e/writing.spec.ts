@@ -36,8 +36,10 @@ test.describe('Writing page', () => {
   test('TIL column has content', async ({ page }) => {
     await page.goto('/writing')
 
-    // Check for TIL entry
-    await expect(page.getByRole('link', { name: /Today I Learned/ })).toBeVisible()
+    // Check for TIL entry - TIL links have day names in headings (e.g., "Dec 08 2018 2018 Sun Dec 9")
+    // Filter by day names to specifically target TIL links
+    const tilLinks = page.getByRole('link').filter({ hasText: /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/ })
+    await expect(tilLinks.first()).toBeVisible()
   })
 
   test('essay links are clickable and navigate correctly', async ({ page }) => {
@@ -59,8 +61,13 @@ test.describe('Writing page', () => {
   test('TIL link is clickable and navigates correctly', async ({ page }) => {
     await page.goto('/writing')
 
-    await page.getByRole('link', { name: /Today I Learned/ }).click()
-    await expect(page).toHaveURL(/\/writing\/til\/index/)
+    // Click on a TIL entry link - they have unique day names in headings (e.g., "Sun Dec 9")
+    // Filter by links containing day names to avoid matching essay/log dates
+    const tilLinks = page.getByRole('link').filter({ hasText: /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/ })
+    await tilLinks.first().click()
+
+    // Should navigate to the TIL index page with anchor
+    await expect(page).toHaveURL(/\/writing\/til\/index\/#/)
     await expect(page.getByRole('heading', { name: /Today I Learned/, level: 1 })).toBeVisible()
   })
 })
