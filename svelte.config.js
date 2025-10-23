@@ -18,12 +18,12 @@ const config = {
       '$data/*': 'src/data/*',
     },
     prerender: {
-      // Disable prerendering in GitHub Actions CI to avoid memory issues
-      // Cloudflare Pages will still prerender in production
-      entries: process.env.GITHUB_ACTIONS ? [] : ['*'],
+      // Disable prerendering in CI environments to avoid memory issues
+      // Pages are rendered on-demand at runtime instead
+      entries: (process.env.GITHUB_ACTIONS || process.env.CF_PAGES) ? [] : ['*'],
       handleHttpError: 'warn',
       handleMissingId: 'warn',
-      handleUnseenRoutes: process.env.GITHUB_ACTIONS ? 'ignore' : 'fail',
+      handleUnseenRoutes: (process.env.GITHUB_ACTIONS || process.env.CF_PAGES) ? 'ignore' : 'fail',
     },
   },
 }
