@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2025-10-22T02:01:05.700Z",
+  "fetchedAt": "2025-10-23T01:56:29.127Z",
   "repos": [
     {
       "name": "polen",
@@ -45,13 +45,13 @@
     {
       "name": "graffle",
       "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
-      "stargazerCount": 6060,
+      "stargazerCount": 6064,
       "forkCount": 308,
       "primaryLanguage": {
         "name": "TypeScript",
         "color": "#3178c6"
       },
-      "pushedAt": "2025-10-19T04:00:17Z",
+      "pushedAt": "2025-10-22T19:37:53Z",
       "url": "https://github.com/graffle-js/graffle",
       "repositoryTopics": {
         "nodes": [
@@ -102,10 +102,41 @@
         "name": "TypeScript",
         "color": "#3178c6"
       },
-      "pushedAt": "2025-10-22T01:05:48Z",
+      "pushedAt": "2025-10-22T20:15:43Z",
       "url": "https://github.com/jasonkuhrt/oak",
       "repositoryTopics": {
-        "nodes": []
+        "nodes": [
+          {
+            "topic": {
+              "name": "cli"
+            }
+          },
+          {
+            "topic": {
+              "name": "cli-framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "command-line"
+            }
+          },
+          {
+            "topic": {
+              "name": "developer-tools"
+            }
+          },
+          {
+            "topic": {
+              "name": "framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
       },
       "latestRelease": {
         "tagName": "@molt/command@0.9.0",
