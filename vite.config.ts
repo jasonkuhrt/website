@@ -14,4 +14,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['svelte', 'lucide-svelte'],
   },
+  server: {
+    port: 5175,
+  },
 })
