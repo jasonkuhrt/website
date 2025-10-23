@@ -15,7 +15,7 @@
   <div class="container">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto">
       <!-- Essays Column -->
-      <div>
+      <section aria-label="Essays">
         <h2 class="text-2xl font-bold mb-6">Essays</h2>
         <div class="space-y-6">
           {#each data.essays as post}
@@ -39,10 +39,10 @@
             </article>
           {/each}
         </div>
-      </div>
+      </section>
 
       <!-- Logs Column -->
-      <div>
+      <section aria-label="Logs">
         <h2 class="text-2xl font-bold mb-6">Logs</h2>
         <div class="space-y-6">
           {#each data.logs as post}
@@ -66,10 +66,10 @@
             </article>
           {/each}
         </div>
-      </div>
+      </section>
 
       <!-- TIL Column -->
-      <div>
+      <section aria-label="Today I Learned">
         <h2 class="text-2xl font-bold mb-6">Today I Learned</h2>
         <div class="space-y-6">
           {#each data.til as post}
@@ -93,7 +93,7 @@
             </article>
           {/each}
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </Section>
