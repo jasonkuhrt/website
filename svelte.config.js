@@ -18,8 +18,12 @@ const config = {
       '$data/*': 'src/data/*',
     },
     prerender: {
+      // Disable prerendering in CI to avoid memory issues
+      // Cloudflare Pages will still prerender in production
+      entries: process.env.CI ? [] : ['*'],
       handleHttpError: 'warn',
       handleMissingId: 'warn',
+      handleUnseenRoutes: process.env.CI ? 'ignore' : 'fail',
     },
   },
 }
