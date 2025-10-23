@@ -23,12 +23,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm dev',
+    command: 'NODE_OPTIONS="--max-old-space-size=8192" pnpm dev',
     url: 'http://localhost:5175',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000, // 3 minutes for CI builds with memory constraints
-    env: {
-      NODE_OPTIONS: '--max-old-space-size=4096',
-    },
   },
 })
