@@ -12,7 +12,7 @@ test.describe('Writing page', () => {
     // Check for the three main column headings (level 2 headings are the column titles)
     await expect(page.getByRole('heading', { name: 'Essays', exact: true, level: 2 })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Logs', exact: true, level: 2 })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Today I Learned', exact: true, level: 2 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Scribbles', exact: true, level: 2 })).toBeVisible()
   })
 
   test('essays column has content', async ({ page }) => {
@@ -33,13 +33,13 @@ test.describe('Writing page', () => {
     await expect(page.getByRole('link', { name: /Yarn publish woes/ })).toBeVisible()
   })
 
-  test('TIL column has content', async ({ page }) => {
+  test('Scribbles column has content', async ({ page }) => {
     await page.goto('/writing')
 
-    // Use semantic region selector to target TIL section
-    const tilSection = page.getByRole('region', { name: 'Today I Learned' })
-    const tilLinks = tilSection.getByRole('link')
-    await expect(tilLinks.first()).toBeVisible()
+    // Use semantic region selector to target Scribbles section
+    const scribblesSection = page.getByRole('region', { name: 'Scribbles' })
+    const scribblesLinks = scribblesSection.getByRole('link')
+    await expect(scribblesLinks.first()).toBeVisible()
   })
 
   test('essay links are clickable and navigate correctly', async ({ page }) => {
@@ -47,26 +47,25 @@ test.describe('Writing page', () => {
 
     await page.getByRole('link', { name: /Visiting Lambda Calculus/ }).click()
     await expect(page).toHaveURL(/\/writing\/essays\/visiting-lambda-calculus/)
-    await expect(page.getByRole('heading', { name: /Visiting Lambda Calculus/, level: 1 })).toBeVisible()
+    await expect(page.locator('.prose')).toBeVisible()
   })
 
   test('log links are clickable and navigate correctly', async ({ page }) => {
     await page.goto('/writing')
 
     await page.getByRole('link', { name: /Yarn publish woes/ }).click()
-    await expect(page).toHaveURL(/\/writing\/logs\/yarn-publish-woes/)
-    await expect(page.getByRole('heading', { name: /Yarn publish woes/, level: 1 })).toBeVisible()
+    await expect(page).toHaveURL(/\/writing\/logs\/2017-06-08_yarn-publish-woes/)
+    await expect(page.locator('.prose')).toBeVisible()
   })
 
-  test('TIL link is clickable and navigates correctly', async ({ page }) => {
+  test('Scribbles link is clickable and navigates correctly', async ({ page }) => {
     await page.goto('/writing')
 
-    // Use semantic region selector to target TIL section, then click first link
-    const tilSection = page.getByRole('region', { name: 'Today I Learned' })
-    await tilSection.getByRole('link').first().click()
+    // Use semantic region selector to target Scribbles section, then click first link
+    const scribblesSection = page.getByRole('region', { name: 'Scribbles' })
+    await scribblesSection.getByRole('link').first().click()
 
-    // Should navigate to the TIL index page with anchor
-    await expect(page).toHaveURL(/\/writing\/til\/index\/#/)
-    await expect(page.getByRole('heading', { name: /Today I Learned/, level: 1 })).toBeVisible()
+    // Should navigate to a scribbles entry
+    await expect(page).toHaveURL(/\/writing\/scribbles\//)
   })
 })

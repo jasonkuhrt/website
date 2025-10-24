@@ -1,19 +1,20 @@
-import { sveltekit } from '@sveltejs/kit/vite'
+import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
-import Icons from 'unplugin-icons/vite'
+import mdx from '@mdx-js/rollup'
+import rehypeSlug from 'rehype-slug'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    sveltekit(),
-    tailwindcss(),
-    Icons({
-      compiler: 'svelte',
+    mdx({
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      rehypePlugins: [rehypeSlug],
     }),
+    reactRouter(),
+    tailwindcss(),
   ],
-  optimizeDeps: {
-    include: ['svelte', 'lucide-svelte'],
-  },
   server: {
     port: 5175,
   },

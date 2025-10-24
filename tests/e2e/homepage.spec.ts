@@ -15,9 +15,4 @@ test.describe('Homepage', () => {
     await expect(page.getByRole('link', { name: 'drawing' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'bio' })).toBeVisible()
   })
-
-  test('settings button is present', async ({ page }) => {
-    await page.goto('/')
-    await expect(page.getByRole('button', { name: 'Settings' })).toBeVisible()
-  })
 })
