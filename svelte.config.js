@@ -36,6 +36,7 @@ const config = {
       handleHttpError: 'warn',
       handleMissingId: 'warn',
       handleUnseenRoutes: 'fail',
+      concurrency: 1,
     },
   },
 }

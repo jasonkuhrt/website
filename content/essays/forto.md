@@ -3,7 +3,7 @@ title: 'Forto: The layout engine powering React Popover'
 date: 2018-03-01
 ---
 
-![Zones diagram](./zones.png)
+![Zones diagram](/writing/essays/forto/zones.png)
 
 This is a technical document regarding Forto, the layout engine powering react-popover. If you are generally curious about what react-popover is, why it exists, etc. then you may want to read a [recent article detailing its back-story](/writing/essays/react-popover-history).
 
@@ -22,7 +22,7 @@ This is a technical document regarding Forto, the layout engine powering react-p
 
 Forto is a two dimensional layout system. It is specifically designed to find the optimal position of Popover in relation to Target and Frame. Forto only needs minimal knowledge of these components to function correctly: Their coordinates, dimensions, and (for Tip only) directionality. The following diagram is an introductory view of these components and how the system works toward a final result.
 
-![Introduction diagram](./introduction.png)
+![Introduction diagram](/writing/essays/forto/introduction.png)
 
 Forto has its roots in a project that began as a quick idea and hasty implementation almost two years ago. It is ad hoc in that it lacks any formal methods such as mathematical proofs. It is also not a general layout system (e.g. [Flex](https://www.w3.org/TR/css-flexbox-1)) but rather purpose built. These limitations arise from my practical limits in resources and knowledge. I do not claim my system is innovative or better than X. I am in awe at systems like [Constraint Cascading Style Sheets for the Web](http://constraints.cs.washington.edu/web/ccss-uwtr.pdf) and [Cassowary](http://overconstrained.io/). Forto is just my humble contribution to this vast world. If you have an idea about how to improve Forto, I would welcome your contributions on Github!
 
@@ -62,7 +62,7 @@ _Note: For a discussion on why rezone thresholds are useful see [appendix c](#ap
 
 In the following diagram (see [zone measure diagram](#zone-measure-diagram) in glossary for how to read these) see how the measuring and ranking play out. Interestingly, the right zone has greater remaining length available than the bottom zone yet it's ranked lower. This is because the right zone would have Popover exceed frame bounds while the bottom would not. The right zone is an example of second class.
 
-![Zone measure diagram](./zone-measure.png)
+![Zone measure diagram](/writing/essays/forto/zone-measure.png)
 
 ### Phase 2: Position the Popover
 
@@ -70,13 +70,13 @@ In the following diagram (see [zone measure diagram](#zone-measure-diagram) in g
 
 With the optimal zone found Forto can now calculate the best position for Popover within it. Forto seeks the position of Popover that would see its cross-axis center matched to the that of Target _within Frame_.
 
-![Positioning diagram](./positioning.png)
+![Positioning diagram](/writing/essays/forto/positioning.png)
 
 #### Handle cropped Targets
 
 Target _within Frame_ means that any Target length outside the Frame bounds is ignored when calculating Target center.
 
-![Positioning in frame center diagram](./positioning-in-frame-center.png)
+![Positioning in frame center diagram](/writing/essays/forto/positioning-in-frame-center.png)
 
 This approach to centering generally produces more harmonious results in the author's opinion. However should use-cases arise where absolute center is more desirable I think support for configuration here would be relatively easy.
 
@@ -88,13 +88,13 @@ As we just saw a hint of above in the diagram, if matching cross-axis centers wo
 
 Position Popover up to the Frame bounds but not beyond them.
 
-![Positioning bounded diagram](./positioning-bounded.png)
+![Positioning bounded diagram](/writing/essays/forto/positioning-bounded.png)
 
 ##### Mode Unbounded
 
 Frame bounds are ignored. Note that Popover is still positioned to the Target's in-Frame center; It may turn out that in this mode absolute center is actually more desirable, but I'm not sure. Maybe my opinion will change with feedback and examples from real-world usage.
 
-![Positioning unbounded diagram](./positioning-unbounded.png)
+![Positioning unbounded diagram](/writing/essays/forto/positioning-unbounded.png)
 
 ### Phase 3: Position the Tip
 
@@ -104,7 +104,7 @@ With the Popover's optimal position found within the optimal zone Forto can now 
 2. Along main-axis: position between Popover and Target.
 3. Along cross-axis: position centered between the two nearest cross-sides amongst Target and Popover:
 
-![Tip centering diagram](./tip-centering.png)
+![Tip centering diagram](/writing/essays/forto/tip-centering.png)
 
 ## Conclusion
 
@@ -122,13 +122,13 @@ One meta improvement that interests me is to enhance some of the diagrams I've c
 
 ### Appendix A: Examples
 
-![Examples diagram](./examples.png)
+![Examples diagram](/writing/essays/forto/examples.png)
 
 ### Appendix B: Factoring in Tip's main length, an interesting edge case
 
 Observe that Tip length affects either height or width of Popover depending upon the orientation of a zone. As such zones of opposite orientation manifest slightly different Popover dimensions. If not handled right this can trigger an infinite layout loop between two second-class zones of opposite orientation. This could happen when said change in dimension would affect the percentage of Popover cropped and in turn lead to always another zone appearing superior than the current one. The following diagram helps illustrate this:
 
-![Infinite loop diagram](./infini-loop.png)
+![Infinite loop diagram](/writing/essays/forto/infini-loop.png)
 
 1. Popover positioned via either initial render or some previous lead up. Dimensions change because of Tip movement
 2. A new optimal zone in first class is detected
@@ -137,7 +137,7 @@ Observe that Tip length affects either height or width of Popover depending upon
 
 As we saw Forto gets around this by adding the Tip's main-axis length to Popover's main-axis length when calculating a zone's rank. Therefore in actuality the scenario from before, corrected, looks like:
 
-![Infinite loop fixed diagram](./infini-loop-fixed.png)
+![Infinite loop fixed diagram](/writing/essays/forto/infini-loop-fixed.png)
 
 1. Popover positioned via either initial render or some previous lead up
 2. Some change triggers a layout scan, another zone is closely ranked but given that its in the same class and has a fit as bad or worse than current position, the latter is maintained.
@@ -150,15 +150,15 @@ Rezone thresholds are useful in at least two ways. First, in preventing rezoning
 
 A minimal threshold is enough to guard against jitter. In the following diagram you can imagine the Target might be some kind of draggable, while the Frame might be some kind of scrollable. Without thresholds jitter in either would propagate to the Popover.
 
-![Change threshold 0 diagram](./change-threshold-0.png)
+![Change threshold 0 diagram](/writing/essays/forto/change-threshold-0.png)
 
 A large threshold can limit rezones in the face of correspondingly sized changes to the arrangement. In the following diagram you can see how Popover will not rezone until there is another zone three times greater in area.
 
-![Change threshold 75 diagram](./change-threshold-75.png)
+![Change threshold 75 diagram](/writing/essays/forto/change-threshold-75.png)
 
 An "infinite" threshold can disable most rezones altogether. In the following diagram you can see how there is no rezone until not doing so would mean being outside the Frame bounds (AKA a class-upgrade is available).
 
-![Change threshold 100 diagram](./change-threshold-100.png)
+![Change threshold 100 diagram](/writing/essays/forto/change-threshold-100.png)
 
 ## Glossary
 
@@ -174,7 +174,7 @@ An "infinite" threshold can disable most rezones altogether. In the following di
 
 ### Layout
 
-![Anatomy layout diagram](./anatomy-layout.png)
+![Anatomy layout diagram](/writing/essays/forto/anatomy-layout.png)
 
 **Arrangement** – The current position and dimensions of Target, Frame, and Popover.
 
@@ -204,4 +204,4 @@ An "infinite" threshold can disable most rezones altogether. In the following di
 
 ### Zone Measure Diagram
 
-![Zone measure legend diagram](./zone-measure-legend.png)
+![Zone measure legend diagram](/writing/essays/forto/zone-measure-legend.png)
