@@ -1,0 +1,44 @@
+[
+  {
+    "title": "My first son Roman is born",
+    "date": "July 2011",
+    "icon": "Baby"
+  },
+  {
+    "title": "Move to NYC",
+    "date": "March 2014",
+    "icon": "MapPin"
+  },
+  {
+    "title": "Launch cloudBit at TED",
+    "date": "March 2014",
+    "icon": "Heart",
+    "description": "Preview of littleBits cloudBit at TED2014 conference in Vancouver. Official product launch followed in July 2014.",
+    "url": "https://en.wikipedia.org/wiki/LittleBits"
+  },
+  {
+    "title": "Move back to Montreal",
+    "date": "July 2015",
+    "icon": "Home"
+  },
+  {
+    "title": "My second son Willem is born",
+    "date": "March 2016",
+    "icon": "Baby"
+  },
+  {
+    "title": "First Rocky Mountains Expedition",
+    "date": "July 2023",
+    "icon": "Mountain"
+  },
+  {
+    "title": "ADHD positive assessment",
+    "date": "December 2023",
+    "icon": "Brain"
+  },
+  {
+    "title": "Second Rocky Mountains Expedition",
+    "date": "August 2025",
+    "icon": "Mountain"
+  }
+]

@@ -14,7 +14,8 @@ const config = {
         exclude: [
           '<build>',
           '<prerendered>',
-          '/photographing/*',
+          '/designing/*',
+          '/imaging/*',
           '/bio/*',
           '/images/*',
           '/favicon.ico',

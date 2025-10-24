@@ -76,7 +76,7 @@ export default function Writing({ loaderData }: Route.ComponentProps) {
   return (
     <Section spacing='xl'>
       <div className='container'>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-12 max-w-7xl mx-auto'>
+        <div className='grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-12 max-w-7xl mx-auto'>
           {/* Essays Column */}
           <section aria-label='Essays'>
             <h2 className='text-2xl font-bold mb-6'>Essays</h2>
@@ -127,25 +127,17 @@ export default function Writing({ loaderData }: Route.ComponentProps) {
             </div>
           </section>
 
-          {/* Scribbles Column */}
-          <section aria-label='Scribbles'>
+          {/* Scribbles Column - Narrower, dates only */}
+          <section aria-label='Scribbles' className='md:pl-4'>
             <h2 className='text-2xl font-bold mb-6'>Scribbles</h2>
-            <div className='space-y-6'>
+            <div className='space-y-3'>
               {loaderData.scribbles.map((post) => (
                 <article key={post.slug} className='group'>
                   <a
                     href={`/writing/${post.slug}`}
-                    className='block border-b border-gray-200 dark:border-gray-800 pb-6 hover:border-gray-300 dark:hover:border-gray-700 transition-colors'
+                    className='block text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-mono'
                   >
-                    <time
-                      dateTime={post.date.toISOString()}
-                      className='text-xs text-gray-500 dark:text-gray-400 font-mono block mb-2'
-                    >
-                      {format(post.date, 'LLL dd yyyy')}
-                    </time>
-                    <h3 className='text-base font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
-                      {post.title}
-                    </h3>
+                    {format(post.date, 'yyyy-MM-dd')}
                   </a>
                 </article>
               ))}

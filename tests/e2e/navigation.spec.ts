@@ -7,10 +7,10 @@ test.describe('Navigation', () => {
     // Test each navigation link
     const navLinks = [
       { name: 'writing', url: '/writing' },
+      { name: 'crafting', url: '/crafting' },
+      { name: 'designing', url: '/designing' },
+      { name: 'capturing', url: '/capturing' },
       { name: 'speaking', url: '/speaking' },
-      { name: 'coding', url: '/coding' },
-      { name: 'photographing', url: '/photographing' },
-      { name: 'drawing', url: '/drawing' },
       { name: 'bio', url: '/bio' },
     ]
 
@@ -22,10 +22,10 @@ test.describe('Navigation', () => {
   })
 
   test('logo link returns to homepage', async ({ page }) => {
+    // Start on a different page (not homepage)
     await page.goto('/writing')
 
     // Click the logo to return home
-    await page.goto('/')
     const homeLink = page.locator('a[href="/"]').first()
     await homeLink.click()
     await expect(page).toHaveURL('/')

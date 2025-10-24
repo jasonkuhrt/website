@@ -1,0 +1,957 @@
+{
+  "fetchedAt": "2025-10-24T15:40:45.963Z",
+  "repos": [
+    {
+      "name": "graffle",
+      "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
+      "stargazerCount": 6063,
+      "forkCount": 308,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-24T14:33:17Z",
+      "url": "https://github.com/graffle-js/graffle",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql-client"
+            }
+          },
+          {
+            "topic": {
+              "name": "nodejs"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          },
+          {
+            "topic": {
+              "name": "lightweight"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "graphql-request@7.3.1",
+        "publishedAt": "2025-10-18T20:40:58Z",
+        "url": "https://github.com/graffle-js/graffle/releases/tag/graphql-request%407.3.1"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/graffle-js/graffle/commit/91d271a6714a2074295b15e8af8a6e180fde8137"
+        }
+      }
+    },
+    {
+      "name": "polen",
+      "description": "🌺 A framework for delightful GraphQL developer portals",
+      "stargazerCount": 19,
+      "forkCount": 2,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-05T16:56:47Z",
+      "url": "https://github.com/jasonkuhrt/polen",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "developer-portal"
+            }
+          },
+          {
+            "topic": {
+              "name": "framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.10.0",
+        "publishedAt": "2025-07-14T18:28:29Z",
+        "url": "https://github.com/jasonkuhrt/polen/releases/tag/0.10.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/polen/commit/1c7dc1460f2998f35a067b42bc28c0767b63bfc4"
+        }
+      }
+    },
+    {
+      "name": "oak",
+      "description": "⚡️ CLI building blocks & framework for the TypeScript era.",
+      "stargazerCount": 80,
+      "forkCount": 1,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-24T15:31:31Z",
+      "url": "https://github.com/jasonkuhrt/oak",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "cli"
+            }
+          },
+          {
+            "topic": {
+              "name": "cli-framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "command-line"
+            }
+          },
+          {
+            "topic": {
+              "name": "developer-tools"
+            }
+          },
+          {
+            "topic": {
+              "name": "framework"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "@molt/command@0.9.0",
+        "publishedAt": "2023-09-16T16:58:27Z",
+        "url": "https://github.com/jasonkuhrt/oak/releases/tag/%40molt/command%400.9.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/oak/commit/2eefa4b241e47a634476605aa841efd38e086416"
+        }
+      }
+    },
+    {
+      "name": "alge",
+      "description": "Type safe library for creating Algebraic Data Types (ADTs) in TypeScript. 🌱",
+      "stargazerCount": 123,
+      "forkCount": 4,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-24T11:35:09Z",
+      "url": "https://github.com/jasonkuhrt/alge",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "adt"
+            }
+          },
+          {
+            "topic": {
+              "name": "algebraic-data-types"
+            }
+          },
+          {
+            "topic": {
+              "name": "data"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.8.1",
+        "publishedAt": "2023-02-26T16:40:50Z",
+        "url": "https://github.com/jasonkuhrt/alge/releases/tag/0.8.1"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/alge/commit/12c273ab5cf2835dc70b41dc05277721f81c3610"
+        }
+      }
+    },
+    {
+      "name": "setset",
+      "description": "Powerful Incremental Type-driven Settings Engine.",
+      "stargazerCount": 20,
+      "forkCount": 2,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-21T16:59:50Z",
+      "url": "https://github.com/jasonkuhrt/setset",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "configuration"
+            }
+          },
+          {
+            "topic": {
+              "name": "settings"
+            }
+          },
+          {
+            "topic": {
+              "name": "api"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "v0.0.7",
+        "publishedAt": "2021-04-09T01:08:28Z",
+        "url": "https://github.com/jasonkuhrt/setset/releases/tag/v0.0.7"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/setset/commit/a0df048dd9f721f57bbe0911653f8f082d3f6be1"
+        }
+      }
+    },
+    {
+      "name": "react-popover",
+      "description": "A smart popover component for React",
+      "stargazerCount": 596,
+      "forkCount": 234,
+      "primaryLanguage": {
+        "name": "JavaScript",
+        "color": "#f1e05a"
+      },
+      "pushedAt": "2023-12-15T14:31:50Z",
+      "url": "https://github.com/jasonkuhrt/react-popover",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "javascript"
+            }
+          },
+          {
+            "topic": {
+              "name": "react"
+            }
+          },
+          {
+            "topic": {
+              "name": "ui-components"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "v0.5.9",
+        "publishedAt": "2018-06-30T01:44:49Z",
+        "url": "https://github.com/jasonkuhrt/react-popover/releases/tag/v0.5.9"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/react-popover/commit/905e7545e32806abf8ee38f4557621e9bc5b1c1a"
+        }
+      }
+    },
+    {
+      "name": "libra",
+      "description": "CLI for TypeScript library development with convention over configuration. Manages package.json exports, TypeScript configs, builds, and developer workflow automation.",
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": null,
+      "pushedAt": "2025-05-13T02:48:46Z",
+      "url": "https://github.com/jasonkuhrt/libra",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "build-tool"
+            }
+          },
+          {
+            "topic": {
+              "name": "cli"
+            }
+          },
+          {
+            "topic": {
+              "name": "convention-over-configuration"
+            }
+          },
+          {
+            "topic": {
+              "name": "developer-tools"
+            }
+          },
+          {
+            "topic": {
+              "name": "library-development"
+            }
+          },
+          {
+            "topic": {
+              "name": "package-management"
+            }
+          },
+          {
+            "topic": {
+              "name": "tooling"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": null
+    },
+    {
+      "name": "nexus",
+      "description": "Code-First, Type-Safe, GraphQL Schema Construction",
+      "stargazerCount": 3423,
+      "forkCount": 278,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2023-11-19T09:46:52Z",
+      "url": "https://github.com/graphql-nexus/nexus",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          },
+          {
+            "topic": {
+              "name": "nexus"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql-nexus"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql-schema"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "v1.3.0",
+        "publishedAt": "2022-03-07T13:45:55Z",
+        "url": "https://github.com/graphql-nexus/nexus/releases/tag/v1.3.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/graphql-nexus/nexus/commit/9e5c27c50901b038e276c8a2ec4bb5ace1415580"
+        }
+      }
+    },
+    {
+      "name": "nexus-prisma",
+      "description": "Prisma plugin for Nexus",
+      "stargazerCount": 559,
+      "forkCount": 45,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-21T17:17:06Z",
+      "url": "https://github.com/graphql-nexus/nexus-prisma",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "nexus"
+            }
+          },
+          {
+            "topic": {
+              "name": "prisma"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "api"
+            }
+          },
+          {
+            "topic": {
+              "name": "crud"
+            }
+          },
+          {
+            "topic": {
+              "name": "generation"
+            }
+          },
+          {
+            "topic": {
+              "name": "nexus-prisma"
+            }
+          },
+          {
+            "topic": {
+              "name": "prisma-generator"
+            }
+          },
+          {
+            "topic": {
+              "name": "prisma-schema"
+            }
+          },
+          {
+            "topic": {
+              "name": "custom-scalars"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "v2.0.8",
+        "publishedAt": "2024-12-09T10:32:38Z",
+        "url": "https://github.com/graphql-nexus/nexus-prisma/releases/tag/v2.0.8"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/graphql-nexus/nexus-prisma/commit/fb88f52814741e9e6216b37aa19a181ce2c45dfe"
+        }
+      }
+    },
+    {
+      "name": "dripip",
+      "description": "Opinionated CLI for continuous delivery of npm packages",
+      "stargazerCount": 101,
+      "forkCount": 2,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-24T14:04:09Z",
+      "url": "https://github.com/prisma-labs/dripip",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "cicd"
+            }
+          },
+          {
+            "topic": {
+              "name": "release-management"
+            }
+          },
+          {
+            "topic": {
+              "name": "cli"
+            }
+          },
+          {
+            "topic": {
+              "name": "canary-releases"
+            }
+          },
+          {
+            "topic": {
+              "name": "semver"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.10.0",
+        "publishedAt": "2020-08-05T13:57:21Z",
+        "url": "https://github.com/prisma-labs/dripip/releases/tag/0.10.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/prisma-labs/dripip/commit/88a3d78a2358394befb8921d66cc857e548911b1"
+        }
+      }
+    },
+    {
+      "name": "forto",
+      "description": "A robust layout engine ideal for but not limited to popovers.",
+      "stargazerCount": 2,
+      "forkCount": 1,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-02-19T17:21:09Z",
+      "url": "https://github.com/jasonkuhrt/forto",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "layout-engine"
+            }
+          },
+          {
+            "topic": {
+              "name": "ui"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/forto/commit/7901ad40d31e1ba0d85a07226eabe066bbed2c2c"
+        }
+      }
+    },
+    {
+      "name": "template-typescript-lib",
+      "description": "🎛️ Project template for TypeScript libraries",
+      "stargazerCount": 53,
+      "forkCount": 2,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-23T18:12:15Z",
+      "url": "https://github.com/jasonkuhrt/template-typescript-lib",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "example"
+            }
+          },
+          {
+            "topic": {
+              "name": "library"
+            }
+          },
+          {
+            "topic": {
+              "name": "template"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/template-typescript-lib/commit/92f50602eafe1b73f0fc62b8c1f4f62566d033f6"
+        }
+      }
+    },
+    {
+      "name": "floggy",
+      "description": "Universal structured event-oriented logging for libraries & applications",
+      "stargazerCount": 11,
+      "forkCount": 3,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-10-24T14:51:50Z",
+      "url": "https://github.com/jasonkuhrt/floggy",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "logging"
+            }
+          },
+          {
+            "topic": {
+              "name": "debug"
+            }
+          },
+          {
+            "topic": {
+              "name": "json"
+            }
+          },
+          {
+            "topic": {
+              "name": "structured-logging"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.3.5",
+        "publishedAt": "2022-09-23T04:04:57Z",
+        "url": "https://github.com/jasonkuhrt/floggy/releases/tag/0.3.5"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/floggy/commit/49fd5d8ea668b7f766478cfe5eb9b0a75f99bd97"
+        }
+      }
+    },
+    {
+      "name": "flo",
+      "description": "GitHub issues → Git worktrees → Claude context. Create worktrees from GitHub issues with automatic Claude setup.",
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "Shell",
+        "color": "#89e051"
+      },
+      "pushedAt": "2025-10-19T05:45:43Z",
+      "url": "https://github.com/jasonkuhrt/flo",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "automation"
+            }
+          },
+          {
+            "topic": {
+              "name": "claude"
+            }
+          },
+          {
+            "topic": {
+              "name": "developer-tools"
+            }
+          },
+          {
+            "topic": {
+              "name": "fish-shell"
+            }
+          },
+          {
+            "topic": {
+              "name": "git-worktree"
+            }
+          },
+          {
+            "topic": {
+              "name": "workflow"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/flo/commit/44c98b85ac9d375612f4a32371e5c5482cd42d07"
+        }
+      }
+    },
+    {
+      "name": "graphql-kit",
+      "description": "GraphQL toolkit with Effect-based utilities for schema management, versioning, and lifecycle tracking.",
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-09-23T19:14:45Z",
+      "url": "https://github.com/jasonkuhrt/graphql-kit",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "effect"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "schema-management"
+            }
+          },
+          {
+            "topic": {
+              "name": "toolkit"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          },
+          {
+            "topic": {
+              "name": "versioning"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "0.11.0",
+        "publishedAt": "2025-09-23T19:14:46Z",
+        "url": "https://github.com/jasonkuhrt/graphql-kit/releases/tag/0.11.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/graphql-kit/commit/198dce3dc2537110f5bb162db5f60f3d01782b72"
+        }
+      }
+    },
+    {
+      "name": "dotfiles",
+      "description": "Tool configurations",
+      "stargazerCount": 1,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "Vim Script",
+        "color": "#199f4b"
+      },
+      "pushedAt": "2025-09-17T17:33:52Z",
+      "url": "https://github.com/jasonkuhrt/dotfiles",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "configuration"
+            }
+          },
+          {
+            "topic": {
+              "name": "development-environment"
+            }
+          },
+          {
+            "topic": {
+              "name": "dotfiles"
+            }
+          },
+          {
+            "topic": {
+              "name": "fish-shell"
+            }
+          },
+          {
+            "topic": {
+              "name": "vim"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/dotfiles/commit/75dc62a1a2ca5c7c95ded5e802bf988b6e7719fa"
+        }
+      }
+    },
+    {
+      "name": "claude",
+      "description": "Personal Claude AI configuration, conventions, and scripts",
+      "stargazerCount": 1,
+      "forkCount": 0,
+      "primaryLanguage": null,
+      "pushedAt": "2025-09-17T15:08:15Z",
+      "url": "https://github.com/jasonkuhrt/claude",
+      "repositoryTopics": {
+        "nodes": []
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/claude/commit/c110e7c3b158b326e3cebc660676b39c2c176673"
+        }
+      }
+    },
+    {
+      "name": "treant",
+      "description": "TypeScript-first toolkit for Tree-sitter grammars. Generate type-safe SDKs with full IDE support.",
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2025-09-01T20:33:05Z",
+      "url": "https://github.com/jasonkuhrt/treant",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "ast"
+            }
+          },
+          {
+            "topic": {
+              "name": "graphql"
+            }
+          },
+          {
+            "topic": {
+              "name": "parser"
+            }
+          },
+          {
+            "topic": {
+              "name": "sdk-generator"
+            }
+          },
+          {
+            "topic": {
+              "name": "tree-sitter"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": {
+        "tagName": "@treant/graphql@0.1.0",
+        "publishedAt": "2025-09-01T20:33:10Z",
+        "url": "https://github.com/jasonkuhrt/treant/releases/tag/%40treant/graphql%400.1.0"
+      },
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/treant/commit/6b141d3454cd66ed5477650f8a6ea8fb75b0d602"
+        }
+      }
+    },
+    {
+      "name": "purry",
+      "description": "Symbiotic, high-performance currying and partial application",
+      "stargazerCount": 5,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "JavaScript",
+        "color": "#f1e05a"
+      },
+      "pushedAt": "2023-12-15T05:42:46Z",
+      "url": "https://github.com/jasonkuhrt/purry",
+      "repositoryTopics": {
+        "nodes": [
+          {
+            "topic": {
+              "name": "currying"
+            }
+          },
+          {
+            "topic": {
+              "name": "functional-programming"
+            }
+          },
+          {
+            "topic": {
+              "name": "javascript"
+            }
+          },
+          {
+            "topic": {
+              "name": "partial-application"
+            }
+          },
+          {
+            "topic": {
+              "name": "performance"
+            }
+          },
+          {
+            "topic": {
+              "name": "typescript"
+            }
+          }
+        ]
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/purry/commit/1f1a22bef3b47aaca78c1e803c2b4257ed4054db"
+        }
+      }
+    },
+    {
+      "name": "research-node-package-exports",
+      "description": null,
+      "stargazerCount": 1,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "JavaScript",
+        "color": "#f1e05a"
+      },
+      "pushedAt": "2023-12-15T08:52:54Z",
+      "url": "https://github.com/jasonkuhrt/research-node-package-exports",
+      "repositoryTopics": {
+        "nodes": []
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/jasonkuhrt/research-node-package-exports/commit/1bd07595356c58bc32a7112ccb2b60ff1d9f5965"
+        }
+      }
+    },
+    {
+      "name": "paka",
+      "description": null,
+      "stargazerCount": 0,
+      "forkCount": 0,
+      "primaryLanguage": {
+        "name": "TypeScript",
+        "color": "#3178c6"
+      },
+      "pushedAt": "2022-05-17T21:48:52Z",
+      "url": "https://github.com/pakadev/paka",
+      "repositoryTopics": {
+        "nodes": []
+      },
+      "latestRelease": null,
+      "defaultBranchRef": {
+        "target": {
+          "commitUrl": "https://github.com/pakadev/paka/commit/3c5c31b26e5c133c71863bae199cec28e95f6c9e"
+        }
+      }
+    }
+  ]
+}

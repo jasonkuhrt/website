@@ -1,0 +1,25 @@
+export const curatedRepos = [
+  { owner: 'graffle-js', name: 'graffle' },
+  { owner: 'jasonkuhrt', name: 'polen' },
+  { owner: 'jasonkuhrt', name: 'oak' },
+  { owner: 'jasonkuhrt', name: 'alge' },
+  { owner: 'jasonkuhrt', name: 'setset' },
+  { owner: 'jasonkuhrt', name: 'react-popover' },
+  { owner: 'jasonkuhrt', name: 'libra' },
+  { owner: 'graphql-nexus', name: 'nexus' },
+  { owner: 'graphql-nexus', name: 'nexus-prisma' },
+  { owner: 'prisma-labs', name: 'dripip' },
+  { owner: 'jasonkuhrt', name: 'forto' },
+  { owner: 'jasonkuhrt', name: 'template-typescript-lib' },
+  { owner: 'jasonkuhrt', name: 'floggy' },
+  { owner: 'jasonkuhrt', name: 'flo' },
+  { owner: 'jasonkuhrt', name: 'graphql-kit' },
+  { owner: 'jasonkuhrt', name: 'dotfiles' },
+  { owner: 'jasonkuhrt', name: 'claude' },
+  { owner: 'jasonkuhrt', name: 'treant' },
+  { owner: 'jasonkuhrt', name: 'purry' },
+  { owner: 'jasonkuhrt', name: 'research-node-package-exports' },
+  { owner: 'pakadev', name: 'paka' },
+] as const
+
+export type CuratedRepo = (typeof curatedRepos)[number]

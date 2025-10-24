@@ -1,18 +1,16 @@
 /**
- * Grid component - responsive grid layout
+ * Grid component - responsive fluid grid layout
  *
- * Columns are responsive:
- * - 1 column on mobile
- * - 2 columns on tablet (md)
- * - 3 columns on desktop (lg)
+ * Uses CSS auto-fit to create a fluid grid that automatically adjusts
+ * the number of columns based on available space.
  */
 export function Grid({
-  cols = { sm: 1, md: 2, lg: 3 },
+  minWidth = '300px',
   gap = 'base',
   className,
   children,
 }: {
-  cols?: { sm?: number; md?: number; lg?: number } | number
+  minWidth?: string
   gap?: 'sm' | 'base' | 'lg'
   className?: string
   children?: React.ReactNode
@@ -23,19 +21,13 @@ export function Grid({
     lg: 'var(--spacing-6)',
   }
 
-  const colsObj = typeof cols === 'number' ? { sm: cols, md: cols, lg: cols } : cols
-
   return (
     <div
       className={`grid ${className || ''}`}
       style={{
-        '--grid-gap': gapMap[gap],
-        '--cols-sm': colsObj.sm || 1,
-        '--cols-md': colsObj.md || 2,
-        '--cols-lg': colsObj.lg || 3,
         display: 'grid',
-        gridTemplateColumns: 'repeat(var(--cols-sm), 1fr)',
-        gap: 'var(--grid-gap)',
+        gridTemplateColumns: `repeat(auto-fit, minmax(min(${minWidth}, 100%), 1fr))`,
+        gap: gapMap[gap],
       } as React.CSSProperties}
     >
       {children}

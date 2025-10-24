@@ -14,6 +14,7 @@ export function NavLink({
   return (
     <RouterNavLink
       to={href}
+      viewTransition
       className={({ isActive }) => `text-xs ${isActive ? 'font-bold' : 'opacity-50'} hover:opacity-100`}
       style={({ isActive }) => ({
         marginLeft: '0.75rem',

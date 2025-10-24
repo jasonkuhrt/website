@@ -1,0 +1,336 @@
+{
+  "projects": [
+    {
+      "id": "bored-in-heaven",
+      "title": "Bored in Heaven",
+      "description": "A poster, dvd/blu-ray insert, and disc label for the Canadian documentary film Bored in Heaven.",
+      "coverImage": "/designing/bored-in-heaven/cover.jpg",
+      "images": [
+        "/designing/bored-in-heaven/366b599346531.5602da9be211b.jpg",
+        "/designing/bored-in-heaven/ac58919346707.5602dc6fe2986.png",
+        "/designing/bored-in-heaven/c700a89346529.5602dbe335982.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 2,
+      "views": 292,
+      "tags": [
+        "poster"
+      ]
+    },
+    {
+      "id": "bottom-of-the-hill",
+      "title": "At the bottom of the hill",
+      "description": "A poster for At the bottom of the hill, a Canadian short film by director Vanya Rose. The film is about a solider returning from Afghanistan. With its poster I wanted to convey the sharp disturbance that the protagonist experiences.",
+      "coverImage": "/designing/bottom-of-the-hill/cover.jpg",
+      "images": [
+        "/designing/bottom-of-the-hill/2ab7fe9344705.5602dbd7b301c.jpg",
+        "/designing/bottom-of-the-hill/4733059345411.5602dc6b20b97.jpg",
+        "/designing/bottom-of-the-hill/9e8a559345413.5602d99a7d399.jpg",
+        "/designing/bottom-of-the-hill/9f31189345415.5602dc250fd63.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 14,
+      "views": 569,
+      "tags": [
+        "poster"
+      ]
+    },
+    {
+      "id": "circle-under-attack",
+      "title": "The circle is under attack",
+      "description": "",
+      "coverImage": "/designing/circle-under-attack/cover.jpg",
+      "images": [
+        "/designing/circle-under-attack/1906713950841.5601c8f59d050.jpg",
+        "/designing/circle-under-attack/1983043950661.5601c98984f3c.jpg",
+        "/designing/circle-under-attack/490fc23950660.5601c8d4c2b28.jpg",
+        "/designing/circle-under-attack/49ec543937988.5601c8295b869.jpg",
+        "/designing/circle-under-attack/9fe3e63950840.5601c8e9db91c.jpg",
+        "/designing/circle-under-attack/cab5cf3950659.5601c8e61ff4a.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 4,
+      "views": 255,
+      "tags": [
+        "graphic"
+      ]
+    },
+    {
+      "id": "icograda-2007",
+      "title": "Icograda World Design Congress 2007",
+      "description": "",
+      "coverImage": "/designing/icograda-2007/cover.jpg",
+      "images": [
+        "/designing/icograda-2007/80eb403523659.5601b1822a3e7.jpg",
+        "/designing/icograda-2007/faec3b3523660.5601b17cc52ff.jpg"
+      ],
+      "date": "2007-01-01",
+      "appreciations": 7,
+      "views": 304,
+      "tags": [
+        "poster"
+      ]
+    },
+    {
+      "id": "icograda-2009",
+      "title": "Icograda 2009 Biennial Review",
+      "description": "Icograda 2009 Biennial ReviewThis project used to be live at icograda.org/2009 but it was taken down in 2015.",
+      "coverImage": "/designing/icograda-2009/cover.jpg",
+      "images": [
+        "/designing/icograda-2009/048cc13960113.5601c9860aa41.jpg",
+        "/designing/icograda-2009/88afce3960110.5601c954d7bd3.jpg",
+        "/designing/icograda-2009/a9f8e63938118.5601c889d1f99.jpg",
+        "/designing/icograda-2009/b24d493960112.5601ca0e79100.jpg",
+        "/designing/icograda-2009/d7481b3960111.5601ca0de24e0.jpg"
+      ],
+      "date": "2009-01-01",
+      "appreciations": 61,
+      "views": 2793,
+      "tags": [
+        "web"
+      ],
+      "order": 3
+    },
+    {
+      "id": "modus-operandi",
+      "title": "Modus Operandi (coming sometime)",
+      "description": "",
+      "coverImage": "/designing/modus-operandi/cover.jpg",
+      "images": [
+        "/designing/modus-operandi/f8fc933980447.5601ca7d01be2.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 6,
+      "views": 280,
+      "tags": [],
+      "hide": true
+    },
+    {
+      "id": "montreal-stories-1944",
+      "title": "Montreal Stories 1944",
+      "description": "",
+      "coverImage": "/designing/montreal-stories-1944/cover.jpg",
+      "images": [
+        "/designing/montreal-stories-1944/2181ca3937962.5601c81255fd9.jpg",
+        "/designing/montreal-stories-1944/5524c33951157.5601c992cedb8.jpg",
+        "/designing/montreal-stories-1944/86741c3950993.5601c989a4637.jpg",
+        "/designing/montreal-stories-1944/b2986a3937963.5601c812e7ac2.jpg",
+        "/designing/montreal-stories-1944/c32c2f3951156.5601c8ffe5a31.jpg",
+        "/designing/montreal-stories-1944/ca9a633951155.5601c8dcc97b0.jpg",
+        "/designing/montreal-stories-1944/f3698a3950994.5601c989f1788.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 3,
+      "views": 208,
+      "tags": [
+        "poster"
+      ]
+    },
+    {
+      "id": "montreal-urban-sustainment",
+      "title": "Montreal Urban Community Sustainment",
+      "description": "",
+      "coverImage": "/designing/montreal-urban-sustainment/cover.jpg",
+      "images": [
+        "/designing/montreal-urban-sustainment/15f9c33962385.5601c9a9d1b53.jpg",
+        "/designing/montreal-urban-sustainment/17300a3962391.5601c9a98f8dc.jpg",
+        "/designing/montreal-urban-sustainment/66fefb3961820.5601ca0aed8b4.jpg",
+        "/designing/montreal-urban-sustainment/7c980d3962377.5601ca3676c1f.jpg",
+        "/designing/montreal-urban-sustainment/993f513962384.5601c9ab7820e.jpg",
+        "/designing/montreal-urban-sustainment/d812823962378.5601c9b06429c.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 4,
+      "views": 181,
+      "tags": [],
+      "hide": true
+    },
+    {
+      "id": "portfolio-day-montreal",
+      "title": "Portfolio Day in Montreal",
+      "description": "",
+      "coverImage": "/designing/portfolio-day-montreal/cover.jpg",
+      "images": [
+        "/designing/portfolio-day-montreal/2f33833974064.5601caeac0849.jpg",
+        "/designing/portfolio-day-montreal/49fe953973936.5601ca711ab6e.jpg",
+        "/designing/portfolio-day-montreal/793f413966000.5601ca7a3458d.jpg",
+        "/designing/portfolio-day-montreal/960c453974065.5601cadcb5e06.jpg",
+        "/designing/portfolio-day-montreal/a933393973992.5601cae8d7df5.jpg",
+        "/designing/portfolio-day-montreal/b1324f3974066.5601cacf9b275.jpg",
+        "/designing/portfolio-day-montreal/dd616c3974063.5601cacfe3d13.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 3,
+      "views": 201,
+      "tags": [
+        "poster"
+      ]
+    },
+    {
+      "id": "sky-meets-ocean",
+      "title": "Sky Meets Ocean",
+      "description": "",
+      "coverImage": "/designing/sky-meets-ocean/cover.jpg",
+      "images": [
+        "/designing/sky-meets-ocean/4ccd833949875.5601c9719af00.jpg",
+        "/designing/sky-meets-ocean/500dd93945395.5601c8a1bdbe9.jpg",
+        "/designing/sky-meets-ocean/8a1d213950031.5601c8c86a9c3.jpg",
+        "/designing/sky-meets-ocean/a317ea3938208.5601c88b091fa.jpg",
+        "/designing/sky-meets-ocean/a5bdaa3949874.5601c97176b5e.jpg",
+        "/designing/sky-meets-ocean/d1d2983938207.5601c813d9710.jpg",
+        "/designing/sky-meets-ocean/feaea13949873.5601c940372fe.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 5,
+      "views": 260,
+      "tags": [
+        "graphic"
+      ],
+      "order": 4
+    },
+    {
+      "id": "sousveillance",
+      "title": "Sousveillance",
+      "description": "",
+      "coverImage": "/designing/sousveillance/cover.jpg",
+      "images": [
+        "/designing/sousveillance/12a4133986021.5601cb2d1f0a6.jpg",
+        "/designing/sousveillance/14ee544000229.5601cc5db8bbc.jpg",
+        "/designing/sousveillance/71cfb94002662.5601cca90b70e.jpg",
+        "/designing/sousveillance/8357494002664.5601cc8580cc4.jpg",
+        "/designing/sousveillance/855f1c4003685.5601cc0943edb.jpg",
+        "/designing/sousveillance/93900e4000723.5601cc217a1dc.jpg",
+        "/designing/sousveillance/957c723987583.5601caf496ad7.jpg",
+        "/designing/sousveillance/a560474002661.5601cc9f99f93.jpg",
+        "/designing/sousveillance/b9e0b84003695.5601cc904f625.jpg",
+        "/designing/sousveillance/c104114002663.5601cc41a9b13.jpg",
+        "/designing/sousveillance/c382f84000228.5601cc7f7a7ff.jpg",
+        "/designing/sousveillance/c8afd53986221.5601caf8a7d51.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 11,
+      "views": 717,
+      "tags": [
+        "installation"
+      ]
+    },
+    {
+      "id": "species",
+      "title": "Species",
+      "description": "",
+      "coverImage": "/designing/species/cover.jpg",
+      "images": [
+        "/designing/species/2b1f4f3963660.5601ca463b87b.jpg",
+        "/designing/species/75444a3963495.5601c98594d08.jpg",
+        "/designing/species/7e4e6b3963496.5601c9c48a903.jpg",
+        "/designing/species/cbce843963497.5601ca4405aeb.jpg",
+        "/designing/species/f002733963525.5601ca1ec0354.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 10,
+      "views": 362,
+      "tags": [
+        "web"
+      ]
+    },
+    {
+      "id": "vanya-rose",
+      "title": "VANYA ROSE",
+      "description": "",
+      "coverImage": "/designing/vanya-rose/cover.jpg",
+      "images": [
+        "/designing/vanya-rose/0be6d53960514.5601ca1f1aeca.jpg",
+        "/designing/vanya-rose/29c5ff3960513.5601ca215cde9.jpg",
+        "/designing/vanya-rose/2d7fc93960692.5601c95d04bc6.jpg",
+        "/designing/vanya-rose/83f30f3960345.5601ca117ee84.jpg",
+        "/designing/vanya-rose/bfc5503960694.5601ca243dde3.jpg",
+        "/designing/vanya-rose/e067273960691.5601ca21e6c14.jpg",
+        "/designing/vanya-rose/e8e94a3960693.5601c9952c34c.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 3,
+      "views": 386,
+      "tags": [
+        "web"
+      ]
+    },
+    {
+      "id": "visual-lexicon",
+      "title": "Visual Lexicon",
+      "description": "",
+      "coverImage": "/designing/visual-lexicon/cover.jpg",
+      "images": [
+        "/designing/visual-lexicon/direction.jpg",
+        "/designing/visual-lexicon/line.jpg",
+        "/designing/visual-lexicon/point.jpg",
+        "/designing/visual-lexicon/scale.jpg",
+        "/designing/visual-lexicon/shape.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 11,
+      "views": 374,
+      "tags": [
+        "graphic"
+      ],
+      "order": 1
+    },
+    {
+      "id": "visual-lexicon-derivatives",
+      "title": "Visual Lexicon Derivatives",
+      "description": "",
+      "coverImage": "/designing/visual-lexicon-derivatives/cover.jpg",
+      "images": [
+        "/designing/visual-lexicon-derivatives/02e1033937885.5601c8155340a.jpg",
+        "/designing/visual-lexicon-derivatives/14770e3937879.5601c816ef122.jpg",
+        "/designing/visual-lexicon-derivatives/2961f03937881.5601c816f0319.jpg",
+        "/designing/visual-lexicon-derivatives/2c41043937877.5601c82787c75.jpg",
+        "/designing/visual-lexicon-derivatives/3e405a3937878.5601c82812faf.jpg",
+        "/designing/visual-lexicon-derivatives/3fc78f3937882.5601c888e21dc.jpg",
+        "/designing/visual-lexicon-derivatives/8f66e43937932.5601c8888a573.jpg",
+        "/designing/visual-lexicon-derivatives/be44b93937875.5601c815c03ce.jpg",
+        "/designing/visual-lexicon-derivatives/c95c733937884.5601c81135b95.jpg",
+        "/designing/visual-lexicon-derivatives/d835c33937883.5601c8b0b3cc9.jpg",
+        "/designing/visual-lexicon-derivatives/efd4b53937874.5601c8aa8443d.jpg",
+        "/designing/visual-lexicon-derivatives/f6c3533937880.5601c8880b7ed.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 5,
+      "views": 262,
+      "tags": [],
+      "order": 2
+    },
+    {
+      "id": "wall",
+      "title": "Wall",
+      "description": "To learn more about this wall you may start at the wikipedia page, but hopefully you won't stop there. You may be interested in reading some of the recent or archival discussions on the Wikipedia Talk Page for this entry, too.",
+      "coverImage": "/designing/wall/70bd9d9234693.5602d7ff75afd.jpg",
+      "images": [
+        "/designing/wall/df66919235807.5602d8236cc02.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 16,
+      "views": 708,
+      "tags": [
+        "graphic"
+      ]
+    },
+    {
+      "id": "wanderers",
+      "title": "Wanderers",
+      "description": "",
+      "coverImage": "/designing/wanderers/2121f93959081.5601c978c3fb5.jpg",
+      "images": [
+        "/designing/wanderers/353bc03959080.5601c9781d75f.jpg",
+        "/designing/wanderers/8b6e063959079.5601c97a559a6.jpg"
+      ],
+      "date": "2010-01-01",
+      "appreciations": 8,
+      "views": 195,
+      "tags": [
+        "drawing"
+      ]
+    }
+  ],
+  "lastUpdated": "2025-10-24T20:31:28.247Z",
+  "totalCount": 17
+}

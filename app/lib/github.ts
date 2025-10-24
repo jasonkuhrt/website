@@ -1,4 +1,4 @@
-import cachedData from './data/repos.json'
+import cachedData from '../../public/data/repos.json'
 
 export interface GitHubRepo {
   name: string

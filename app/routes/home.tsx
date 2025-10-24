@@ -1,6 +1,7 @@
-import { Github, Mail, MapPin } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { Container } from '../components/Container'
 import { Section } from '../components/Section'
+import { Socials } from '../components/Socials'
 import type { Route } from './+types/home'
 
 export const meta: Route.MetaFunction = () => {
@@ -9,19 +10,6 @@ export const meta: Route.MetaFunction = () => {
     { name: 'description', content: 'Personal website of Jason Kuhrt' },
   ]
 }
-
-const socialLinks = [
-  {
-    href: 'https://github.com/jasonkuhrt',
-    title: 'github.com/jasonkuhrt',
-    Icon: Github,
-  },
-  {
-    href: 'mailto:jasonkuhrt@me.com',
-    title: 'jasonkuhrt@me.com',
-    Icon: Mail,
-  },
-]
 
 export default function Home() {
   return (
@@ -53,20 +41,7 @@ export default function Home() {
         </div>
 
         {/* Social Links */}
-        <div className='flex gap-4'>
-          {socialLinks.map((socialLink) => (
-            <a
-              key={socialLink.href}
-              rel='me'
-              href={socialLink.href}
-              title={socialLink.title}
-              className='flex items-center justify-center w-10 h-10 rounded-full text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200'
-              target='_blank'
-            >
-              <socialLink.Icon className='w-5 h-5' />
-            </a>
-          ))}
-        </div>
+        <Socials />
       </Container>
     </Section>
   )

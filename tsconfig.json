@@ -1,6 +1,5 @@
 {
-  "include": ["app/**/*", "react-router.config.ts", ".react-router/types/**/*"],
-  "exclude": ["scripts/**/*"],
+  "include": ["app/**/*", "react-router.config.ts", ".react-router/types/**/*", "vite-env.d.ts"],
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,

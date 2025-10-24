@@ -2,7 +2,7 @@
 
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { curatedRepos } from '../src/config/repos.js'
+import { curatedRepos } from '../app/config/repos.js'
 
 interface GitHubRepo {
   name: string
@@ -43,8 +43,8 @@ const fetchRepoData = async (token: string): Promise<GitHubRepo[]> => {
   // Build GraphQL query with aliases for each repo
   const repoFragments = curatedRepos
     .map(
-      (repo) => `
-    ${repo}: repository(owner: "jasonkuhrt", name: "${repo}") {
+      (repo, index) => `
+    repo${index}: repository(owner: "${repo.owner}", name: "${repo.name}") {
       name
       description
       stargazerCount
@@ -130,7 +130,7 @@ const main = async () => {
       repos,
     }
 
-    const outputPath = join(process.cwd(), 'data', 'repos.json')
+    const outputPath = join(process.cwd(), 'public', 'data', 'repos.json')
     writeFileSync(outputPath, JSON.stringify(data, null, 2))
 
     console.log(`✓ Successfully fetched ${repos.length} repositories`)

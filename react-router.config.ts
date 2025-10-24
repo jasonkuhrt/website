@@ -1,6 +1,6 @@
 import type { Config } from '@react-router/dev/config'
 import { glob } from 'glob'
-import { join } from 'node:path'
+import portfolioData from './public/designing/data.json'
 
 export default {
   ssr: false,
@@ -25,17 +25,23 @@ export default {
       return `/writing/scribbles/${slug}`
     })
 
+    // Add designing project pages (exclude hidden)
+    const designingSlugs = portfolioData.projects
+      .filter((project) => !project.hide)
+      .map((project) => `/designing/${project.id}`)
+
     return [
       '/',
       '/bio',
-      '/coding',
-      '/drawing',
-      '/photographing',
+      '/crafting',
+      '/designing',
+      '/capturing',
       '/speaking',
       '/writing',
       ...essaySlugs,
       ...logSlugs,
       ...scribbleSlugs,
+      ...designingSlugs,
     ]
   },
 } satisfies Config

@@ -10,14 +10,6 @@ test.describe('Individual posts', () => {
       await expect(page.locator('.prose')).toBeVisible()
     })
 
-    test('React Popover essay loads', async ({ page }) => {
-      await page.goto('/writing/essays/react-popover-history')
-      await expect(page).toHaveTitle(/React Popover/)
-
-      // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
-    })
-
     test('Lambda Calculus essay loads', async ({ page }) => {
       await page.goto('/writing/essays/visiting-lambda-calculus')
       await expect(page).toHaveTitle(/Lambda Calculus/)
@@ -28,6 +20,14 @@ test.describe('Individual posts', () => {
   })
 
   test.describe('Logs', () => {
+    test('React Popover log loads', async ({ page }) => {
+      await page.goto('/writing/logs/react-popover-history')
+      await expect(page).toHaveTitle(/React Popover/)
+
+      // Check that content is present
+      await expect(page.locator('.prose')).toBeVisible()
+    })
+
     test('Yarn publish woes log loads with code blocks', async ({ page }) => {
       await page.goto('/writing/logs/2017-06-08_yarn-publish-woes')
       await expect(page).toHaveTitle(/Yarn publish woes/)

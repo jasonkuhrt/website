@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "@fontsource/space-mono": "^5.2.9",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-toggle-group": "^1.1.11",
     "@react-router/dev": "^7",
     "@react-router/node": "^7",
     "@react-router/serve": "^7",
@@ -47,6 +49,7 @@
     "@opentelemetry/api": "^1.9.0",
     "@playwright/test": "^1.56.1",
     "@prisma-labs/prettier-config": "^0.1.0",
+    "@shikijs/rehype": "^3.13.0",
     "@tailwindcss/vite": "^4.1.16",
     "@types/node": "^24.9.1",
     "@types/react": "^19",
