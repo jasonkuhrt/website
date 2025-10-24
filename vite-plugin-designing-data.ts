@@ -10,9 +10,7 @@ export function designingDataPlugin(): Plugin {
     name: 'vite-plugin-designing-data',
 
     resolveId(id) {
-      if (id === VIRTUAL_MODULE_ID) {
-        return RESOLVED_VIRTUAL_MODULE_ID
-      }
+      if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID
     },
 
     load(id) {
@@ -41,7 +39,7 @@ export function designingDataPlugin(): Plugin {
             appreciations: 0,
             views: 0,
             tags: [],
-            hide: false
+            hide: false,
           }
 
           // Get all image files
@@ -62,9 +60,9 @@ export function designingDataPlugin(): Plugin {
           const coverImage = `/designing/${projectId}/${coverFileName}`
 
           // Build image paths (exclude cover if it's from imageFiles)
-          const images = coverExists
-            ? imageFiles.map(filename => `/designing/${projectId}/${filename}`)
-            : imageFiles.slice(1).map(filename => `/designing/${projectId}/${filename}`) // Skip first image (used as cover)
+          const images = coverExists ?
+            imageFiles.map(filename => `/designing/${projectId}/${filename}`) :
+            imageFiles.slice(1).map(filename => `/designing/${projectId}/${filename}`) // Skip first image (used as cover)
 
           return {
             id: projectId,
@@ -78,7 +76,7 @@ export function designingDataPlugin(): Plugin {
             views: existing.views,
             tags: existing.tags,
             ...(existing.hide && { hide: true }),
-            ...(existing.order !== undefined && { order: existing.order })
+            ...(existing.order !== undefined && { order: existing.order }),
           }
         })
 
@@ -106,6 +104,6 @@ export function designingDataPlugin(): Plugin {
           }
         }
       })
-    }
+    },
   }
 }

@@ -11,7 +11,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { Moon, Monitor, Sun, X } from 'lucide-react'
+import { Monitor, Moon, Sun, X } from 'lucide-react'
 import type { ThemeMode } from '../../lib/settings'
 import { useSettings } from '../../lib/settings'
 

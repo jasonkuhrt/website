@@ -1,6 +1,6 @@
-import { PhotoGrid } from '../components/PhotoGrid'
 import photoData from '../../public/data/capturing/photos.json'
 import type { PhotoCollection } from '../../public/data/capturing/types'
+import { PhotoGrid } from '../components/PhotoGrid'
 import type { Route } from './+types/capturing'
 
 const data = photoData as PhotoCollection

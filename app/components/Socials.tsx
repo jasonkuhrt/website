@@ -1,6 +1,6 @@
 import { Cloud, Github, Mail } from 'lucide-react'
-import { Bluesky } from './icons/Bluesky'
 import { socialLinks } from '../consts'
+import { Bluesky } from './icons/Bluesky'
 
 // Icon component map
 const iconComponents: Record<string, React.ComponentType<{ className?: string }>> = {

@@ -44,64 +44,64 @@ export default function Speaking() {
                     {talk.venue}
                   </td>
                   <td className='py-3 px-2 text-center align-top'>
-                    {talk.links.repo ? (
-                      <a
-                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                        href={talk.links.repo}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Slides'
-                      >
-                        <Github className='w-4 h-4' />
-                      </a>
-                    ) : (
-                      <span className='text-gray-300 dark:text-gray-700'>-</span>
-                    )}
+                    {talk.links.repo ?
+                      (
+                        <a
+                          className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                          href={talk.links.repo}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          title='Slides'
+                        >
+                          <Github className='w-4 h-4' />
+                        </a>
+                      ) :
+                      <span className='text-gray-300 dark:text-gray-700'>-</span>}
                   </td>
                   <td className='py-3 px-2 text-center align-top'>
-                    {talk.links.info ? (
-                      <a
-                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                        href={talk.links.info}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Event Info'
-                      >
-                        <Link className='w-4 h-4' />
-                      </a>
-                    ) : (
-                      <span className='text-gray-300 dark:text-gray-700'>-</span>
-                    )}
+                    {talk.links.info ?
+                      (
+                        <a
+                          className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                          href={talk.links.info}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          title='Event Info'
+                        >
+                          <Link className='w-4 h-4' />
+                        </a>
+                      ) :
+                      <span className='text-gray-300 dark:text-gray-700'>-</span>}
                   </td>
                   <td className='py-3 px-2 text-center align-top'>
-                    {talk.links.recording ? (
-                      <a
-                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                        href={talk.links.recording}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Recording'
-                      >
-                        <Play className='w-4 h-4' />
-                      </a>
-                    ) : (
-                      <span className='text-gray-300 dark:text-gray-700'>-</span>
-                    )}
+                    {talk.links.recording ?
+                      (
+                        <a
+                          className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                          href={talk.links.recording}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          title='Recording'
+                        >
+                          <Play className='w-4 h-4' />
+                        </a>
+                      ) :
+                      <span className='text-gray-300 dark:text-gray-700'>-</span>}
                   </td>
                   <td className='py-3 px-2 text-center align-top'>
-                    {talk.links.twitter ? (
-                      <a
-                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                        href={talk.links.twitter}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Twitter'
-                      >
-                        <Twitter className='w-4 h-4' />
-                      </a>
-                    ) : (
-                      <span className='text-gray-300 dark:text-gray-700'>-</span>
-                    )}
+                    {talk.links.twitter ?
+                      (
+                        <a
+                          className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                          href={talk.links.twitter}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          title='Twitter'
+                        >
+                          <Twitter className='w-4 h-4' />
+                        </a>
+                      ) :
+                      <span className='text-gray-300 dark:text-gray-700'>-</span>}
                   </td>
                 </tr>
               ))}

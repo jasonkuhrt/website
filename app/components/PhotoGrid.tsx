@@ -1,6 +1,6 @@
 import { Images, Play } from 'lucide-react'
 import { useState } from 'react'
-import type { Photo, MediaItem } from '../../public/data/capturing/types'
+import type { MediaItem, Photo } from '../../public/data/capturing/types'
 
 interface Props {
   photos: Photo[]

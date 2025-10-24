@@ -49,9 +49,7 @@ export const useSettings = () => {
     return theme
   }
 
-  const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>(() =>
-    getEffectiveTheme(defaultSettings.theme)
-  )
+  const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>(() => getEffectiveTheme(defaultSettings.theme))
 
   // Load from localStorage on mount
   useEffect(() => {

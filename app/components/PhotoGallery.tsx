@@ -18,11 +18,9 @@ const hikingPhotoModules = import.meta.glob('/public/bio/web-res/hiking/*.(jpg|j
 
 // Extract filenames from the glob results
 const professionalPhotos = Object.keys(professionalPhotoModules).map((path) =>
-  path.replace('/public/bio/web-res/professional/', ''),
+  path.replace('/public/bio/web-res/professional/', '')
 )
-const hikingPhotos = Object.keys(hikingPhotoModules).map((path) =>
-  path.replace('/public/bio/web-res/hiking/', ''),
-)
+const hikingPhotos = Object.keys(hikingPhotoModules).map((path) => path.replace('/public/bio/web-res/hiking/', ''))
 
 // Single fixed layout: 4 photos in a 4x2 grid
 // [colStart, colEnd, rowStart, rowEnd]

@@ -66,9 +66,7 @@ const getEventType = (type: TimelineEvent['type']) => {
 }
 
 const getDateRange = (item: TimelineEvent): string => {
-  if (item.type === 'achievement' || item.type === 'speaking' || item.type === 'personal') {
-    return item.date
-  }
+  if (item.type === 'achievement' || item.type === 'speaking' || item.type === 'personal') return item.date
   const endDate = item.endDate === 'Present' ? 'Now' : item.endDate
   return `${item.startDate} - ${endDate}`
 }
@@ -138,74 +136,76 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
                   {org}
                 </td>
                 <td className='py-3 px-2 text-center align-top'>
-                  {item.type === 'speaking' && item.links.repo ? (
-                    <a
-                      className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                      href={item.links.repo}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      title='Slides'
-                    >
-                      <Github className='w-4 h-4' />
-                    </a>
-                  ) : (
-                    <span className='text-gray-300 dark:text-gray-700'>-</span>
-                  )}
+                  {item.type === 'speaking' && item.links.repo ?
+                    (
+                      <a
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                        href={item.links.repo}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='Slides'
+                      >
+                        <Github className='w-4 h-4' />
+                      </a>
+                    ) :
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
                 <td className='py-3 px-2 text-center align-top'>
-                  {item.type === 'speaking' && item.links.info ? (
-                    <a
-                      className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                      href={item.links.info}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      title='Event Info'
-                    >
-                      <Link className='w-4 h-4' />
-                    </a>
-                  ) : item.type === 'personal' && item.url ? (
-                    <a
-                      className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                      href={item.url}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      title='Learn more'
-                    >
-                      <Link className='w-4 h-4' />
-                    </a>
-                  ) : (
-                    <span className='text-gray-300 dark:text-gray-700'>-</span>
-                  )}
+                  {item.type === 'speaking' && item.links.info ?
+                    (
+                      <a
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                        href={item.links.info}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='Event Info'
+                      >
+                        <Link className='w-4 h-4' />
+                      </a>
+                    ) :
+                    item.type === 'personal' && item.url ?
+                    (
+                      <a
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                        href={item.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='Learn more'
+                      >
+                        <Link className='w-4 h-4' />
+                      </a>
+                    ) :
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
                 <td className='py-3 px-2 text-center align-top'>
-                  {item.type === 'speaking' && item.links.recording ? (
-                    <a
-                      className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                      href={item.links.recording}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      title='Recording'
-                    >
-                      <Play className='w-4 h-4' />
-                    </a>
-                  ) : (
-                    <span className='text-gray-300 dark:text-gray-700'>-</span>
-                  )}
+                  {item.type === 'speaking' && item.links.recording ?
+                    (
+                      <a
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                        href={item.links.recording}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='Recording'
+                      >
+                        <Play className='w-4 h-4' />
+                      </a>
+                    ) :
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
                 <td className='py-3 px-2 text-center align-top'>
-                  {item.type === 'speaking' && item.links.twitter ? (
-                    <a
-                      className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
-                      href={item.links.twitter}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      title='Post'
-                    >
-                      <X className='w-4 h-4' />
-                    </a>
-                  ) : (
-                    <span className='text-gray-300 dark:text-gray-700'>-</span>
-                  )}
+                  {item.type === 'speaking' && item.links.twitter ?
+                    (
+                      <a
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
+                        href={item.links.twitter}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='Post'
+                      >
+                        <X className='w-4 h-4' />
+                      </a>
+                    ) :
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
               </tr>
             )

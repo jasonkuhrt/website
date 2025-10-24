@@ -1,5 +1,5 @@
-import { PortfolioGrid } from '../../components/PortfolioGrid'
 import portfolioData from 'virtual:designing-data'
+import { PortfolioGrid } from '../../components/PortfolioGrid'
 
 const data = portfolioData
 
@@ -16,9 +16,7 @@ export default function Designing() {
 
   // Sort projects: items with order come first (sorted by order), then items without order
   const sortedProjects = visibleProjects.sort((a, b) => {
-    if (a.order !== undefined && b.order !== undefined) {
-      return a.order - b.order
-    }
+    if (a.order !== undefined && b.order !== undefined) return a.order - b.order
     if (a.order !== undefined) return -1
     if (b.order !== undefined) return 1
     return 0
