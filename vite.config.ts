@@ -18,7 +18,10 @@ export default defineConfig({
         [
           rehypeShiki,
           {
-            theme: 'tokyo-night',
+            themes: {
+              light: 'vitesse-light',
+              dark: 'tokyo-night',
+            },
             langs: [
               'bash',
               'diff',
