@@ -39,7 +39,7 @@ Tests MUST pass for:
 Current test coverage includes:
 
 - Homepage functionality
-- Writing page three-column layout (Essays, Logs, TIL)
+- Writing page three-column layout (Essays, Drivel, TIL)
 - Individual post pages (all categories)
 - Site-wide navigation
 - Code block rendering (critical for technical posts)
@@ -49,33 +49,34 @@ Current test coverage includes:
 
 This is a personal website built with:
 
-- **Framework**: SvelteKit
+- **Framework**: React Router v7
 - **Styling**: Tailwind CSS v4
-- **Content**: MDSvex (Markdown with Svelte components)
-- **Syntax Highlighting**: Shiki
+- **Content**: MDX (Markdown with React components)
+- **Syntax Highlighting**: Shiki with Twoslash
 - **Deployment**: Cloudflare Pages
 
 ### Content Structure
 
 ```
-src/content/
-├── essays/        # Long-form technical essays with images
+content/
+├── essays/           # Long-form technical essays (as subdirectories with images)
 │   └── {slug}/
-│       ├── index.md
+│       ├── index.mdx
 │       └── *.png
-├── logs/          # Shorter blog posts
-│   └── *.md
-└── til/           # Today I Learned entries
-    └── index.md
+├── drivel/           # Shorter blog posts (flat MDX files)
+│   └── {slug}.mdx
+└── scribbles/        # Quick notes and TIL entries
+    └── entries/
+        └── {date}.mdx
 ```
 
 ### Route Structure
 
 - `/` - Homepage
-- `/writing` - Three-column index (Essays | Logs | TIL)
+- `/writing` - Three-column index (Essays | Drivel | Scribbles)
 - `/writing/essays/{slug}` - Individual essays
-- `/writing/logs/{slug}` - Individual logs
-- `/writing/til/index` - TIL page
+- `/writing/drivel/{slug}` - Individual drivel posts
+- `/writing/scribbles/{date}` - Individual scribbles
 
 ## Development Workflow
 
@@ -88,6 +89,7 @@ src/content/
 
 ## Known Issues
 
-- MDSvex requires backticks and backslashes in code blocks to be escaped in the highlighter
-- Route parameters must use catch-all syntax `[...slug]` for nested paths
-- Blog posts with underscores in slugs are filtered as drafts
+- **Prerender configuration**: When renaming content directories, remember to update `react-router.config.ts` prerender function to glob the correct paths
+- **Route parameters**: Use catch-all syntax `*` for nested paths in React Router v7
+- **Draft filtering**: Blog posts with underscores in slugs are filtered as drafts
+- **Module caching**: After major changes (like directory renames), clean `.react-router`, `build`, and `node_modules/.vite` directories

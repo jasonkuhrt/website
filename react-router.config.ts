@@ -7,7 +7,7 @@ export default {
   async prerender() {
     // Use glob to find all MDX files
     const essayFiles = await glob('content/essays/*.mdx')
-    const logFiles = await glob('content/logs/*.mdx')
+    const drivelFiles = await glob('content/drivel/*.mdx')
     const scribbleFiles = await glob('content/scribbles/entries/*.mdx')
 
     const essaySlugs = essayFiles.map((file) => {
@@ -15,9 +15,9 @@ export default {
       return `/writing/essays/${slug}`
     })
 
-    const logSlugs = logFiles.map((file) => {
-      const slug = file.replace('content/logs/', '').replace('.mdx', '')
-      return `/writing/logs/${slug}`
+    const drivelSlugs = drivelFiles.map((file) => {
+      const slug = file.replace('content/drivel/', '').replace('.mdx', '')
+      return `/writing/drivel/${slug}`
     })
 
     const scribbleSlugs = scribbleFiles.map((file) => {
@@ -39,7 +39,7 @@ export default {
       '/speaking',
       '/writing',
       ...essaySlugs,
-      ...logSlugs,
+      ...drivelSlugs,
       ...scribbleSlugs,
       ...designingSlugs,
     ]

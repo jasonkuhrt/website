@@ -19,17 +19,17 @@ test.describe('Individual posts', () => {
     })
   })
 
-  test.describe('Logs', () => {
-    test('React Popover log loads', async ({ page }) => {
-      await page.goto('/writing/logs/react-popover-history')
+  test.describe('Drivel', () => {
+    test('React Popover drivel loads', async ({ page }) => {
+      await page.goto('/writing/drivel/react-popover-history')
       await expect(page).toHaveTitle(/React Popover/)
 
       // Check that content is present
       await expect(page.locator('.prose')).toBeVisible()
     })
 
-    test('Yarn publish woes log loads with code blocks', async ({ page }) => {
-      await page.goto('/writing/logs/2017-06-08_yarn-publish-woes')
+    test('Yarn publish woes drivel loads with code blocks', async ({ page }) => {
+      await page.goto('/writing/drivel/2017-06-08_yarn-publish-woes')
       await expect(page).toHaveTitle(/Yarn publish woes/)
 
       // Verify code blocks are rendered (this was a problematic post)
@@ -37,24 +37,24 @@ test.describe('Individual posts', () => {
       await expect(page.locator('pre').first()).toBeVisible()
     })
 
-    test('Journaling foobar platform log loads', async ({ page }) => {
-      await page.goto('/writing/logs/2018-01-01_journaling-the-foobar-platform')
+    test('Journaling foobar platform drivel loads', async ({ page }) => {
+      await page.goto('/writing/drivel/2018-01-01_journaling-the-foobar-platform')
       await expect(page).toHaveTitle(/journaling/i)
 
       // This post had backtick issues in code blocks - verify at least one code block is rendered
       await expect(page.locator('pre').first()).toBeVisible()
     })
 
-    test('Writing pairs in TypeScript log loads', async ({ page }) => {
-      await page.goto('/writing/logs/2018-01-23_writing-pairs-in-typescript')
+    test('Writing pairs in TypeScript drivel loads', async ({ page }) => {
+      await page.goto('/writing/drivel/2018-01-23_writing-pairs-in-typescript')
       await expect(page).toHaveTitle(/TypeScript/i)
 
       // Check that content is present
       await expect(page.locator('.prose')).toBeVisible()
     })
 
-    test('Multi-stage Docker builds log loads', async ({ page }) => {
-      await page.goto('/writing/logs/2018-02-27_multi-stage-docker-builds')
+    test('Multi-stage Docker builds drivel loads', async ({ page }) => {
+      await page.goto('/writing/drivel/2018-02-27_multi-stage-docker-builds')
       await expect(page).toHaveTitle(/Docker/i)
 
       // Check that content is present

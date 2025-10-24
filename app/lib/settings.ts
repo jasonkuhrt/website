@@ -18,8 +18,16 @@ import { useEffect, useState } from 'react'
 export const ThemeMode = S.Literal('light', 'dark', 'system')
 export type ThemeMode = S.Schema.Type<typeof ThemeMode>
 
+export const TitleFont = S.Literal('zilla-slab', 'roboto-slab', 'bitter', 'arvo')
+export type TitleFont = S.Schema.Type<typeof TitleFont>
+
+export const FontWeight = S.Literal('400', '600', '700')
+export type FontWeight = S.Schema.Type<typeof FontWeight>
+
 const SettingsSchema = S.Struct({
   theme: ThemeMode,
+  titleFont: TitleFont,
+  fontWeight: FontWeight,
 })
 export type Settings = S.Schema.Type<typeof SettingsSchema>
 
@@ -29,6 +37,8 @@ export type Settings = S.Schema.Type<typeof SettingsSchema>
 
 const defaultSettings: Settings = {
   theme: 'system',
+  titleFont: 'zilla-slab',
+  fontWeight: '400',
 }
 
 // ============================================================================
@@ -99,6 +109,34 @@ export const useSettings = () => {
     }
   }, [settings.theme, effectiveTheme])
 
+  // Apply title font to DOM
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    // Remove all font classes
+    const classes = document.documentElement.classList
+    classes.forEach((className) => {
+      if (className.startsWith('font-')) classes.remove(className)
+    })
+
+    // Add selected font class
+    classes.add(`font-${settings.titleFont}`)
+  }, [settings.titleFont])
+
+  // Apply font weight to DOM
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    // Remove all weight classes
+    const classes = document.documentElement.classList
+    classes.forEach((className) => {
+      if (className.startsWith('weight-')) classes.remove(className)
+    })
+
+    // Add selected weight class
+    classes.add(`weight-${settings.fontWeight}`)
+  }, [settings.fontWeight])
+
   // Listen for system theme changes
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -119,10 +157,20 @@ export const useSettings = () => {
     setEffectiveTheme(getEffectiveTheme(theme))
   }
 
+  const setTitleFont = (titleFont: TitleFont) => {
+    setSettingsState((prev) => ({ ...prev, titleFont }))
+  }
+
+  const setFontWeight = (fontWeight: FontWeight) => {
+    setSettingsState((prev) => ({ ...prev, fontWeight }))
+  }
+
   return {
     settings,
     effectiveTheme,
     setTheme,
+    setTitleFont,
+    setFontWeight,
     isHydrated,
   }
 }

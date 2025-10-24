@@ -11,7 +11,7 @@ test.describe('Writing page', () => {
 
     // Check for the three main column headings (level 2 headings are the column titles)
     await expect(page.getByRole('heading', { name: 'Essays', exact: true, level: 2 })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Logs', exact: true, level: 2 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Drivel', exact: true, level: 2 })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Scribbles', exact: true, level: 2 })).toBeVisible()
   })
 
@@ -24,10 +24,10 @@ test.describe('Writing page', () => {
     await expect(page.getByRole('link', { name: /React Popover/ }).first()).toBeVisible()
   })
 
-  test('logs column has content', async ({ page }) => {
+  test('drivel column has content', async ({ page }) => {
     await page.goto('/writing')
 
-    // Check for some log entries
+    // Check for some drivel entries
     await expect(page.getByRole('link', { name: /Multi-Stage Docker Builds/ })).toBeVisible()
     await expect(page.getByRole('link', { name: /Writing pairs in TypeScript/ })).toBeVisible()
     await expect(page.getByRole('link', { name: /Yarn publish woes/ })).toBeVisible()
@@ -50,11 +50,11 @@ test.describe('Writing page', () => {
     await expect(page.locator('.prose')).toBeVisible()
   })
 
-  test('log links are clickable and navigate correctly', async ({ page }) => {
+  test('drivel links are clickable and navigate correctly', async ({ page }) => {
     await page.goto('/writing')
 
     await page.getByRole('link', { name: /Yarn publish woes/ }).click()
-    await expect(page).toHaveURL(/\/writing\/logs\/2017-06-08_yarn-publish-woes/)
+    await expect(page).toHaveURL(/\/writing\/drivel\/2017-06-08_yarn-publish-woes/)
     await expect(page.locator('.prose')).toBeVisible()
   })
 

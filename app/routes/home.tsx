@@ -27,11 +27,14 @@ export default function Home() {
         </div>
 
         {/* Name */}
-        <h1 className='text-5xl font-bold tracking-tight mb-4'>Jason Kuhrt</h1>
+        <h1 className='text-5xl font-bold mb-6 font-sans'>
+          Jason Kuhrt
+        </h1>
 
         {/* Bio */}
-        <p className='text-lg text-center max-w-md mb-2'>
-          Working in open source, open to opportunities.
+        <p className='text-lg text-center max-w-2xl mb-8 text-gray-700 dark:text-gray-300'>
+          Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering. Heart humanities. In alternate universes ⊻ Coureur de
+          Bois, Architect, Athlete, Lego Master Builder.
         </p>
 
         {/* Location */}

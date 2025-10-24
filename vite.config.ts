@@ -4,6 +4,7 @@ import rehypeShiki from '@shikijs/rehype'
 import tailwindcss from '@tailwindcss/vite'
 import rehypeSlug from 'rehype-slug'
 import remarkFrontmatter from 'remark-frontmatter'
+import remarkGfm from 'remark-gfm'
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import { defineConfig } from 'vite'
 import { designingDataPlugin } from './vite-plugin-designing-data'
@@ -12,14 +13,17 @@ export default defineConfig({
   plugins: [
     designingDataPlugin(),
     mdx({
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
       rehypePlugins: [
         rehypeSlug,
         [
           rehypeShiki,
           {
             themes: {
-              light: 'vitesse-light',
+              // Available light themes: vitesse-light, min-light, one-light, everforest-light,
+              // solarized-light, material-theme-lighter, github-light-default,
+              // github-light-high-contrast, gruvbox-light-soft/medium/hard
+              light: 'min-light',
               dark: 'tokyo-night',
             },
             langs: [

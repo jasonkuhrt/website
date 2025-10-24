@@ -120,8 +120,8 @@ This project uses Playwright for end-to-end testing to ensure the website works 
 Tests are located in `tests/e2e/` and organized by feature:
 
 - `homepage.spec.ts` - Homepage functionality and navigation
-- `writing.spec.ts` - Writing page with three-column layout (Essays, Logs, TIL)
-- `posts.spec.ts` - Individual post pages (essays, logs, TIL entries)
+- `writing.spec.ts` - Writing page with three-column layout (Essays, Drivel, TIL)
+- `posts.spec.ts` - Individual post pages (essays, drivel, TIL entries)
 - `navigation.spec.ts` - Site-wide navigation
 
 ### Running Tests

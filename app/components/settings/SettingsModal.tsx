@@ -11,8 +11,8 @@
 
 import * as Dialog from '@radix-ui/react-dialog'
 import * as ToggleGroup from '@radix-ui/react-toggle-group'
-import { Monitor, Moon, Sun, X } from 'lucide-react'
-import type { ThemeMode } from '../../lib/settings'
+import { Monitor, Moon, Sun, Type, Weight, X } from 'lucide-react'
+import type { FontWeight, ThemeMode, TitleFont } from '../../lib/settings'
 import { useSettings } from '../../lib/settings'
 
 export interface SettingsModalProps {
@@ -20,8 +20,21 @@ export interface SettingsModalProps {
   onOpenChange: (open: boolean) => void
 }
 
+const FONT_OPTIONS: Array<{ value: TitleFont; label: string; description: string }> = [
+  { value: 'zilla-slab', label: 'Zilla Slab', description: 'Bold & Playful' },
+  { value: 'roboto-slab', label: 'Roboto Slab', description: 'Modern & Clean' },
+  { value: 'bitter', label: 'Bitter', description: 'Subtle & Refined' },
+  { value: 'arvo', label: 'Arvo', description: 'Geometric & Strong' },
+]
+
+const WEIGHT_OPTIONS: Array<{ value: FontWeight; label: string }> = [
+  { value: '400', label: 'Regular' },
+  { value: '600', label: 'Semibold' },
+  { value: '700', label: 'Bold' },
+]
+
 export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
-  const { settings, setTheme } = useSettings()
+  const { settings, setTheme, setTitleFont, setFontWeight } = useSettings()
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -85,6 +98,69 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
               >
                 <Monitor className='w-4 h-4' />
               </ToggleGroup.Item>
+            </ToggleGroup.Root>
+          </div>
+
+          {/* Title Font Setting */}
+          <div className='mt-8'>
+            <div className='text-sm text-gray-600 dark:text-gray-400 mb-2 block'>Title Font</div>
+            <ToggleGroup.Root
+              type='single'
+              value={settings.titleFont}
+              onValueChange={(value) => value && setTitleFont(value as TitleFont)}
+              className='flex flex-col gap-2'
+            >
+              {FONT_OPTIONS.map((font) => (
+                <ToggleGroup.Item
+                  key={font.value}
+                  value={font.value}
+                  className='flex items-center justify-between px-4 py-3 border border-gray-200 dark:border-gray-800 rounded
+                  data-[state=on]:bg-gray-900 data-[state=on]:text-white data-[state=on]:border-gray-900
+                  data-[state=off]:bg-white data-[state=off]:hover:bg-gray-50
+                  dark:data-[state=on]:bg-gray-100 dark:data-[state=on]:text-gray-900 dark:data-[state=on]:border-gray-100
+                  dark:data-[state=off]:bg-gray-950 dark:data-[state=off]:hover:bg-gray-900
+                  transition-colors'
+                  aria-label={font.label}
+                >
+                  <div className='flex items-center gap-3'>
+                    <Type className='w-4 h-4' />
+                    <div className='text-left'>
+                      <div className='font-semibold text-sm'>{font.label}</div>
+                      <div className='text-xs opacity-60'>{font.description}</div>
+                    </div>
+                  </div>
+                </ToggleGroup.Item>
+              ))}
+            </ToggleGroup.Root>
+          </div>
+
+          {/* Font Weight Setting */}
+          <div className='mt-8'>
+            <div className='text-sm text-gray-600 dark:text-gray-400 mb-2 block'>Font Weight</div>
+            <ToggleGroup.Root
+              type='single'
+              value={settings.fontWeight}
+              onValueChange={(value) => value && setFontWeight(value as FontWeight)}
+              className='inline-flex border border-gray-200 dark:border-gray-800 rounded'
+            >
+              {WEIGHT_OPTIONS.map((weight) => (
+                <ToggleGroup.Item
+                  key={weight.value}
+                  value={weight.value}
+                  className='flex items-center justify-center px-4 py-2 border-r border-gray-200 dark:border-gray-800 last:border-r-0
+                  data-[state=on]:bg-gray-900 data-[state=on]:text-white
+                  data-[state=off]:bg-white data-[state=off]:hover:bg-gray-50
+                  dark:data-[state=on]:bg-gray-100 dark:data-[state=on]:text-gray-900
+                  dark:data-[state=off]:bg-gray-950 dark:data-[state=off]:hover:bg-gray-900
+                  transition-colors'
+                  aria-label={weight.label}
+                >
+                  <div className='flex items-center gap-2'>
+                    <Weight className='w-4 h-4' />
+                    <span className='text-sm'>{weight.label}</span>
+                  </div>
+                </ToggleGroup.Item>
+              ))}
             </ToggleGroup.Root>
           </div>
 

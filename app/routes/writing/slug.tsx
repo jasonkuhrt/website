@@ -7,8 +7,8 @@ const essayModules = import.meta.glob<{ default: React.ComponentType; frontmatte
   '../../../content/essays/*.mdx',
   { eager: true },
 )
-const logModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
-  '../../../content/logs/*.mdx',
+const drivelModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
+  '../../../content/drivel/*.mdx',
   { eager: true },
 )
 const scribbleModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
@@ -28,14 +28,15 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   const [category, filename] = parts
 
   // Validate category and file exists
-  let moduleKey
-  let modules
+  let moduleKey: string
+  let modules: Record<string, any>
+
   if (category === 'essays') {
     modules = essayModules
     moduleKey = `../../../content/essays/${filename}.mdx`
-  } else if (category === 'logs') {
-    modules = logModules
-    moduleKey = `../../../content/logs/${filename}.mdx`
+  } else if (category === 'drivel') {
+    modules = drivelModules
+    moduleKey = `../../../content/drivel/${filename}.mdx`
   } else if (category === 'scribbles') {
     modules = scribbleModules
     moduleKey = `../../../content/scribbles/entries/${filename}.mdx`
@@ -43,13 +44,12 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
     throw data('Invalid category', { status: 404 })
   }
 
-  if (!modules[moduleKey]) throw data(`Post not found: ${slug}`, { status: 404 })
+  const module = modules[moduleKey]
 
-  // Get the module to extract title
-  let module
-  if (category === 'essays') module = modules[moduleKey]
-  else if (category === 'logs') module = modules[moduleKey]
-  else if (category === 'scribbles') module = modules[moduleKey]
+  if (!module) {
+    console.error('Module not found:', { moduleKey, availableKeys: Object.keys(modules).slice(0, 5) })
+    throw data(`Post not found: ${slug}`, { status: 404 })
+  }
 
   return {
     category,
@@ -70,18 +70,25 @@ export default function Post({ loaderData }: Route.ComponentProps) {
   // Get the appropriate module
   let Content
   if (category === 'essays') Content = essayModules[`../../../content/essays/${filename}.mdx`]?.default
-  else if (category === 'logs') Content = logModules[`../../../content/logs/${filename}.mdx`]?.default
+  else if (category === 'drivel') Content = drivelModules[`../../../content/drivel/${filename}.mdx`]?.default
   else if (category === 'scribbles')
     Content = scribbleModules[`../../../content/scribbles/entries/${filename}.mdx`]?.default
 
   if (!Content) return <div>Post not found</div>
 
   return (
-    <Container variant='content' className='prose dark:prose-invert mx-auto py-12'>
-      <header className='text-center mb-12'>
-        <h1 className='text-4xl font-bold'>{title}</h1>
-      </header>
-      <Content />
+    <Container variant='content' className='py-16'>
+      <article className='prose dark:prose-invert mx-auto' data-article={filename}>
+        <header className='text-center mb-20'>
+          <h1
+            className='text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-0'
+            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}
+          >
+            {title}
+          </h1>
+        </header>
+        <Content />
+      </article>
     </Container>
   )
 }

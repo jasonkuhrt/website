@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/typography';
 
 @variant dark (&:where(.dark, .dark *));
@@ -7,6 +7,18 @@
  * Design System - Inspired by Vercel/Geist, Linear, Arc Browser
  * Grid-based, minimal, clean aesthetic
  */
+
+/* Font Loading Optimization - reduce FOUT by matching fallback metrics */
+@font-face {
+  font-family: "Zilla Slab Fallback";
+  font-style: normal;
+  font-weight: 400 700;
+  src: local("Georgia"), local("Times New Roman");
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+  size-adjust: 106%;
+}
 
 :root {
   /* Spacing Scale - 8px base unit */
@@ -28,21 +40,30 @@
   --content-max-width: 48rem; /* 768px */
 
   /* Typography Scale */
+  --font-display:
+    "Zilla Slab", "Zilla Slab Fallback", serif; /* Default - Bold & Playful */
+  --font-heading:
+    "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* Modern geometric sans */
   --font-sans:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   --font-mono:
-    'Space Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    "Space Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 
+  /* Enhanced type scale for reading */
   --text-xs: 0.75rem; /* 12px */
   --text-sm: 0.875rem; /* 14px */
-  --text-base: 1rem; /* 16px */
+  --text-base: 0.9375rem; /* 15px */
+  --text-md: 1rem; /* 16px */
   --text-lg: 1.125rem; /* 18px */
   --text-xl: 1.25rem; /* 20px */
   --text-2xl: 1.5rem; /* 24px */
   --text-3xl: 1.875rem; /* 30px */
   --text-4xl: 2.25rem; /* 36px */
   --text-5xl: 3rem; /* 48px */
+  --text-6xl: 3.75rem; /* 60px */
+  --text-7xl: 4.5rem; /* 72px */
 
   /* Colors - Minimal neutral palette with accent */
   --color-gray-50: hsl(0, 0%, 98%);
@@ -57,10 +78,10 @@
   --color-gray-900: hsl(0, 0%, 9%);
   --color-gray-950: hsl(0, 0%, 4%);
 
-  /* Accent color */
-  --color-accent: hsl(220, 100%, 50%);
-  --color-accent-hover: hsl(220, 100%, 45%);
-  --color-accent-light: hsl(220, 100%, 95%);
+  /* Accent color - Blue */
+  --color-accent: hsl(220, 90%, 56%); /* Blue */
+  --color-accent-hover: hsl(220, 90%, 46%); /* Darker on hover */
+  --color-accent-light: hsl(220, 90%, 95%);
 
   /* Semantic colors */
   --color-bg: var(--color-gray-50);
@@ -92,7 +113,7 @@
   --color-border: var(--color-gray-800);
   --color-border-hover: var(--color-gray-700);
 
-  --color-accent-light: hsl(220, 100%, 15%);
+  --color-accent-light: hsl(220, 90%, 20%);
 }
 
 /* Base Styles */
@@ -118,43 +139,73 @@ body {
   background-color: var(--color-bg);
 }
 
-/* Typography */
+/* Typography - Playful & Sharp Hierarchy */
+
+/* Main titles - Bold slab serif for impact */
 h1,
-h2,
+h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+/* Subtitles & smaller headings - Clean sans serif */
 h3,
 h4,
 h5,
 h6 {
   margin: 0;
+  font-family: var(--font-heading);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.3;
   color: var(--color-text-primary);
+  font-feature-settings: "cv11" on;
 }
 
 h1 {
-  font-size: var(--text-4xl);
+  font-size: var(--text-5xl);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 
 h2 {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+h3 {
   font-size: var(--text-3xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h4 {
+  font-size: var(--text-2xl);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-h3 {
-  font-size: var(--text-2xl);
+h5 {
+  font-size: var(--text-xl);
+  font-weight: 600;
 }
 
-h4 {
-  font-size: var(--text-xl);
+h6 {
+  font-size: var(--text-lg);
+  font-weight: 600;
 }
 
 p {
   margin: 0;
   color: var(--color-text-secondary);
-  line-height: 1.7;
+  line-height: 1.75;
+  font-size: var(--text-md);
 }
 
 a {
@@ -195,6 +246,18 @@ pre {
   margin: var(--spacing-4) 0;
   font-size: 0.875rem;
   line-height: 1.7;
+}
+
+/* Images that should invert in dark mode */
+.dark img.invert-dark {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Per-article custom styles */
+
+/* Forto essay - reduce image saturation */
+article[data-article="forto"] img {
+  filter: saturate(0.6);
 }
 
 pre code {
@@ -254,6 +317,25 @@ li {
   margin-top: var(--spacing-1);
 }
 
+/* Eyebrow/Overline text - for category labels & dates */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* Subtitle text - softer secondary text */
+.subtitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
 /* Layout System */
 
 /* Main layout wrapper - centers all content with standard padding */
@@ -301,6 +383,160 @@ li {
   :root {
     --grid-gap: var(--spacing-2);
   }
+}
+
+/* Enhanced Prose Styles for Writing Content */
+.prose {
+  /* Better defaults for reading */
+  font-size: var(--text-md);
+  line-height: 1.75;
+  max-width: 65ch; /* Optimal line length for reading */
+}
+
+.prose h1 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-4);
+}
+
+.prose h2 {
+  margin-top: var(--spacing-8);
+  margin-bottom: var(--spacing-4);
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.prose h3 {
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-3);
+}
+
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: var(--spacing-5);
+  margin-bottom: var(--spacing-2);
+}
+
+.prose p {
+  margin-top: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+.prose p:first-of-type {
+  font-size: var(--text-lg);
+  line-height: 1.7;
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition: all var(--transition-fast);
+}
+
+.prose a:hover {
+  color: var(--color-accent-hover);
+  text-decoration-thickness: 2px;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.prose code {
+  font-size: 0.9em;
+}
+
+.prose pre {
+  margin-top: var(--spacing-5);
+  margin-bottom: var(--spacing-5);
+}
+
+.prose ul,
+.prose ol {
+  margin-top: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+  padding-left: var(--spacing-5);
+}
+
+.prose li {
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.prose li > p {
+  margin-top: var(--spacing-1);
+  margin-bottom: var(--spacing-1);
+}
+
+/* Nested lists - tighter spacing for TOC */
+.prose li > ul,
+.prose li > ol {
+  margin-top: var(--spacing-1);
+  margin-bottom: var(--spacing-1);
+}
+
+.prose li > ul > li,
+.prose li > ol > li {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.prose blockquote {
+  margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+  padding-left: var(--spacing-4);
+  border-left: 3px solid var(--color-border);
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.prose hr {
+  margin-top: var(--spacing-8);
+  margin-bottom: var(--spacing-8);
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Font Options - User Selectable Title Fonts */
+html.font-zilla-slab {
+  --font-display: "Zilla Slab", serif;
+}
+
+html.font-roboto-slab {
+  --font-display: "Roboto Slab", serif;
+}
+
+html.font-bitter {
+  --font-display: "Bitter", serif;
+}
+
+html.font-arvo {
+  --font-display: "Arvo", serif;
+}
+
+html.font-rokkitt {
+  --font-display: "Rokkitt", serif;
+}
+
+/* Font Weight Options - User Selectable */
+html.weight-400 h1,
+html.weight-400 h2 {
+  font-weight: 400;
+}
+
+html.weight-600 h1,
+html.weight-600 h2 {
+  font-weight: 600;
+}
+
+html.weight-700 h1,
+html.weight-700 h2 {
+  font-weight: 700;
 }
 
 /* View Transitions - Custom animations */
@@ -351,4 +587,3 @@ li {
     transform: translate3d(0, 0, 0);
   }
 }
-
