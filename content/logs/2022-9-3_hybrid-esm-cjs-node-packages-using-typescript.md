@@ -3,7 +3,7 @@ title: Hybrid ESM/CJS Node Packages using TypeScript
 date: 2022-9-3
 ---
 
-- Update 2023/2/17: I found a new simpler way detailed [here](./hybrid-esm-cjs-node-packages-using-typescript-take-2)
+- Update 2023/2/17: I found a new simpler way detailed [here](/writing/logs/2023-2-17_hybrid-esm-cjs-node-packages-using-typescript-take-2)
 - Update 2022/9/5: There is a [TS issue](https://github.com/microsoft/TypeScript/issues/46786#issuecomment-1237243821) covering the topic herein.
 
 ---
