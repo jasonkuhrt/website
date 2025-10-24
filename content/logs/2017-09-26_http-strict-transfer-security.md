@@ -55,7 +55,7 @@ Given that preload lists live hardcoded in software, it means host inclusion wil
 
 In the following diagram we go from totally insecure to totally secure.
 
-![hsts,500](./assets/hsts.png)
+<!-- Image removed: hsts.png missing from repository -->
 
 ## References
 
