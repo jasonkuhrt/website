@@ -16,7 +16,7 @@ export const meta: Route.MetaFunction = () => {
   ]
 }
 
-export async function loader() {
+export const loader = async (args: Route.LoaderArgs) => {
   // Load from three directories - use eager loading to get frontmatter
   const essayModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
     '../../../content/essays/*.mdx',

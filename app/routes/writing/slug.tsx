@@ -16,7 +16,7 @@ const scribbleModules = import.meta.glob<{ default: React.ComponentType; frontma
   { eager: true },
 )
 
-export async function loader({ params }: Route.LoaderArgs) {
+export const loader = async ({ params }: Route.LoaderArgs) => {
   const slug = params['*']
 
   if (!slug) throw data('No slug provided', { status: 404 })

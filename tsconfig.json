@@ -1,5 +1,6 @@
 {
-  "include": ["app/**/*", "**/*.ts", "**/*.tsx"],
+  "include": ["app/**/*", "react-router.config.ts", ".react-router/types/**/*"],
+  "exclude": ["scripts/**/*"],
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
@@ -11,7 +12,10 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
+    "isolatedModules": true,
+    "noEmit": true,
     "types": ["@react-router/node", "vite/client"],
+    "rootDirs": [".", "./.react-router/types"],
     "paths": {
       "~/*": ["./app/*"]
     }
