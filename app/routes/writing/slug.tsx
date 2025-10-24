@@ -65,7 +65,7 @@ export const meta: Route.MetaFunction = ({ data }) => {
 }
 
 export default function Post({ loaderData }: Route.ComponentProps) {
-  const { category, filename } = loaderData
+  const { category, filename, title } = loaderData
 
   // Get the appropriate module
   let Content
@@ -78,6 +78,9 @@ export default function Post({ loaderData }: Route.ComponentProps) {
 
   return (
     <Container variant='content' className='prose dark:prose-invert mx-auto py-12'>
+      <header className='text-center mb-12'>
+        <h1 className='text-4xl font-bold'>{title}</h1>
+      </header>
       <Content />
     </Container>
   )
