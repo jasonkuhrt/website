@@ -8,7 +8,7 @@ async function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       themes: ['github-light', 'tokyo-night'],
-      langs: ['javascript', 'typescript', 'bash', 'sh', 'shell', 'json', 'html', 'css', 'yaml', 'markdown', 'haskell', 'graphql', 'diff'],
+      langs: ['javascript', 'typescript', 'bash', 'sh', 'shell', 'json', 'html', 'css', 'yaml', 'markdown', 'haskell', 'graphql', 'diff', 'dockerfile'],
     })
   }
   return highlighterPromise
