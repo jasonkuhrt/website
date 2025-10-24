@@ -2,62 +2,62 @@ import { Code, Star, Users } from 'lucide-react'
 
 export const GitHubProfileCard: React.FC = () => {
   return (
-    <div className="flex flex-col h-full group border border-gray-200 dark:border-gray-800 rounded p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-colors bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+    <div className='flex flex-col h-full group border border-gray-200 dark:border-gray-800 rounded p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-colors bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950'>
       {/* Header with avatar and username - clickable to profile */}
       <a
-        href="https://github.com/jasonkuhrt"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-3 mb-4"
+        href='https://github.com/jasonkuhrt'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='flex items-center gap-3 mb-4'
       >
         <img
-          src="https://github.com/jasonkuhrt.png"
-          alt="Jason Kuhrt"
-          className="w-16 h-16 rounded-full"
+          src='https://github.com/jasonkuhrt.png'
+          alt='Jason Kuhrt'
+          className='w-16 h-16 rounded-full'
         />
-        <div className="flex flex-col">
-          <h3 className="text-2xl font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <div className='flex flex-col'>
+          <h3 className='text-2xl font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
             @jasonkuhrt
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className='text-sm text-gray-500 dark:text-gray-400'>
             View GitHub Profile →
           </p>
         </div>
       </a>
 
       {/* Bio */}
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow leading-relaxed">
-        Software engineer passionate about developer experience, type safety, and
-        open source. Building tools for the GraphQL and TypeScript communities.
+      <p className='text-sm text-gray-600 dark:text-gray-400 mb-4 flex-grow leading-relaxed'>
+        Software engineer passionate about developer experience, type safety, and open source. Building tools for the
+        GraphQL and TypeScript communities.
       </p>
 
       {/* Quick stats */}
-      <div className="flex justify-start gap-4 text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-200 dark:border-gray-800">
+      <div className='flex justify-start gap-4 text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-200 dark:border-gray-800'>
         <a
-          href="https://github.com/jasonkuhrt?tab=repositories"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          href='https://github.com/jasonkuhrt?tab=repositories'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
         >
-          <Code className="w-4 h-4" />
+          <Code className='w-4 h-4' />
           <span>Repositories</span>
         </a>
         <a
-          href="https://github.com/jasonkuhrt?tab=stars"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          href='https://github.com/jasonkuhrt?tab=stars'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
         >
-          <Star className="w-4 h-4" />
+          <Star className='w-4 h-4' />
           <span>Stars</span>
         </a>
         <a
-          href="https://github.com/jasonkuhrt?tab=followers"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          href='https://github.com/jasonkuhrt?tab=followers'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
         >
-          <Users className="w-4 h-4" />
+          <Users className='w-4 h-4' />
           <span>Followers</span>
         </a>
       </div>

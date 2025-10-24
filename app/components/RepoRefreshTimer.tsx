@@ -41,9 +41,9 @@ export const RepoRefreshTimer: React.FC<Props> = ({ fetchedAt }) => {
   }, [fetchedAt])
 
   return (
-    <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
-      <span className="opacity-60">Data refreshes in:</span>
-      <span className="font-mono">{countdown}</span>
+    <div className='text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2'>
+      <span className='opacity-60'>Data refreshes in:</span>
+      <span className='font-mono'>{countdown}</span>
     </div>
   )
 }

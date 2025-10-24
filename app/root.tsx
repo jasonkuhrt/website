@@ -2,8 +2,8 @@ import '@fontsource/space-mono/400.css'
 import '@fontsource/space-mono/700.css'
 import './styles/global.css'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
-import { Header } from './components/Header'
 import type { Route } from './+types/root'
+import { Header } from './components/Header'
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -14,10 +14,10 @@ export const meta: Route.MetaFunction = () => {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
         <Meta />
         <Links />
       </head>
@@ -34,7 +34,7 @@ export default function Root() {
   return (
     <>
       <Header />
-      <main className="pt-20">
+      <main className='pt-20'>
         <Outlet />
       </main>
     </>

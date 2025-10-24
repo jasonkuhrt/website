@@ -1,5 +1,5 @@
-import { createHighlighter } from 'shiki'
 import rehypeSlug from 'rehype-slug'
+import { createHighlighter } from 'shiki'
 
 // Create a single shared highlighter instance (reused across all code blocks)
 let highlighterPromise
@@ -8,7 +8,22 @@ async function getHighlighter() {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
       themes: ['github-light', 'tokyo-night'],
-      langs: ['javascript', 'typescript', 'bash', 'sh', 'shell', 'json', 'html', 'css', 'yaml', 'markdown', 'haskell', 'graphql', 'diff', 'dockerfile'],
+      langs: [
+        'javascript',
+        'typescript',
+        'bash',
+        'sh',
+        'shell',
+        'json',
+        'html',
+        'css',
+        'yaml',
+        'markdown',
+        'haskell',
+        'graphql',
+        'diff',
+        'dockerfile',
+      ],
     })
   }
   return highlighterPromise

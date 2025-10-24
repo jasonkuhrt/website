@@ -22,14 +22,12 @@ export function Stack({
   return (
     <div
       className={`stack ${className || ''}`}
-      style={
-        {
-          '--stack-gap': spacingMap[spacing],
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--stack-gap)',
-        } as React.CSSProperties
-      }
+      style={{
+        '--stack-gap': spacingMap[spacing],
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--stack-gap)',
+      } as React.CSSProperties}
     >
       {children}
     </div>

@@ -28,17 +28,15 @@ export function Grid({
   return (
     <div
       className={`grid ${className || ''}`}
-      style={
-        {
-          '--grid-gap': gapMap[gap],
-          '--cols-sm': colsObj.sm || 1,
-          '--cols-md': colsObj.md || 2,
-          '--cols-lg': colsObj.lg || 3,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(var(--cols-sm), 1fr)',
-          gap: 'var(--grid-gap)',
-        } as React.CSSProperties
-      }
+      style={{
+        '--grid-gap': gapMap[gap],
+        '--cols-sm': colsObj.sm || 1,
+        '--cols-md': colsObj.md || 2,
+        '--cols-lg': colsObj.lg || 3,
+        display: 'grid',
+        gridTemplateColumns: 'repeat(var(--cols-sm), 1fr)',
+        gap: 'var(--grid-gap)',
+      } as React.CSSProperties}
     >
       {children}
     </div>

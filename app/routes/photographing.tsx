@@ -7,7 +7,7 @@ export const meta: Route.MetaFunction = () => {
 
 export default function uphotographing() {
   return (
-    <Container variant="content" className="prose dark:prose-invert mx-auto">
+    <Container variant='content' className='prose dark:prose-invert mx-auto'>
       <h1>uphotographing</h1>
       <p>Coming soon...</p>
     </Container>
