@@ -3,6 +3,7 @@ import { glob } from 'glob'
 import { join } from 'node:path'
 
 export default {
+  ssr: false,
   async prerender() {
     // Use glob to find all MDX files
     const essayFiles = await glob('content/essays/*.mdx')
