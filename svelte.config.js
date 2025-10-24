@@ -8,7 +8,21 @@ const config = {
   extensions: ['.svelte', ...mdsvexConfig.extensions],
   preprocess: [vitePreprocess(), mdsvex(mdsvexConfig)],
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      routes: {
+        include: ['/*'],
+        exclude: [
+          '<build>',
+          '<prerendered>',
+          '/photographing/*',
+          '/bio/*',
+          '/images/*',
+          '/favicon.ico',
+          '/favicon.svg',
+          '/robots.txt',
+        ],
+      },
+    }),
     alias: {
       $lib: 'src/lib',
       '$lib/*': 'src/lib/*',
@@ -18,12 +32,10 @@ const config = {
       '$data/*': 'src/data/*',
     },
     prerender: {
-      // Disable prerendering in CI environments to avoid memory issues
-      // Pages are rendered on-demand at runtime instead
-      entries: (process.env.GITHUB_ACTIONS || process.env.CF_PAGES) ? [] : ['*'],
+      entries: ['*'],
       handleHttpError: 'warn',
       handleMissingId: 'warn',
-      handleUnseenRoutes: (process.env.GITHUB_ACTIONS || process.env.CF_PAGES) ? 'ignore' : 'fail',
+      handleUnseenRoutes: 'fail',
     },
   },
 }

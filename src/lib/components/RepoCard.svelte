@@ -35,9 +35,22 @@
 </script>
 
 <div
-  class="flex flex-col h-full group border border-gray-200 dark:border-gray-800 rounded p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-colors"
+  class="flex flex-col h-full group border border-gray-200 dark:border-gray-800 rounded p-6 hover:border-gray-300 dark:hover:border-gray-700 transition-colors cursor-pointer"
+  onclick={(e) => {
+    if (e.target === e.currentTarget || !(e.target instanceof HTMLAnchorElement)) {
+      window.open(repo.url, '_blank', 'noopener,noreferrer')
+    }
+  }}
+  role="link"
+  tabindex="0"
+  onkeydown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      window.open(repo.url, '_blank', 'noopener,noreferrer')
+    }
+  }}
 >
-  <a href={repo.url} target="_blank" rel="noopener noreferrer" class="flex flex-col flex-grow">
+  <div class="flex flex-col flex-grow">
     <!-- Header with name and stats -->
     <div class="flex items-center justify-between mb-2">
       <h3
@@ -144,5 +157,5 @@
         </div>
       {/if}
     </dl>
-  </a>
+  </div>
 </div>

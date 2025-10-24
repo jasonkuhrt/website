@@ -145,7 +145,7 @@
 >
   {#each displayedPhotos as photo (photo.path)}
     <div class="photo-item" style="grid-column: {photo.gridColumn}; grid-row: {photo.gridRow}">
-      <img src={`/bio/${photo.path}`} alt="Photo from Jason Kuhrt" loading="lazy" />
+      <img src={`/bio/${photo.path}`} alt="" loading="lazy" />
     </div>
   {/each}
 </div>

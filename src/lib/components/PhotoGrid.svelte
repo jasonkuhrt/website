@@ -70,16 +70,16 @@
                   decoding="async"
                 />
               {:else}
-                <video src={photo.media[0].path} class="block h-full w-full object-cover" controls></video>
+                <video src={photo.media[0].path} class="block h-full w-full object-cover" controls muted></video>
               {/if}
 
               <!-- Series indicator -->
               {#if photo.media.length > 1}
                 <div
-                  class="series-icon absolute top-2 right-2 bg-black/60 text-white rounded-full p-2"
+                  class="series-icon absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 pointer-events-none"
                   onmouseenter={() => handleSeriesIconEnter(photo.id)}
                   onmouseleave={handleSeriesIconLeave}
-                  onclick={() => handleSeriesIconEnter(photo.id)}
+                  aria-hidden="true"
                 >
                   <Images class="w-4 h-4" />
                 </div>
@@ -107,7 +107,7 @@
                 decoding="async"
               />
             {:else}
-              <video src={photo.media[0].path} class="block h-full w-full object-cover" controls></video>
+              <video src={photo.media[0].path} class="block h-full w-full object-cover" controls muted></video>
             {/if}
 
             <!-- Video indicator -->
@@ -133,7 +133,7 @@
                 class="block h-full w-full object-cover"
               />
             {:else}
-              <video src={mediaItem.path} class="block h-full w-full object-cover" controls></video>
+              <video src={mediaItem.path} class="block h-full w-full object-cover" controls muted></video>
             {/if}
           </div>
         {/each}

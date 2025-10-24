@@ -17,7 +17,7 @@
     <div class="rounded-full overflow-hidden w-32 h-32 mb-8 ring-1 ring-gray-200 dark:ring-gray-800">
       <img
         src="/images/avatar2@1x.jpg"
-        alt="Profile picture of Jason Kuhrt"
+        alt="Jason Kuhrt"
         width="128"
         height="128"
         class="object-cover"
