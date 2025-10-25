@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import styles from './RepoRefreshTimer.module.css'
 
 interface Props {
   fetchedAt: string
@@ -41,9 +42,9 @@ export const RepoRefreshTimer: React.FC<Props> = ({ fetchedAt }) => {
   }, [fetchedAt])
 
   return (
-    <div className='text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2'>
-      <span className='opacity-60'>Data refreshes in:</span>
-      <span className='font-mono'>{countdown}</span>
+    <div className={styles.container}>
+      <span className={styles.label}>Data refreshes in:</span>
+      <span className={styles.countdown}>{countdown}</span>
     </div>
   )
 }

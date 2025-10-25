@@ -1,3 +1,5 @@
+import styles from './Stack.module.css'
+
 /**
  * Stack component - vertical layout with consistent spacing
  *
@@ -13,20 +15,17 @@ export function Stack({
   children?: React.ReactNode
 }) {
   const spacingMap = {
-    sm: 'var(--spacing-2)',
-    base: 'var(--spacing-4)',
-    lg: 'var(--spacing-6)',
-    xl: 'var(--spacing-8)',
+    sm: 'var(--spacing-base-2)',
+    base: 'var(--spacing-base-4)',
+    lg: 'var(--spacing-base-6)',
+    xl: 'var(--spacing-base-8)',
   }
 
   return (
     <div
-      className={`stack ${className || ''}`}
+      className={`${styles.stack} ${className || ''}`}
       style={{
         '--stack-gap': spacingMap[spacing],
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 'var(--stack-gap)',
       } as React.CSSProperties}
     >
       {children}

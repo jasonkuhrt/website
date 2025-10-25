@@ -7,6 +7,7 @@
 import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { SettingsModal } from './SettingsModal'
+import styles from './SettingsButton.module.css'
 
 export function SettingsButton() {
   const [open, setOpen] = useState(false)
@@ -14,12 +15,12 @@ export function SettingsButton() {
   return (
     <>
       <button
-        className='p-2 rounded-lg transition-all hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 opacity-60 hover:opacity-100'
+        className={styles.button}
         aria-label='Settings'
         title='Settings'
         onClick={() => setOpen(true)}
       >
-        <Settings className='w-5 h-5' />
+        <Settings className={styles.icon} />
       </button>
 
       <SettingsModal open={open} onOpenChange={setOpen} />

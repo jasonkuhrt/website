@@ -10,6 +10,7 @@ import { Timeline } from '../components/Timeline'
 import { TimelineTable } from '../components/TimelineTable'
 import { talks } from '../consts'
 import type { Route } from './+types/bio'
+import styles from './bio.module.css'
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -88,21 +89,21 @@ export default function Bio() {
       {/* Hero Section */}
       <Section spacing='lg'>
         <Container variant='content'>
-          <div className='flex flex-col items-center text-center mb-12'>
-            <h1 className='text-4xl font-bold mb-4'>
+          <div className={styles.hero}>
+            <h1 className={styles.name}>
               {linkedinData.name.first} {linkedinData.name.last}
             </h1>
-            <p className='text-gray-600 dark:text-gray-400 mb-2'>{linkedinData.headline}</p>
-            <p className='text-sm text-gray-500 dark:text-gray-500 mb-6'>
-              <MapPin className='inline-block w-4 h-4 mr-1' />
+            <p className={styles.headline}>{linkedinData.headline}</p>
+            <p className={styles.location}>
+              <MapPin className={styles.locationIcon} />
               {linkedinData.location}
             </p>
             <Socials />
           </div>
 
           {/* Bio */}
-          <div className='prose prose-gray dark:prose-invert max-w-none'>
-            <p className='text-lg leading-relaxed'>{linkedinData.summary}</p>
+          <div className={styles.bio}>
+            <p className={styles.bioText}>{linkedinData.summary}</p>
           </div>
         </Container>
       </Section>
@@ -110,32 +111,24 @@ export default function Bio() {
       {/* Timeline */}
       <Section spacing='lg'>
         <Container variant='content'>
-          <div className='flex justify-between items-center mb-8'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-gray-100'>Experiences</h2>
-            <div className='flex gap-2'>
+          <div className={styles.experiencesHeader}>
+            <h2 className={styles.experiencesTitle}>Experiences</h2>
+            <div className={styles.viewToggle}>
               <button
                 type='button'
-                className={`p-2 rounded transition-all ${
-                  viewMode === 'timeline' ?
-                    'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100' :
-                    'text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100'
-                }`}
+                className={`${styles.viewButton} ${viewMode === 'timeline' ? styles.active : styles.inactive}`}
                 onClick={() => setViewMode('timeline')}
                 title='Timeline view'
               >
-                <List className='w-4 h-4' />
+                <List className={styles.viewButtonIcon} />
               </button>
               <button
                 type='button'
-                className={`p-2 rounded transition-all ${
-                  viewMode === 'table' ?
-                    'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100' :
-                    'text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100'
-                }`}
+                className={`${styles.viewButton} ${viewMode === 'table' ? styles.active : styles.inactive}`}
                 onClick={() => setViewMode('table')}
                 title='Table view'
               >
-                <Table className='w-4 h-4' />
+                <Table className={styles.viewButtonIcon} />
               </button>
             </div>
           </div>

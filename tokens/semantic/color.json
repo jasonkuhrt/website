@@ -1,0 +1,26 @@
+{
+  "color": {
+    "bg": {
+      "$type": "color",
+      "default": { "$value": "{color.base.gray.50}", "$description": "Main background" },
+      "surface": { "$value": "{color.base.gray.100}", "$description": "Card/panel background" },
+      "subtle": { "$value": "{color.base.gray.200}", "$description": "Recessed areas" }
+    },
+    "text": {
+      "$type": "color",
+      "primary": { "$value": "{color.base.gray.950}" },
+      "secondary": { "$value": "{color.base.gray.600}" },
+      "tertiary": { "$value": "{color.base.gray.500}" }
+    },
+    "border": {
+      "$type": "color",
+      "default": { "$value": "{color.base.gray.300}" },
+      "subtle": { "$value": "{color.base.gray.200}" }
+    },
+    "accent": {
+      "$type": "color",
+      "default": { "$value": "{color.base.accent.default}" },
+      "dark": { "$value": "{color.base.accent.dark}" }
+    }
+  }
+}

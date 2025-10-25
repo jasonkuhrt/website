@@ -5,6 +5,9 @@
   "private": true,
   "packageManager": "pnpm@9.0.6",
   "scripts": {
+    "tokens:build": "style-dictionary build --config tokens/tokens.config.js",
+    "predev": "pnpm tokens:build",
+    "prebuild": "pnpm tokens:build",
     "fix:format": "dprint fmt",
     "check:format": "dprint check",
     "check:types": "tsc --noEmit",
@@ -27,8 +30,10 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/newsreader": "^5.2.10",
     "@fontsource/arvo": "^5.2.7",
     "@fontsource/bitter": "^5.2.10",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/roboto-slab": "^5.2.8",
     "@fontsource/space-mono": "^5.2.9",
     "@fontsource/zilla-slab": "^5.2.8",
@@ -37,7 +42,6 @@
     "@react-router/dev": "^7.9.4",
     "@react-router/node": "^7.9.4",
     "@react-router/serve": "^7.9.4",
-    "@tailwindcss/typography": "^0.5.19",
     "date-fns": "^4.1.0",
     "effect": "^3.18.4",
     "lucide-react": "^0.548.0",
@@ -55,7 +59,6 @@
     "@playwright/test": "^1.56.1",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@shikijs/rehype": "^3.13.0",
-    "@tailwindcss/vite": "^4.1.16",
     "@types/node": "^24.9.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
@@ -70,7 +73,7 @@
     "sharp": "^0.34.4",
     "shiki": "^3.13.0",
     "shiki-twoslash": "^3.1.2",
-    "tailwindcss": "^4.1.16",
+    "style-dictionary": "^5.1.1",
     "typescript": "^5.9.3",
     "wrangler": "^4.45.0"
   }

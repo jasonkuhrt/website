@@ -1,6 +1,7 @@
 import { data } from 'react-router'
 import { Container } from '../../components/Container'
 import type { Route } from './+types/slug'
+import styles from './slug.module.css'
 
 // Eagerly load all MDX files
 const essayModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
@@ -77,13 +78,10 @@ export default function Post({ loaderData }: Route.ComponentProps) {
   if (!Content) return <div>Post not found</div>
 
   return (
-    <Container variant='content' className='py-16'>
-      <article className='prose dark:prose-invert mx-auto' data-article={filename}>
-        <header className='text-center mb-20'>
-          <h1
-            className='text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-0'
-            style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.03em' }}
-          >
+    <Container variant='content' className={styles.container}>
+      <article className={styles.article} data-article={filename}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>
             {title}
           </h1>
         </header>

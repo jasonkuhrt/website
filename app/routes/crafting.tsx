@@ -6,6 +6,7 @@ import { RepoRefreshTimer } from '../components/RepoRefreshTimer'
 import { Section } from '../components/Section'
 import { getRepoData, getRepoDataFetchedAt } from '../lib/github'
 import type { Route } from './+types/crafting'
+import styles from './crafting.module.css'
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -28,7 +29,7 @@ export default function Crafting() {
           <GitHubProfileCard />
           {repos.map((repo) => <RepoCard key={repo.name} repo={repo} />)}
         </Grid>
-        <div className='mt-6 flex justify-end'>
+        <div className={styles.refreshTimer}>
           <RepoRefreshTimer fetchedAt={fetchedAt} />
         </div>
       </Container>

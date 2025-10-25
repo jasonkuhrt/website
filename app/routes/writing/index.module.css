@@ -1,0 +1,107 @@
+/**
+ * Writing index route styles
+ * Three-column layout for essays, drivel, scribbles
+ */
+
+.container {
+  max-width: var(--layout-container-max-width-wide);
+  margin-inline: auto;
+  padding-inline: var(--spacing-base-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-base-16);
+  max-width: 90rem;
+  margin-inline: auto;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr auto;
+  }
+}
+
+.column {
+  /* Column wrapper */
+}
+
+.columnTitle {
+  font-size: var(--typography-font-size-2xl);
+  font-weight: var(--typography-font-weight-bold);
+  margin-bottom: var(--spacing-base-10);
+  letter-spacing: -0.02em;
+  font-family: var(--typography-font-family-serif);
+}
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-base-10);
+}
+
+.postCard {
+  /* Article wrapper */
+}
+
+.postLink {
+  display: block;
+  border-bottom: 2px solid var(--color-border-default);
+  padding-bottom: var(--spacing-base-6);
+  transition: all var(--effects-transition-base);
+}
+
+.postLink:hover {
+  border-color: var(--color-accent-default);
+}
+
+.postDate {
+  margin-bottom: var(--spacing-base-3);
+  font-size: var(--typography-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-tertiary);
+}
+
+.postTitle {
+  font-size: var(--typography-font-size-xl);
+  font-weight: var(--typography-font-weight-bold);
+  line-height: 1.25;
+  font-family: var(--typography-font-family-serif);
+  transition: color var(--effects-transition-base);
+}
+
+.postLink:hover .postTitle {
+  color: var(--color-accent-dark);
+}
+
+/* Scribbles column - specific styles */
+.scribblesColumn {
+  padding-left: var(--spacing-base-4);
+}
+
+@media (min-width: 768px) {
+  .scribblesColumn {
+    padding-left: 0;
+  }
+}
+
+.scribblesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-base-5);
+}
+
+.scribbleLink {
+  display: block;
+  font-size: var(--typography-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-tertiary);
+  transition: color var(--effects-transition-base);
+}
+
+.scribbleLink:hover {
+  color: var(--color-accent-dark);
+}

@@ -1,0 +1,10 @@
+/**
+ * Grid component styles
+ * Responsive fluid grid layout using auto-fit
+ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min-width), 100%), 1fr));
+  gap: var(--grid-gap);
+}
