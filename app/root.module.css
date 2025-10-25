@@ -1,0 +1,16 @@
+/**
+ * Root layout styles
+ * App shell with main content and fixed settings button
+ */
+
+.main {
+  padding-top: var(--spacing-base-20);
+  view-transition-name: main-content;
+}
+
+.settingsButton {
+  position: fixed;
+  bottom: var(--spacing-base-6);
+  left: var(--spacing-base-6);
+  z-index: 50;
+}

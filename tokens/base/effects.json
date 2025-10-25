@@ -1,0 +1,18 @@
+{
+  "effects": {
+    "transition": {
+      "$type": "duration",
+      "fast": { "$value": "150ms" },
+      "base": { "$value": "200ms" },
+      "slow": { "$value": "300ms" }
+    },
+    "radius": {
+      "$type": "dimension",
+      "sm": { "$value": "0.125rem" },
+      "base": { "$value": "0.25rem" },
+      "md": { "$value": "0.5rem" },
+      "lg": { "$value": "1rem" },
+      "full": { "$value": "9999px" }
+    }
+  }
+}

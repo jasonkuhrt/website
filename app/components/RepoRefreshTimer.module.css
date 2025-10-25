@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-base-2);
+  font-size: var(--typography-font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.label {
+  opacity: 0.6;
+}
+
+.countdown {
+  font-family: var(--typography-font-family-mono);
+}

@@ -1,0 +1,148 @@
+/* Timeline Component Styles */
+
+.header {
+  margin-bottom: var(--spacing-base-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--spacing-base-4);
+}
+
+.heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.controls {
+  display: flex;
+  gap: var(--spacing-base-2);
+}
+
+.iconButton {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+}
+
+.iconHidden {
+  opacity: 0.2;
+  transition: opacity var(--effects-transition-base);
+}
+
+.iconHidden:hover {
+  opacity: 1;
+}
+
+.iconLabel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.iconLabelDimmed {
+  opacity: 0.1;
+}
+
+.hiddenSmall {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .hiddenSmall {
+    display: inline;
+  }
+}
+
+.timeline {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.event {
+  margin-top: var(--spacing-base-2);
+}
+
+.eventContent {
+  line-height: 2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-base-2);
+}
+
+.eventContentSimple {
+  line-height: 2rem;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
+
+.spacing {
+  margin-top: var(--spacing-base-2);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: var(--typography-font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.linkGroup {
+  display: flex;
+  gap: var(--spacing-base-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.detailLink {
+  opacity: 0.2;
+  transition: opacity var(--effects-transition-base);
+}
+
+.detailLink:hover {
+  opacity: 1;
+}
+
+.detailLinkInline {
+  opacity: 0.2;
+  transition: opacity var(--effects-transition-base);
+  display: inline-block;
+}
+
+.detailLinkInline:hover {
+  opacity: 1;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 40;
+}
+
+.modalContent {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-bg-default);
+  border-radius: var(--effects-radius-base);
+  box-shadow: var(--effects-shadow-xl);
+  padding: var(--spacing-base-6);
+  max-width: 28rem;
+  z-index: 50;
+  border: 1px solid var(--color-border-default);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-base-4);
+}

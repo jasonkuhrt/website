@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { Section } from '../../components/Section'
 import type { Route } from './+types/index'
+import styles from './index.module.css'
 
 interface Post {
   slug: string
@@ -75,25 +76,22 @@ export const loader = async (args: Route.LoaderArgs) => {
 export default function Writing({ loaderData }: Route.ComponentProps) {
   return (
     <Section spacing='xl'>
-      <div className='container'>
-        <div className='grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-16 max-w-7xl mx-auto'>
+      <div className={styles.container}>
+        <div className={styles.grid}>
           {/* Essays Column */}
-          <section aria-label='Essays'>
-            <h2 className='text-4xl font-bold mb-10 tracking-tight' style={{ fontFamily: 'var(--font-display)' }}>
+          <section aria-label='Essays' className={styles.column}>
+            <h2 className={styles.columnTitle}>
               Essays
             </h2>
-            <div className='space-y-10'>
+            <div className={styles.postList}>
               {loaderData.essays.map((post) => (
-                <article key={post.slug} className='group'>
+                <article key={post.slug} className={styles.postCard}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className='block border-b-2 border-gray-200 dark:border-gray-800 pb-6 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200'
+                    className={styles.postLink}
                   >
-                    <div className='eyebrow mb-3'>{format(post.date, 'LLL dd yyyy')}</div>
-                    <h3
-                      className='text-xl font-bold leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
+                    <div className={styles.postDate}>{format(post.date, 'LLL dd yyyy')}</div>
+                    <h3 className={styles.postTitle}>
                       {post.title}
                     </h3>
                   </a>
@@ -103,22 +101,19 @@ export default function Writing({ loaderData }: Route.ComponentProps) {
           </section>
 
           {/* Drivel Column */}
-          <section aria-label='Drivel'>
-            <h2 className='text-4xl font-bold mb-10 tracking-tight' style={{ fontFamily: 'var(--font-display)' }}>
+          <section aria-label='Drivel' className={styles.column}>
+            <h2 className={styles.columnTitle}>
               Drivel
             </h2>
-            <div className='space-y-10'>
+            <div className={styles.postList}>
               {loaderData.drivel.map((post) => (
-                <article key={post.slug} className='group'>
+                <article key={post.slug} className={styles.postCard}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className='block border-b-2 border-gray-200 dark:border-gray-800 pb-6 hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200'
+                    className={styles.postLink}
                   >
-                    <div className='eyebrow mb-3'>{format(post.date, 'LLL dd yyyy')}</div>
-                    <h3
-                      className='text-xl font-bold leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'
-                      style={{ fontFamily: 'var(--font-display)' }}
-                    >
+                    <div className={styles.postDate}>{format(post.date, 'LLL dd yyyy')}</div>
+                    <h3 className={styles.postTitle}>
                       {post.title}
                     </h3>
                   </a>
@@ -128,16 +123,16 @@ export default function Writing({ loaderData }: Route.ComponentProps) {
           </section>
 
           {/* Scribbles Column - Narrower, dates only */}
-          <section aria-label='Scribbles' className='md:pl-4'>
-            <h2 className='text-4xl font-bold mb-10 tracking-tight' style={{ fontFamily: 'var(--font-display)' }}>
+          <section aria-label='Scribbles' className={`${styles.column} ${styles.scribblesColumn}`}>
+            <h2 className={styles.columnTitle}>
               Scribbles
             </h2>
-            <div className='space-y-5'>
+            <div className={styles.scribblesList}>
               {loaderData.scribbles.map((post) => (
-                <article key={post.slug} className='group'>
+                <article key={post.slug}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className='block eyebrow hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
+                    className={styles.scribbleLink}
                   >
                     {format(post.date, 'yyyy-MM-dd')}
                   </a>
