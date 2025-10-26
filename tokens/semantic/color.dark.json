@@ -1,0 +1,21 @@
+{
+  "color": {
+    "bg": {
+      "$type": "color",
+      "default": { "$value": "{color.base.gray.950}" },
+      "surface": { "$value": "{color.base.gray.900}" },
+      "subtle": { "$value": "{color.base.gray.800}" }
+    },
+    "text": {
+      "$type": "color",
+      "primary": { "$value": "{color.base.gray.50}" },
+      "secondary": { "$value": "{color.base.gray.400}" },
+      "tertiary": { "$value": "{color.base.gray.500}" }
+    },
+    "border": {
+      "$type": "color",
+      "default": { "$value": "{color.base.gray.700}" },
+      "subtle": { "$value": "{color.base.gray.800}" }
+    }
+  }
+}

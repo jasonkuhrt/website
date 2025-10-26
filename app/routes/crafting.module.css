@@ -1,0 +1,9 @@
+/**
+ * Crafting route styles
+ */
+
+.refreshTimer {
+  margin-top: var(--spacing-base-6);
+  display: flex;
+  justify-content: flex-end;
+}

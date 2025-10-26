@@ -1,0 +1,20 @@
+/**
+ * Section component styles
+ * Provides vertical spacing for page sections
+ */
+
+.sm {
+  padding-block: var(--spacing-base-8);
+}
+
+.base {
+  padding-block: var(--spacing-base-12);
+}
+
+.lg {
+  padding-block: var(--spacing-base-16);
+}
+
+.xl {
+  padding-block: var(--spacing-base-24);
+}

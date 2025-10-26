@@ -38,3 +38,6 @@ dist
 .playwright-mcp
 .svelte-kit
 .react-router
+
+# Generated design tokens
+app/styles/tokens.generated.css

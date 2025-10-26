@@ -7,7 +7,7 @@ test.describe('Individual posts', () => {
       await expect(page).toHaveTitle(/Forto/)
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
 
     test('Lambda Calculus essay loads', async ({ page }) => {
@@ -15,7 +15,7 @@ test.describe('Individual posts', () => {
       await expect(page).toHaveTitle(/Lambda Calculus/)
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
   })
 
@@ -25,7 +25,7 @@ test.describe('Individual posts', () => {
       await expect(page).toHaveTitle(/React Popover/)
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
 
     test('Yarn publish woes drivel loads with code blocks', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('Individual posts', () => {
       await expect(page).toHaveTitle(/TypeScript/i)
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
 
     test('Multi-stage Docker builds drivel loads', async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe('Individual posts', () => {
       await expect(page).toHaveTitle(/Docker/i)
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
   })
 
@@ -67,7 +67,7 @@ test.describe('Individual posts', () => {
       await page.goto('/writing/scribbles/2017-09-05')
 
       // Check that content is present
-      await expect(page.locator('.prose')).toBeVisible()
+      await expect(page.locator('article')).toBeVisible()
     })
   })
 })

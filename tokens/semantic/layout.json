@@ -1,0 +1,19 @@
+{
+  "layout": {
+    "container": {
+      "maxWidth": {
+        "$type": "dimension",
+        "content": { "$value": "65ch", "$description": "Optimal reading width" },
+        "standard": { "$value": "70rem", "$description": "1120px for layout" },
+        "wide": { "$value": "90rem", "$description": "1440px for media" }
+      }
+    },
+    "grid": {
+      "gap": {
+        "$type": "dimension",
+        "default": { "$value": "{spacing.base.6}" },
+        "large": { "$value": "{spacing.base.8}" }
+      }
+    }
+  }
+}
