@@ -1,7 +1,6 @@
 import { Images, Play } from 'lucide-react'
 import { useState } from 'react'
 import type { MediaItem, Photo } from '../../public/data/capturing/types'
-import styles from './PhotoGrid.module.css'
 
 interface Props {
   photos: Photo[]
@@ -48,31 +47,31 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
   }
 
   return (
-    <div className={styles.photoGrid}>
-      <div className={styles.grid}>
+    <div className='photo-grid'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px'>
         {photos.map((photo) => (
           <>
             {/* Main photo cell */}
             <div
               key={photo.id}
-              className={styles.photoItem}
-              style={{ opacity: shouldDim(photo) ? 0.1 : 1 }}
+              className='photo-item'
+              style={{ opacity: shouldDim(photo) ? 0.1 : 1, transition: 'opacity 0.2s' }}
             >
               {photo.type === 'series' ?
                 (
                   <button
                     type='button'
-                    className={styles.seriesToggle}
+                    className='series-toggle block w-full text-left'
                     onClick={(e) => toggleSeries(photo.id, e)}
                   >
                     {/* Photo Cell Content */}
-                    <div className={styles.photoCell}>
+                    <div className='photo-cell group relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800'>
                       {photo.media[0].type === 'image' ?
                         (
                           <img
                             src={photo.media[0].path}
                             alt={photo.caption || 'Photo'}
-                            className={styles.media}
+                            className='block h-full w-full object-cover'
                             loading='lazy'
                             decoding='async'
                           />
@@ -80,7 +79,7 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                         (
                           <video
                             src={photo.media[0].path}
-                            className={styles.media}
+                            className='block h-full w-full object-cover'
                             controls
                             muted
                           />
@@ -89,19 +88,19 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                       {/* Series indicator */}
                       {photo.media.length > 1 && (
                         <div
-                          className={styles.seriesIcon}
+                          className='series-icon absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 pointer-events-none'
                           onMouseEnter={() => handleSeriesIconEnter(photo.id)}
                           onMouseLeave={handleSeriesIconLeave}
                           aria-hidden='true'
                         >
-                          <Images className={styles.seriesIconImage} />
+                          <Images className='w-4 h-4' />
                         </div>
                       )}
 
                       {/* Video indicator */}
                       {photo.media[0].type === 'video' && (
-                        <div className={styles.videoIndicator}>
-                          <Play className={styles.playIcon} />
+                        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white rounded-full p-4 pointer-events-none'>
+                          <Play className='w-8 h-8 fill-current' />
                         </div>
                       )}
                     </div>
@@ -109,13 +108,13 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                 ) :
                 (
                   /* Non-series photo (single or video) */
-                  <div className={styles.photoCell}>
+                  <div className='photo-cell group relative aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800'>
                     {photo.media[0].type === 'image' ?
                       (
                         <img
                           src={photo.media[0].path}
                           alt={photo.caption || 'Photo'}
-                          className={styles.media}
+                          className='block h-full w-full object-cover'
                           loading='lazy'
                           decoding='async'
                         />
@@ -123,7 +122,7 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                       (
                         <video
                           src={photo.media[0].path}
-                          className={styles.media}
+                          className='block h-full w-full object-cover'
                           controls
                           muted
                         />
@@ -131,8 +130,8 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
 
                     {/* Video indicator */}
                     {photo.type === 'video' && (
-                      <div className={styles.videoIndicator}>
-                        <Play className={styles.playIcon} />
+                      <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 text-white rounded-full p-4 pointer-events-none'>
+                        <Play className='w-8 h-8 fill-current' />
                       </div>
                     )}
                   </div>
@@ -145,21 +144,20 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                 {getExpandedMedia(photo).map((mediaItem: MediaItem, index: number) => (
                   <div
                     key={`${photo.id}-${index}`}
-                    className={styles.photoItem}
-                    style={{ aspectRatio: '1' }}
+                    className='photo-item aspect-square overflow-hidden bg-gray-100 dark:bg-gray-800'
                   >
                     {mediaItem.type === 'image' ?
                       (
                         <img
                           src={mediaItem.path}
                           alt={`${photo.caption || 'Photo'} - ${index + 2}`}
-                          className={styles.media}
+                          className='block h-full w-full object-cover'
                         />
                       ) :
                       (
                         <video
                           src={mediaItem.path}
-                          className={styles.media}
+                          className='block h-full w-full object-cover'
                           controls
                           muted
                         />
@@ -169,9 +167,9 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
 
                 {/* Caption cell */}
                 {photo.caption && (
-                  <div className={`${styles.photoItem} ${styles.captionCell}`}>
-                    <p className={styles.caption}>{photo.caption}</p>
-                    <p className={styles.date}>
+                  <div className='photo-item bg-gray-50 dark:bg-gray-900 p-4 flex flex-col justify-center'>
+                    <p className='text-sm text-gray-700 dark:text-gray-300 mb-2'>{photo.caption}</p>
+                    <p className='text-xs text-gray-500 dark:text-gray-400'>
                       {new Date(photo.date).toLocaleDateString()}
                     </p>
                   </div>

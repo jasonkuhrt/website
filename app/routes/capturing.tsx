@@ -2,7 +2,6 @@ import photoData from '../../public/data/capturing/photos.json'
 import type { PhotoCollection } from '../../public/data/capturing/types'
 import { PhotoGrid } from '../components/PhotoGrid'
 import type { Route } from './+types/capturing'
-import styles from './capturing.module.css'
 
 const data = photoData as PhotoCollection
 
@@ -17,7 +16,7 @@ export default function Capturing() {
   const { photos } = data
 
   return (
-    <div className={styles.container}>
+    <div className='container mx-auto px-4 py-8'>
       {photos.length > 0 && <PhotoGrid photos={photos} />}
     </div>
   )

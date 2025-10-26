@@ -1,4 +1,3 @@
-import styles from "./TimelineTable.module.css"
 import { Github, Link, Play, X } from 'lucide-react'
 
 type TimelineEvent =
@@ -102,18 +101,18 @@ const getOrganization = (item: TimelineEvent): string => {
 
 export const TimelineTable: React.FC<Props> = ({ items }) => {
   return (
-    <div className={styles.tableWrapper}>
-      <table className={styles.table}>
+    <div className='overflow-x-auto'>
+      <table className='w-full text-sm'>
         <thead>
-          <tr className={styles.headerRow}>
-            <th className={`${styles.headerCell} ${styles.headerCellLeft}`}>Date</th>
-            <th className={`${styles.headerCell} ${styles.headerCellLeft}`}>Type</th>
-            <th className={`${styles.headerCell} ${styles.headerCellLeft}`}>Title</th>
-            <th className={`${styles.headerCell} ${styles.headerCellLeft}`}>Organization</th>
-            <th className={`${styles.headerCell} ${styles.headerCellCenter}`}>Slides</th>
-            <th className={`${styles.headerCell} ${styles.headerCellCenter}`}>Info</th>
-            <th className={`${styles.headerCell} ${styles.headerCellCenter}`}>Recording</th>
-            <th className={`${styles.headerCell} ${styles.headerCellCenter}`}>Post</th>
+          <tr className='border-b border-gray-200 dark:border-gray-800'>
+            <th className='text-left py-3 pr-4 text-gray-700 dark:text-gray-300 font-semibold'>Date</th>
+            <th className='text-left py-3 pr-4 text-gray-700 dark:text-gray-300 font-semibold'>Type</th>
+            <th className='text-left py-3 pr-4 text-gray-700 dark:text-gray-300 font-semibold'>Title</th>
+            <th className='text-left py-3 pr-4 text-gray-700 dark:text-gray-300 font-semibold'>Organization</th>
+            <th className='text-center py-3 px-2 text-gray-700 dark:text-gray-300 font-semibold'>Slides</th>
+            <th className='text-center py-3 px-2 text-gray-700 dark:text-gray-300 font-semibold'>Info</th>
+            <th className='text-center py-3 px-2 text-gray-700 dark:text-gray-300 font-semibold'>Recording</th>
+            <th className='text-center py-3 px-2 text-gray-700 dark:text-gray-300 font-semibold'>Post</th>
           </tr>
         </thead>
         <tbody>
@@ -122,91 +121,91 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
             return (
               <tr
                 key={index}
-                className={styles.row}
+                className='border-b border-gray-100 dark:border-gray-900 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors'
               >
-                <td className={styles.cellDate}>
+                <td className='py-3 pr-4 text-gray-600 dark:text-gray-400 whitespace-nowrap align-top'>
                   {getDateRange(item)}
                 </td>
-                <td className={styles.cellDate}>
+                <td className='py-3 pr-4 text-gray-600 dark:text-gray-400 whitespace-nowrap align-top'>
                   {getEventType(item.type)}
                 </td>
-                <td className={styles.cellTitle}>
+                <td className='py-3 pr-4 text-gray-900 dark:text-gray-100 align-top'>
                   {getTitle(item)}
                 </td>
-                <td className={styles.cellOrg}>
+                <td className='py-3 pr-4 text-gray-600 dark:text-gray-400 align-top'>
                   {org}
                 </td>
-                <td className={styles.cellIcon}>
+                <td className='py-3 px-2 text-center align-top'>
                   {item.type === 'speaking' && item.links.repo ?
                     (
                       <a
-                        className={styles.iconLink}
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
                         href={item.links.repo}
                         target='_blank'
                         rel='noopener noreferrer'
                         title='Slides'
                       >
-                        <Github className={styles.icon} />
+                        <Github className='w-4 h-4' />
                       </a>
                     ) :
-                    <span className={styles.emptyIcon}>-</span>}
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
-                <td className={styles.cellIcon}>
+                <td className='py-3 px-2 text-center align-top'>
                   {item.type === 'speaking' && item.links.info ?
                     (
                       <a
-                        className={styles.iconLink}
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
                         href={item.links.info}
                         target='_blank'
                         rel='noopener noreferrer'
                         title='Event Info'
                       >
-                        <Link className={styles.icon} />
+                        <Link className='w-4 h-4' />
                       </a>
                     ) :
                     item.type === 'personal' && item.url ?
                     (
                       <a
-                        className={styles.iconLink}
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
                         href={item.url}
                         target='_blank'
                         rel='noopener noreferrer'
                         title='Learn more'
                       >
-                        <Link className={styles.icon} />
+                        <Link className='w-4 h-4' />
                       </a>
                     ) :
-                    <span className={styles.emptyIcon}>-</span>}
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
-                <td className={styles.cellIcon}>
+                <td className='py-3 px-2 text-center align-top'>
                   {item.type === 'speaking' && item.links.recording ?
                     (
                       <a
-                        className={styles.iconLink}
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
                         href={item.links.recording}
                         target='_blank'
                         rel='noopener noreferrer'
                         title='Recording'
                       >
-                        <Play className={styles.icon} />
+                        <Play className='w-4 h-4' />
                       </a>
                     ) :
-                    <span className={styles.emptyIcon}>-</span>}
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
-                <td className={styles.cellIcon}>
+                <td className='py-3 px-2 text-center align-top'>
                   {item.type === 'speaking' && item.links.twitter ?
                     (
                       <a
-                        className={styles.iconLink}
+                        className='text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100 transition-colors inline-block'
                         href={item.links.twitter}
                         target='_blank'
                         rel='noopener noreferrer'
                         title='Post'
                       >
-                        <X className={styles.icon} />
+                        <X className='w-4 h-4' />
                       </a>
                     ) :
-                    <span className={styles.emptyIcon}>-</span>}
+                    <span className='text-gray-300 dark:text-gray-700'>-</span>}
                 </td>
               </tr>
             )

@@ -8,14 +8,13 @@ test.describe('Designing page', () => {
 
   test('displays portfolio grid', async ({ page }) => {
     await page.goto('/designing')
-    // Check for presence of project links (using href pattern)
-    const projectLinks = page.locator('a[href^="/designing/"]')
-    await expect(projectLinks.first()).toBeVisible()
+    const grid = page.locator('.portfolio-grid')
+    await expect(grid).toBeVisible()
   })
 
   test('displays portfolio projects', async ({ page }) => {
     await page.goto('/designing')
-    const projectItems = page.locator('a[href^="/designing/"]')
+    const projectItems = page.locator('.portfolio-item')
     await expect(projectItems.first()).toBeVisible()
 
     // Should have 15 visible projects (modus-operandi and montreal-urban-sustainment are hidden)
@@ -25,7 +24,7 @@ test.describe('Designing page', () => {
 
   test('project cards link to detail pages', async ({ page }) => {
     await page.goto('/designing')
-    const firstProject = page.locator('a[href^="/designing/"]').first()
+    const firstProject = page.locator('.portfolio-item').first()
     await expect(firstProject).toHaveAttribute('href', /^\/designing\//)
   })
 

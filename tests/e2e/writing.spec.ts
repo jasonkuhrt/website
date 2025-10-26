@@ -47,7 +47,7 @@ test.describe('Writing page', () => {
 
     await page.getByRole('link', { name: /Visiting Lambda Calculus/ }).click()
     await expect(page).toHaveURL(/\/writing\/essays\/visiting-lambda-calculus/)
-    await expect(page.locator('article')).toBeVisible()
+    await expect(page.locator('.prose')).toBeVisible()
   })
 
   test('drivel links are clickable and navigate correctly', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('Writing page', () => {
 
     await page.getByRole('link', { name: /Yarn publish woes/ }).click()
     await expect(page).toHaveURL(/\/writing\/drivel\/2017-06-08_yarn-publish-woes/)
-    await expect(page.locator('article')).toBeVisible()
+    await expect(page.locator('.prose')).toBeVisible()
   })
 
   test('Scribbles link is clickable and navigates correctly', async ({ page }) => {

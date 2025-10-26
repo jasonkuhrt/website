@@ -1,5 +1,4 @@
 import { NavLink as RouterNavLink } from 'react-router'
-import styles from './NavLink.module.css'
 
 export function NavLink({
   href,
@@ -16,8 +15,10 @@ export function NavLink({
     <RouterNavLink
       to={href}
       viewTransition
-      className={({ isActive }) =>
-        `${styles.link} ${isActive ? styles.active : styles.inactive}`}
+      className={({ isActive }) => `text-xs ${isActive ? 'font-bold' : 'opacity-50'} hover:opacity-100`}
+      style={({ isActive }) => ({
+        marginLeft: '0.75rem',
+      })}
     >
       {linkText}
     </RouterNavLink>

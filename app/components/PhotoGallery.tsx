@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import styles from './PhotoGallery.module.css'
 
 // Photos organized by category
 // Naming convention: <num>[-<char>].<ext>
@@ -155,7 +154,7 @@ export const PhotoGallery: React.FC = () => {
 
   return (
     <button
-      className={styles.gallery}
+      className='grid grid-cols-4 grid-rows-[repeat(2,230px)] gap-[1px] md:grid-rows-[repeat(2,150px)] cursor-pointer w-full max-w-[1440px] mx-auto'
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       type='button'
@@ -164,14 +163,14 @@ export const PhotoGallery: React.FC = () => {
       {displayedPhotos.map((photo) => (
         <div
           key={photo.path}
-          className={styles.photoContainer}
+          className='overflow-hidden'
           style={{ gridColumn: photo.gridColumn, gridRow: photo.gridRow }}
         >
           <img
             src={`/bio/${photo.path}`}
             alt='Photo from Jason Kuhrt'
             loading='lazy'
-            className={styles.photo}
+            className='w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-300'
           />
         </div>
       ))}

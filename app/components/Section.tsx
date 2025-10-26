@@ -1,5 +1,3 @@
-import styles from './Section.module.css'
-
 export function Section({
   spacing = 'base',
   className,
@@ -9,5 +7,12 @@ export function Section({
   className?: string
   children?: React.ReactNode
 }) {
-  return <section className={`${styles[spacing]} ${className || ''}`}>{children}</section>
+  const spacingClasses = {
+    sm: 'py-8',
+    base: 'py-12',
+    lg: 'py-16',
+    xl: 'py-24',
+  }
+
+  return <section className={`${spacingClasses[spacing]} ${className || ''}`}>{children}</section>
 }

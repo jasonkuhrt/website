@@ -1,4 +1,3 @@
-import styles from "./Timeline.module.css"
 import {
   Award,
   Baby,
@@ -354,8 +353,8 @@ export const Timeline: React.FC<Props> = ({ items }) => {
   return (
     <>
       {/* Filter and mode toggles */}
-      <div className={styles.header}>
-        <div className={styles.linkGroup}>
+      <div className='mb-8 flex justify-between items-start flex-wrap gap-4'>
+        <div className='flex gap-2 flex-wrap items-center'>
           {eventTypes.map((eventType) => {
             const IconComponent = eventType === 'personal' ?
               Heart :
@@ -405,14 +404,14 @@ export const Timeline: React.FC<Props> = ({ items }) => {
       {/* Help overlay */}
       {showHelpOverlay && (
         <div
-          className={styles.modalOverlay}
+          className='fixed inset-0 bg-black/20 dark:bg-black/40 z-40'
           onClick={() => setShowHelpOverlay(false)}
         >
           <div
-            className={styles.modalContent}
+            className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-6 max-w-md z-50 border border-gray-200 dark:border-gray-700'
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={styles.modalHeader}>
+            <div className='flex justify-between items-start mb-4'>
               <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>Timeline Filters</h3>
               <button
                 className='text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors'
@@ -421,7 +420,7 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                 <X className='w-5 h-5' />
               </button>
             </div>
-            <div className={styles.details}>
+            <div className='space-y-3 text-sm text-gray-700 dark:text-gray-300'>
               <p>
                 <strong>Click</strong> a filter button to toggle that category on/off
               </p>
@@ -437,9 +436,9 @@ export const Timeline: React.FC<Props> = ({ items }) => {
         </div>
       )}
 
-      <div className={styles.event}>
+      <div className='relative'>
         {/* SVG Timeline */}
-        <svg className={styles.iconLabel} aria-hidden='true' id='timeline-svg'>
+        <svg className='absolute left-0 top-0 h-full w-full pointer-events-none' aria-hidden='true' id='timeline-svg'>
           <g className='timeline-lines-mobile sm:hidden'>
             {items.map((item, index) => (
               index < items.length - 1 && (
@@ -543,19 +542,19 @@ export const Timeline: React.FC<Props> = ({ items }) => {
             >
               {/* Date on left */}
               <div className='text-right text-sm text-gray-700 dark:text-gray-400 sm:whitespace-nowrap flex items-start justify-end'>
-                <div className={styles.eventContentSimple}>
-                  <span className={styles.inlineBlock}>{startDate}</span>
+                <div className='leading-8'>
+                  <span className='inline-block'>{startDate}</span>
                   {endDate && (
                     <>
-                      <span className={styles.hiddenSmall}>-</span>
-                      <span className={styles.inlineBlock}>{endDate}</span>
+                      <span className='hidden sm:inline'>-</span>
+                      <span className='inline-block'>{endDate}</span>
                     </>
                   )}
                 </div>
               </div>
 
               {/* Timeline node and content */}
-              <div className={styles.timeline}>
+              <div className='relative pl-10'>
                 {/* SVG Node */}
                 <a
                   href={`#${itemId}`}
@@ -569,7 +568,7 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                   }`}
                   onClick={(e) => handleNodeLinkClick(e, itemId)}
                 >
-                  <div className={styles.iconButton}>
+                  <div className='relative w-8 h-8'>
                     <svg
                       width='32'
                       height='32'
@@ -589,9 +588,9 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                 </a>
 
                 {/* Content */}
-                <div className={styles.eventContent}>
+                <div className='leading-8 flex items-start gap-2'>
                   <IconComponent className='w-6 h-6 text-gray-600 dark:text-gray-400 flex-shrink-0 pt-1' />
-                  <div className={styles.heading}>
+                  <div className='flex-1 min-w-0'>
                     {item.type === 'experience' && (
                       <>
                         <div className='text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1'>
@@ -633,11 +632,11 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                           {item.title}
                         </div>
                         <div className='text-sm text-gray-600 dark:text-gray-400 opacity-60 mb-3'>@ {item.venue}</div>
-                        <div className={styles.controls}>
+                        <div className='flex gap-2'>
                           {item.links.repo ?
                             (
                               <a
-                                className={styles.iconHidden}
+                                className='opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity'
                                 href={item.links.repo}
                                 target='_blank'
                                 rel='noopener noreferrer'
@@ -646,14 +645,14 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                               </a>
                             ) :
                             (
-                              <div className={styles.iconLabelDimmed}>
+                              <div className='opacity-10 dark:opacity-20'>
                                 <Github className='w-3.5 h-3.5' />
                               </div>
                             )}
                           {item.links.info ?
                             (
                               <a
-                                className={styles.iconHidden}
+                                className='opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity'
                                 href={item.links.info}
                                 target='_blank'
                                 rel='noopener noreferrer'
@@ -662,14 +661,14 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                               </a>
                             ) :
                             (
-                              <div className={styles.iconLabelDimmed}>
+                              <div className='opacity-10 dark:opacity-20'>
                                 <Link className='w-3.5 h-3.5' />
                               </div>
                             )}
                           {item.links.recording ?
                             (
                               <a
-                                className={styles.iconHidden}
+                                className='opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity'
                                 href={item.links.recording}
                                 target='_blank'
                                 rel='noopener noreferrer'
@@ -678,13 +677,13 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                               </a>
                             ) :
                             (
-                              <div className={styles.iconLabelDimmed}>
+                              <div className='opacity-10 dark:opacity-20'>
                                 <Video className='w-3.5 h-3.5' />
                               </div>
                             )}
                           {item.links.twitter && (
                             <a
-                              className={styles.iconHidden}
+                              className='opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity'
                               href={item.links.twitter}
                               target='_blank'
                               rel='noopener noreferrer'
@@ -704,9 +703,9 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                           <p className='text-sm text-gray-700 dark:text-gray-300 opacity-80'>{item.description}</p>
                         )}
                         {item.url && (
-                          <div className={styles.spacing}>
+                          <div className='mt-2'>
                             <a
-                              className={styles.detailLinkInline}
+                              className='opacity-20 dark:opacity-40 hover:opacity-100 transition-opacity inline-block'
                               href={item.url}
                               target='_blank'
                               rel='noopener noreferrer'

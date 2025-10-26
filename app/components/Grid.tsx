@@ -1,5 +1,3 @@
-import styles from './Grid.module.css'
-
 /**
  * Grid component - responsive fluid grid layout
  *
@@ -18,17 +16,18 @@ export function Grid({
   children?: React.ReactNode
 }) {
   const gapMap = {
-    sm: 'var(--spacing-base-2)',
-    base: 'var(--spacing-base-4)',
-    lg: 'var(--spacing-base-6)',
+    sm: 'var(--spacing-2)',
+    base: 'var(--spacing-4)',
+    lg: 'var(--spacing-6)',
   }
 
   return (
     <div
-      className={`${styles.grid} ${className || ''}`}
+      className={`grid ${className || ''}`}
       style={{
-        '--grid-min-width': minWidth,
-        '--grid-gap': gapMap[gap],
+        display: 'grid',
+        gridTemplateColumns: `repeat(auto-fit, minmax(min(${minWidth}, 100%), 1fr))`,
+        gap: gapMap[gap],
       } as React.CSSProperties}
     >
       {children}

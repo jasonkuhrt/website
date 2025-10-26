@@ -1,5 +1,3 @@
-import styles from './Container.module.css'
-
 /**
  * Container component - provides consistent width constraints and padding
  *
@@ -18,5 +16,12 @@ export function Container({
   className?: string
   children?: React.ReactNode
 }) {
-  return <div className={`${styles[variant]} ${className || ''}`}>{children}</div>
+  const variantClass = {
+    content: 'container-content',
+    standard: 'container',
+    wide: 'container-wide',
+    full: 'container-full',
+  }[variant]
+
+  return <div className={`${variantClass} ${className || ''}`}>{children}</div>
 }

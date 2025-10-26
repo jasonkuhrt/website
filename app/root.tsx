@@ -18,7 +18,6 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import type { Route } from './+types/root'
 import { Header } from './components/Header'
 import { SettingsButton } from './components/settings/SettingsButton'
-import styles from './root.module.css'
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -49,11 +48,11 @@ export default function Root() {
   return (
     <>
       <Header />
-      <main className={styles.main}>
+      <main className='pt-20' style={{ viewTransitionName: 'main-content' }}>
         <Outlet />
       </main>
       {/* Settings button - pinned to bottom left */}
-      <div className={styles.settingsButton}>
+      <div className='fixed bottom-6 left-6 z-50'>
         <SettingsButton />
       </div>
     </>

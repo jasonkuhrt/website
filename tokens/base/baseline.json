@@ -1,9 +1,0 @@
-{
-  "baseline": {
-    "$type": "dimension",
-    "unit": {
-      "$value": "0.375rem",
-      "$description": "6px baseline grid - divides cleanly into 24px, 30px, 36px line heights"
-    }
-  }
-}

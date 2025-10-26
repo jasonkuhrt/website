@@ -1,6 +1,7 @@
 import mdx from '@mdx-js/rollup'
 import { reactRouter } from '@react-router/dev/vite'
 import rehypeShiki from '@shikijs/rehype'
+import tailwindcss from '@tailwindcss/vite'
 import rehypeSlug from 'rehype-slug'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
@@ -25,7 +26,6 @@ export default defineConfig({
               light: 'min-light',
               dark: 'tokyo-night',
             },
-            defaultColor: 'light',
             langs: [
               'bash',
               'diff',
@@ -42,13 +42,8 @@ export default defineConfig({
       ],
     }),
     reactRouter(),
+    tailwindcss(),
   ],
-  css: {
-    modules: {
-      localsConvention: 'camelCase',
-      generateScopedName: '[name]__[local]___[hash:base64:5]',
-    },
-  },
   server: {
     port: 5175,
   },
