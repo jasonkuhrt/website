@@ -1,14 +1,50 @@
 import { format } from 'date-fns'
-import { Section } from '../../components/Section'
+import { css } from '../../../styled-system/css'
+import { L, T } from '../../components/__'
+import * as writingData from '../../data/writing'
 import type { Route } from './+types/index'
-import styles from './index.module.css'
 
-interface Post {
-  slug: string
-  title: string
-  date: Date
-  category: 'essays' | 'drivel' | 'scribbles'
-}
+const postCard = css({
+  /* Article wrapper */
+})
+
+const postLink = css({
+  display: 'block',
+  borderBottom: '2px solid',
+  borderColor: 'border.default',
+  paddingBottom: '6',
+  transition: 'all {durations.base}',
+  _hover: {
+    borderColor: 'accent.default',
+    '& .post-title': {
+      color: 'accent.dark',
+    },
+  },
+})
+
+const postDate = css({
+  marginBottom: '3',
+  fontSize: 'sm',
+  textTransform: 'uppercase',
+  letterSpacing: 'letterSpacings.wide',
+  color: 'text.tertiary',
+})
+
+const postTitleTransition = css({
+  transition: 'color {durations.base}',
+})
+
+const scribbleLink = css({
+  display: 'block',
+  fontSize: 'sm',
+  textTransform: 'uppercase',
+  letterSpacing: 'letterSpacings.wide',
+  color: 'text.tertiary',
+  transition: 'color {durations.base}',
+  _hover: {
+    color: 'accent.dark',
+  },
+})
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -18,130 +54,82 @@ export const meta: Route.MetaFunction = () => {
 }
 
 export const loader = async (args: Route.LoaderArgs) => {
-  // Load from three directories - use eager loading to get frontmatter
-  const essayModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
-    '../../../content/essays/*.mdx',
-    { eager: true },
-  )
-  const drivelModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
-    '../../../content/drivel/*.mdx',
-    { eager: true },
-  )
-  const scribbleModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
-    '../../../content/scribbles/entries/*.mdx',
-    { eager: true },
-  )
-
-  const loadPosts = (
-    modules: Record<string, { frontmatter?: { title?: string; date?: string } }>,
-    category: 'essays' | 'drivel' | 'scribbles',
-  ): Post[] => {
-    return Object.entries(modules).map(([path, module]) => {
-      // Extract slug from path
-      const slug = path.split('/').pop()?.replace('.mdx', '') || ''
-
-      return {
-        slug: `${category}/${slug}`,
-        title: module.frontmatter?.title || 'Untitled',
-        date: new Date(module.frontmatter?.date || Date.now()),
-        category,
-      }
-    })
-  }
-
-  const essays = loadPosts(essayModules, 'essays')
-  const drivel = loadPosts(drivelModules, 'drivel')
-  const scribbles = loadPosts(scribbleModules, 'scribbles')
-
-  // Filter out drafts (files starting with _) and sort by date within each category
-  const publishedEssays = essays
-    .filter((post) => !post.slug.split('/').pop()?.startsWith('_'))
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-
-  const publishedDrivel = drivel
-    .filter((post) => !post.slug.split('/').pop()?.startsWith('_'))
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-
-  const publishedScribbles = scribbles
-    .filter((post) => !post.slug.split('/').pop()?.startsWith('_'))
-    .sort((a, b) => b.date.getTime() - a.date.getTime())
-
   return {
-    essays: publishedEssays,
-    drivel: publishedDrivel,
-    scribbles: publishedScribbles,
+    essays: writingData.essays,
+    drivel: writingData.drivel,
+    scribbles: writingData.scribbles,
   }
 }
 
 export default function Writing({ loaderData }: Route.ComponentProps) {
   return (
-    <Section spacing='xl'>
-      <div className={styles.container}>
-        <div className={styles.grid}>
+    <L.Section spacing='xl'>
+      <L.Container variant='wide'>
+        <L.Grid gridTemplateColumns={{ base: '1fr', md: '1fr 1fr auto' }} gap={16} maxWidth='90rem' marginInline='auto'>
           {/* Essays Column */}
-          <section aria-label='Essays' className={styles.column}>
-            <h2 className={styles.columnTitle}>
+          <section aria-label='Essays'>
+            <T.H2 marginBottom='10'>
               Essays
-            </h2>
-            <div className={styles.postList}>
+            </T.H2>
+            <L.Flex direction='column' gap={10}>
               {loaderData.essays.map((post) => (
-                <article key={post.slug} className={styles.postCard}>
+                <article key={post.slug} className={postCard}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className={styles.postLink}
+                    className={postLink}
                   >
-                    <div className={styles.postDate}>{format(post.date, 'LLL dd yyyy')}</div>
-                    <h3 className={styles.postTitle}>
+                    <div className={postDate}>{format(post.date, 'LLL dd yyyy')}</div>
+                    <T.H3 className={`${postTitleTransition} post-title`} marginBottom='4'>
                       {post.title}
-                    </h3>
+                    </T.H3>
                   </a>
                 </article>
               ))}
-            </div>
+            </L.Flex>
           </section>
 
           {/* Drivel Column */}
-          <section aria-label='Drivel' className={styles.column}>
-            <h2 className={styles.columnTitle}>
+          <section aria-label='Drivel'>
+            <T.H2 marginBottom='10'>
               Drivel
-            </h2>
-            <div className={styles.postList}>
+            </T.H2>
+            <L.Flex direction='column' gap={10}>
               {loaderData.drivel.map((post) => (
-                <article key={post.slug} className={styles.postCard}>
+                <article key={post.slug} className={postCard}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className={styles.postLink}
+                    className={postLink}
                   >
-                    <div className={styles.postDate}>{format(post.date, 'LLL dd yyyy')}</div>
-                    <h3 className={styles.postTitle}>
+                    <div className={postDate}>{format(post.date, 'LLL dd yyyy')}</div>
+                    <T.H3 className={`${postTitleTransition} post-title`} marginBottom='4'>
                       {post.title}
-                    </h3>
+                    </T.H3>
                   </a>
                 </article>
               ))}
-            </div>
+            </L.Flex>
           </section>
 
           {/* Scribbles Column - Narrower, dates only */}
-          <section aria-label='Scribbles' className={`${styles.column} ${styles.scribblesColumn}`}>
-            <h2 className={styles.columnTitle}>
+          <section aria-label='Scribbles'>
+            <T.H2 marginBottom='10'>
               Scribbles
-            </h2>
-            <div className={styles.scribblesList}>
+            </T.H2>
+            <L.Flex direction='column' gap={5} paddingLeft={{ base: '4', md: 0 }}>
               {loaderData.scribbles.map((post) => (
                 <article key={post.slug}>
                   <a
                     href={`/writing/${post.slug}`}
-                    className={styles.scribbleLink}
+                    className={scribbleLink}
                   >
                     {format(post.date, 'yyyy-MM-dd')}
                   </a>
                 </article>
               ))}
-            </div>
+            </L.Flex>
           </section>
-        </div>
-      </div>
-    </Section>
+        </L.Grid>
+      </L.Container>
+    </L.Section>
   )
 }

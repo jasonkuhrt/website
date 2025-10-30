@@ -41,3 +41,7 @@ dist
 
 # Generated design tokens
 app/styles/tokens.generated.css
+
+## Panda
+styled-system
+styled-system-studio

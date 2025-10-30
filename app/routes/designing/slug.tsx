@@ -1,6 +1,74 @@
 import { useParams } from 'react-router'
+import { css } from '../../../styled-system/css'
+import { L } from '../../components/__'
 import portfolioData from '../../../public/designing/data.json'
-import styles from './slug.module.css'
+
+const narrowOverride = css({
+  maxWidth: '650px',
+})
+
+const notFoundTitle = css({
+  fontSize: '2xl',
+  fontWeight: 'bold',
+})
+
+const notFoundText = css({
+  marginTop: '4',
+})
+
+const backLink = css({
+  color: 'accent.default',
+  _hover: {
+    textDecoration: 'underline',
+  },
+})
+
+const header = css({
+  marginBottom: '8',
+  textAlign: 'center',
+})
+
+const title = css({
+  fontSize: '4xl',
+  fontWeight: 'bold',
+  marginBottom: '2',
+})
+
+const tags = css({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '2',
+  marginBottom: '4',
+  justifyContent: 'center',
+})
+
+const tagStyle = css({
+  fontSize: 'xs',
+  paddingInline: '2',
+  paddingBlock: '1',
+  backgroundColor: 'bg.subtle',
+  borderRadius: 'radii.sm',
+})
+
+const description = css({
+  color: 'text.secondary',
+})
+
+const images = css({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1px',
+})
+
+const image = css({
+  maxWidth: '100%',
+})
+
+const noImages = css({
+  textAlign: 'center',
+  color: 'text.tertiary',
+  paddingBlock: '12',
+})
 
 interface PortfolioProject {
   id: string
@@ -34,55 +102,59 @@ export default function DesigningProject() {
 
   if (!project || project.hide) {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.notFoundTitle}>Project Not Found</h1>
-        <p className={styles.notFoundText}>
-          <a href='/designing' className={styles.backLink}>
-            Back to Portfolio
-          </a>
-        </p>
-      </div>
+      <L.Section spacing='sm'>
+        <L.Container variant='wide'>
+          <h1 className={notFoundTitle}>Project Not Found</h1>
+          <p className={notFoundText}>
+            <a href='/designing' className={backLink}>
+              Back to Portfolio
+            </a>
+          </p>
+        </L.Container>
+      </L.Section>
     )
   }
 
   return (
-    <div className={styles.containerNarrow}>
+    <L.Section spacing='sm'>
+      <L.Container variant='content' className={narrowOverride}>
       {/* Project header */}
-      <header className={styles.header}>
-        <h1 className={styles.title}>{project.title}</h1>
+      <header className={header}>
+        <h1 className={title}>{project.title}</h1>
         {project.tags.length > 0 && (
-          <div className={styles.tags}>
+          <div className={tags}>
             {project.tags.map((tag) => (
-              <span key={tag} className={styles.tag}>
+              <span key={tag} className={tagStyle}>
                 {tag}
               </span>
             ))}
           </div>
         )}
-        {project.description && <p className={styles.description}>{project.description}</p>}
+        {project.description && <p className={description}>{project.description}</p>}
       </header>
 
       {/* Images container with hairline separations */}
-      <div className={styles.images}>
+      <div className={images}>
         {/* Cover image */}
         <div>
-          <img src={project.coverImage} alt={project.title} className={styles.image} loading='eager' />
+          <img src={project.coverImage} alt={project.title} className={image} loading='eager' />
         </div>
 
         {/* Project images */}
         {project.images.map((image, index) => (
           <div key={index}>
-            <img src={image} alt={`${project.title} ${index + 1}`} className={styles.image} loading='lazy' />
+            <img src={image} alt={`${project.title} ${index + 1}`} className={image} loading='lazy' />
           </div>
         ))}
       </div>
 
       {/* No images placeholder */}
       {project.images.length === 0 && (
-        <div className={styles.noImages}>
+        <div className={noImages}>
           <p>Project images coming soon</p>
         </div>
       )}
-    </div>
+      </L.Container>
+    </L.Section>
   )
 }

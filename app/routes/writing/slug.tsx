@@ -1,18 +1,29 @@
 import { data } from 'react-router'
-import { Container } from '../../components/Container'
+import { css } from '../../../styled-system/css'
+import { L, T } from '../../components/__'
 import type { Route } from './+types/slug'
-import styles from './slug.module.css'
+
+const container = css({
+  paddingBlock: '10',
+})
+
+const header = css({
+  textAlign: 'center',
+  marginBottom: '8',
+})
+
+type MdxModule = { default: React.ComponentType; frontmatter?: { title?: string } }
 
 // Eagerly load all MDX files
-const essayModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
+const essayModules = import.meta.glob<MdxModule>(
   '../../../content/essays/*.mdx',
   { eager: true },
 )
-const drivelModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
+const drivelModules = import.meta.glob<MdxModule>(
   '../../../content/drivel/*.mdx',
   { eager: true },
 )
-const scribbleModules = import.meta.glob<{ default: React.ComponentType; frontmatter?: { title?: string } }>(
+const scribbleModules = import.meta.glob<MdxModule>(
   '../../../content/scribbles/entries/*.mdx',
   { eager: true },
 )
@@ -30,7 +41,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 
   // Validate category and file exists
   let moduleKey: string
-  let modules: Record<string, any>
+  let modules: Record<string, MdxModule>
 
   if (category === 'essays') {
     modules = essayModules
@@ -48,7 +59,6 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
   const module = modules[moduleKey]
 
   if (!module) {
-    console.error('Module not found:', { moduleKey, availableKeys: Object.keys(modules).slice(0, 5) })
     throw data(`Post not found: ${slug}`, { status: 404 })
   }
 
@@ -78,15 +88,15 @@ export default function Post({ loaderData }: Route.ComponentProps) {
   if (!Content) return <div>Post not found</div>
 
   return (
-    <Container variant='content' className={styles.container}>
-      <article className={styles.article} data-article={filename}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>
+    <L.Container variant='content' className={container}>
+      <article data-article={filename}>
+        <header className={header}>
+          <T.DisplayXL>
             {title}
-          </h1>
+          </T.DisplayXL>
         </header>
         <Content />
       </article>
-    </Container>
+    </L.Container>
   )
 }

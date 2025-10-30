@@ -1,8 +1,0 @@
-/**
- * Logo component styles
- * Dark mode support via currentColor
- */
-
-.logo {
-  color: var(--color-text-primary);
-}

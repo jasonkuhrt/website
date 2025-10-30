@@ -1,10 +1,6 @@
-import photoData from '../../public/data/capturing/photos.json'
-import type { PhotoCollection } from '../../public/data/capturing/types'
-import { PhotoGrid } from '../components/PhotoGrid'
+import { photoCollection } from '../data/photos.js'
+import { L, F } from '../components/__'
 import type { Route } from './+types/capturing'
-import styles from './capturing.module.css'
-
-const data = photoData as PhotoCollection
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -14,11 +10,13 @@ export const meta: Route.MetaFunction = () => {
 }
 
 export default function Capturing() {
-  const { photos } = data
+  const { photos } = photoCollection
 
   return (
-    <div className={styles.container}>
-      {photos.length > 0 && <PhotoGrid photos={photos} />}
-    </div>
+    <L.Section spacing='sm'>
+      <L.Container variant='standard'>
+        {photos.length > 0 && <F.PhotoGrid photos={[...photos]} />}
+      </L.Container>
+    </L.Section>
   )
 }

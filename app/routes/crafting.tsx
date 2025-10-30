@@ -1,12 +1,13 @@
-import { Container } from '../components/Container'
-import { GitHubProfileCard } from '../components/GitHubProfileCard'
-import { Grid } from '../components/Grid'
-import { RepoCard } from '../components/RepoCard'
-import { RepoRefreshTimer } from '../components/RepoRefreshTimer'
-import { Section } from '../components/Section'
-import { getRepoData, getRepoDataFetchedAt } from '../lib/github'
+import { css } from '../../styled-system/css'
+import { L, F } from '../components/__'
+import { repos, fetchedAt } from '../data/repos'
 import type { Route } from './+types/crafting'
-import styles from './crafting.module.css'
+
+const refreshTimer = css({
+  marginTop: '6',
+  display: 'flex',
+  justifyContent: 'flex-end',
+})
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -19,20 +20,18 @@ export const meta: Route.MetaFunction = () => {
 }
 
 export default function Crafting() {
-  const repos = getRepoData()
-  const fetchedAt = getRepoDataFetchedAt()
 
   return (
-    <Section spacing='xl'>
-      <Container variant='standard'>
-        <Grid minWidth='320px' gap='lg'>
-          <GitHubProfileCard />
-          {repos.map((repo) => <RepoCard key={repo.name} repo={repo} />)}
-        </Grid>
-        <div className={styles.refreshTimer}>
-          <RepoRefreshTimer fetchedAt={fetchedAt} />
+    <L.Section spacing='xl'>
+      <L.Container variant='standard'>
+        <L.Grid autoFit minColumnWidth='320px' gap='6'>
+          <F.GitHubProfileCard />
+          {repos.map((repo) => <F.RepoCard key={repo.name} repo={repo} />)}
+        </L.Grid>
+        <div className={refreshTimer}>
+          <F.RepoRefreshTimer fetchedAt={fetchedAt} />
         </div>
-      </Container>
-    </Section>
+      </L.Container>
+    </L.Section>
   )
 }

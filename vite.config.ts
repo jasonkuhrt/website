@@ -6,11 +6,12 @@ import remarkFrontmatter from 'remark-frontmatter'
 import remarkGfm from 'remark-gfm'
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import { defineConfig } from 'vite'
-import { designingDataPlugin } from './vite-plugin-designing-data'
+import { designingDataPlugin, reposDataPlugin } from './vite-plugins/index.js'
 
 export default defineConfig({
   plugins: [
     designingDataPlugin(),
+    reposDataPlugin(),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
       rehypePlugins: [

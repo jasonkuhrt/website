@@ -1,6 +1,5 @@
 import portfolioData from 'virtual:designing-data'
-import { PortfolioGrid } from '../../components/PortfolioGrid'
-import styles from './index.module.css'
+import { L, F } from '../../components/__'
 
 const data = portfolioData
 
@@ -24,8 +23,10 @@ export default function Designing() {
   })
 
   return (
-    <div className={styles.container}>
-      {sortedProjects.length > 0 && <PortfolioGrid projects={sortedProjects} />}
-    </div>
+    <L.Section spacing='sm'>
+      <L.Container variant='wide'>
+        {sortedProjects.length > 0 && <F.PortfolioGrid projects={sortedProjects} />}
+      </L.Container>
+    </L.Section>
   )
 }

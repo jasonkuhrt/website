@@ -13,12 +13,23 @@ import '@fontsource/arvo/400.css'
 import '@fontsource/arvo/700.css'
 import '@fontsource/space-mono/400.css'
 import '@fontsource/space-mono/700.css'
-import './styles/global.css'
+import './global.css'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { css } from '../styled-system/css'
 import type { Route } from './+types/root'
-import { Header } from './components/Header'
-import { SettingsButton } from './components/settings/SettingsButton'
-import styles from './root.module.css'
+import { A, D, F } from './components/__'
+
+const main = css({
+  paddingTop: '20',
+  viewTransitionName: 'main-content',
+})
+
+const settingsButton = css({
+  position: 'fixed',
+  bottom: '6',
+  left: '6',
+  zIndex: 50,
+})
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -48,14 +59,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
   return (
     <>
-      <Header />
-      <main className={styles.main}>
+      <A.Header />
+      <main className={main}>
         <Outlet />
       </main>
       {/* Settings button - pinned to bottom left */}
-      <div className={styles.settingsButton}>
-        <SettingsButton />
+      <div className={settingsButton}>
+        <F.Settings.Button />
       </div>
+      {/* Vertical rhythm grid overlay */}
+      <D.VerticalRhythmOverlay />
     </>
   )
 }

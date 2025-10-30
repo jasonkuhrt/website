@@ -1,16 +1,47 @@
 import { List, MapPin, Table } from 'lucide-react'
 import { useState } from 'react'
-import linkedinData from '../../public/data/linkedin.json'
-import personalEventsData from '../../public/data/personal-events.json'
-import { Container } from '../components/Container'
-import { PhotoGallery } from '../components/PhotoGallery'
-import { Section } from '../components/Section'
-import { Socials } from '../components/Socials'
-import { Timeline } from '../components/Timeline'
-import { TimelineTable } from '../components/TimelineTable'
-import { talks } from '../consts'
+import { Array } from 'effect'
+import { css } from '../../styled-system/css'
+import { Box } from '../../styled-system/jsx'
+import { experiences as experiencesData } from '../data/experiences.js'
+import { ExperienceOrder } from '../data/schemas/experiences/__.js'
+import { profile as profileData } from '../data/profile.js'
+import { L, F, T } from '../components/__'
 import type { Route } from './+types/bio'
-import styles from './bio.module.css'
+
+const locationIcon = css({
+  display: 'inline-block',
+  width: '1rem',
+  height: '1rem',
+  marginRight: '1',
+})
+
+const bio = css({
+  marginTop: '10',
+})
+
+const viewButton = css({
+  padding: '2',
+  borderRadius: 'radii.base',
+  transition: 'all {durations.base}',
+})
+
+const active = css({
+  backgroundColor: 'bg.subtle',
+  color: 'text.primary',
+})
+
+const inactive = css({
+  color: 'text.tertiary',
+  _hover: {
+    color: 'text.primary',
+  },
+})
+
+const viewButtonIcon = css({
+  width: '1rem',
+  height: '1rem',
+})
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -22,119 +53,71 @@ export const meta: Route.MetaFunction = () => {
 export default function Bio() {
   const [viewMode, setViewMode] = useState<'timeline' | 'table'>('timeline')
 
-  // Transform data into tagged union timeline events
-  const experienceEvents = linkedinData.experience.map((exp) => ({
-    type: 'experience' as const,
-    ...exp,
-  }))
-
-  const educationEvents = linkedinData.education.map((edu) => ({
-    type: 'education' as const,
-    ...edu,
-  }))
-
-  const achievementEvents = linkedinData.achievements.map((ach) => ({
-    type: 'achievement' as const,
-    ...ach,
-  }))
-
-  const speakingEvents = talks.map((talk) => ({
-    type: 'speaking' as const,
-    ...talk,
-  }))
-
-  const personalEvents = personalEventsData.map((event) => ({
-    type: 'personal' as const,
-    ...event,
-  }))
-
-  // Combine all events
-  const allEvents = [
-    ...experienceEvents,
-    ...educationEvents,
-    ...achievementEvents,
-    ...speakingEvents,
-    ...personalEvents,
-  ]
-
-  // Parse dates for sorting
-  const parseDate = (dateStr: string): Date => {
-    if (dateStr === 'Present') return new Date()
-
-    const monthYear = dateStr.match(/^([A-Za-z]+)\s+(\d{4})$/)
-    if (monthYear) return new Date(`${monthYear[1]} 1, ${monthYear[2]}`)
-
-    const year = dateStr.match(/^\d{4}$/)
-    if (year) return new Date(`${dateStr}-01-01`)
-
-    return new Date(dateStr)
-  }
-
-  const getStartDate = (event: typeof allEvents[0]): Date => {
-    if (event.type === 'achievement' || event.type === 'speaking' || event.type === 'personal')
-      return parseDate(event.date)
-    return parseDate(event.startDate)
-  }
-
-  // Sort chronologically (newest first)
-  allEvents.sort((a, b) => getStartDate(b).getTime() - getStartDate(a).getTime())
+  // Sort experiences
+  const experiences = Array.sort(experiencesData, ExperienceOrder)
 
   return (
     <>
       {/* Photo Gallery Section */}
-      <Section spacing='xl'>
-        <PhotoGallery />
-      </Section>
+      <L.Section spacing='base'>
+        <F.PhotoGallery />
+      </L.Section>
 
       {/* Hero Section */}
-      <Section spacing='lg'>
-        <Container variant='content'>
-          <div className={styles.hero}>
-            <h1 className={styles.name}>
-              {linkedinData.name.first} {linkedinData.name.last}
-            </h1>
-            <p className={styles.headline}>{linkedinData.headline}</p>
-            <p className={styles.location}>
-              <MapPin className={styles.locationIcon} />
-              {linkedinData.location}
-            </p>
-            <Socials />
-          </div>
+      <L.Section spacing='xl'>
+        <L.Container variant='content'>
+          <L.Flex direction='column' align='center' gap={4} marginBottom='10'>
+            <T.H2 marginBottom='4'>
+              {profileData.name.first} {profileData.name.last}
+            </T.H2>
+            <Box as='p' textStyle='body.base' color='text.secondary' marginBottom='2' textAlign='center'>
+              {profileData.headline}
+            </Box>
+            <Box as='p' textStyle='body.sm' fontFamily='sans' color='text.tertiary' marginBottom='6'>
+              <MapPin className={locationIcon} />
+              {profileData.location}
+            </Box>
+            <F.Socials />
+          </L.Flex>
 
           {/* Bio */}
-          <div className={styles.bio}>
-            <p className={styles.bioText}>{linkedinData.summary}</p>
+          <div className={bio}>
+            <Box as='p' textStyle='body.lg' marginBottom='8'>
+              {profileData.summary}
+            </Box>
           </div>
-        </Container>
-      </Section>
+        </L.Container>
+      </L.Section>
 
       {/* Timeline */}
-      <Section spacing='lg'>
-        <Container variant='content'>
-          <div className={styles.experiencesHeader}>
-            <h2 className={styles.experiencesTitle}>Experiences</h2>
-            <div className={styles.viewToggle}>
+      <L.Section spacing='lg'>
+        <L.Container variant='content'>
+          <L.Flex justify='between' align='center' marginBottom='10'>
+            <T.H2 marginBottom={0}>
+              Experiences
+            </T.H2>
+            <L.Flex gap={2}>
               <button
                 type='button'
-                className={`${styles.viewButton} ${viewMode === 'timeline' ? styles.active : styles.inactive}`}
+                className={`${viewButton} ${viewMode === 'timeline' ? active : inactive}`}
                 onClick={() => setViewMode('timeline')}
                 title='Timeline view'
               >
-                <List className={styles.viewButtonIcon} />
+                <List className={viewButtonIcon} />
               </button>
               <button
                 type='button'
-                className={`${styles.viewButton} ${viewMode === 'table' ? styles.active : styles.inactive}`}
+                className={`${viewButton} ${viewMode === 'table' ? active : inactive}`}
                 onClick={() => setViewMode('table')}
                 title='Table view'
               >
-                <Table className={styles.viewButtonIcon} />
+                <Table className={viewButtonIcon} />
               </button>
-            </div>
-          </div>
-          {viewMode === 'timeline' ? <Timeline items={allEvents} /> : <TimelineTable items={allEvents} />}
-        </Container>
-      </Section>
+            </L.Flex>
+          </L.Flex>
+          {viewMode === 'timeline' ? <F.Timeline items={experiences} /> : <F.TimelineTable items={experiences} />}
+        </L.Container>
+      </L.Section>
     </>
   )
 }

@@ -26,22 +26,22 @@ export default {
     })
 
     // Add designing project pages (exclude hidden)
-    const designingSlugs = portfolioData.projects
-      .filter((project) => !project.hide)
-      .map((project) => `/designing/${project.id}`)
+    // const designingSlugs = portfolioData.projects
+    //   .filter((project) => !project.hide)
+    //   .map((project) => `/designing/${project.id}`)
 
     return [
       '/',
       '/bio',
       '/crafting',
-      '/designing',
-      '/capturing',
+      // '/designing',
+      // '/capturing',
       '/speaking',
       '/writing',
       ...essaySlugs,
       ...drivelSlugs,
       ...scribbleSlugs,
-      ...designingSlugs,
+      // ...designingSlugs,
     ]
   },
 } satisfies Config
