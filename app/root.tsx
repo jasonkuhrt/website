@@ -14,22 +14,10 @@ import '@fontsource/arvo/700.css'
 import '@fontsource/space-mono/400.css'
 import '@fontsource/space-mono/700.css'
 import './global.css'
+import { Box } from '#styled-system/jsx/box'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
-import { css } from '../styled-system/css'
 import type { Route } from './+types/root'
-import { A, D, F } from './components/__'
-
-const main = css({
-  paddingTop: '20',
-  viewTransitionName: 'main-content',
-})
-
-const settingsButton = css({
-  position: 'fixed',
-  bottom: '6',
-  left: '6',
-  zIndex: 50,
-})
+import { A } from './components/__'
 
 export const meta: Route.MetaFunction = () => {
   return [
@@ -59,16 +47,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
   return (
     <>
-      <A.Header />
-      <main className={main}>
+      <A.Header marginTop='20' />
+      <Box as={'main'} marginTop='20' viewTransitionName='main-content'>
         <Outlet />
-      </main>
+      </Box>
       {/* Settings button - pinned to bottom left */}
-      <div className={settingsButton}>
+      {
+        /*<div className={css({
+          position: 'fixed',
+          bottom: '6',
+          left: '6',
+          zIndex: 50,
+        })}>
         <F.Settings.Button />
-      </div>
+      </div>*/
+      }
       {/* Dev tools */}
-      <D.VerticalRhythmOverlay />
+      {/*<D.VerticalRhythmOverlay />*/}
     </>
   )
 }

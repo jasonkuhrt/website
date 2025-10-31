@@ -1,5 +1,4 @@
+export { Avatar } from './Avatar'
 export { Header } from './Header'
-export { LocationBadge } from './LocationBadge'
 export { Logo } from './Logo'
-export { NavLink } from './NavLink'
 export { ViewToggle } from './ViewToggle'

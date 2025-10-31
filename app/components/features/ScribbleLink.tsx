@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 import { UI } from '../__'
 
 const scribbleLink = css({
@@ -34,8 +34,8 @@ interface Props {
  */
 export const ScribbleLink: React.FC<Props> = ({ date, slug, dateFormat = 'yyyy-MM-dd' }) => {
   return (
-    <UI.Link href={`/writing/${slug}`} variant='accent' className={scribbleLink}>
+    <UI.Link.Nav href={`/writing/${slug}`} variant='accent' className={scribbleLink}>
       {format(date, dateFormat)}
-    </UI.Link>
+    </UI.Link.Nav>
   )
 }

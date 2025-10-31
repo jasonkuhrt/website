@@ -1,35 +1,5 @@
 import { useEffect, useState } from 'react'
-import { css } from '../../../styled-system/css'
-
-const gallery = css({
-  display: 'grid',
-  gridTemplateColumns: '[repeat(4, 1fr)]',
-  gridTemplateRows: '[repeat(2, 228px)]', // Fixed height for consistent aspect ratio (38 baselines = 228px)
-  gap: '[1px]', // Intentional hairline separation
-  cursor: 'pointer',
-  width: 'full',
-  maxWidth: '80', // Standard container width (480px = 80 baselines)
-  marginInline: '[auto]',
-  md: {
-    gridTemplateRows: '[repeat(2, 150px)]', // Responsive height for mobile
-  },
-})
-
-const photoContainer = css({
-  overflow: 'hidden',
-})
-
-const photo = css({
-  width: 'full',
-  height: 'full',
-  objectFit: 'cover',
-  filter: '[grayscale(100%)]',
-  transitionProperty: '[all]',
-  transitionDuration: 'slow',
-  _hover: {
-    filter: '[grayscale(0%)]',
-  },
-})
+import { css } from '#styled-system/css'
 
 // Photos organized by category
 // Naming convention: <num>[-<char>].<ext>
@@ -185,7 +155,19 @@ export const PhotoGallery: React.FC = () => {
 
   return (
     <button
-      className={gallery}
+      className={css({
+        display: 'grid',
+        gridTemplateColumns: '[repeat(4, 1fr)]',
+        gridTemplateRows: '[repeat(2, 228px)]',
+        gap: '[1px]',
+        cursor: 'pointer',
+        width: 'full',
+        maxWidth: '80',
+        marginInline: '[auto]',
+        md: {
+          gridTemplateRows: '[repeat(2, 150px)]',
+        },
+      })}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       type='button'
@@ -194,14 +176,24 @@ export const PhotoGallery: React.FC = () => {
       {displayedPhotos.map((photoItem) => (
         <div
           key={photoItem.path}
-          className={photoContainer}
+          className={css({ overflow: 'hidden' })}
           style={{ gridColumn: photoItem.gridColumn, gridRow: photoItem.gridRow }}
         >
           <img
             src={`/bio/${photoItem.path}`}
             alt='Photo from Jason Kuhrt'
             loading='lazy'
-            className={photo}
+            className={css({
+              width: 'full',
+              height: 'full',
+              objectFit: 'cover',
+              filter: '[grayscale(100%)]',
+              transitionProperty: '[all]',
+              transitionDuration: 'slow',
+              _hover: {
+                filter: '[grayscale(0%)]',
+              },
+            })}
           />
         </div>
       ))}

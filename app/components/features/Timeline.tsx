@@ -1,183 +1,17 @@
-import {
-  Github,
-  Heart,
-  HelpCircle,
-  Link,
-  Play,
-  Ruler,
-  Video,
-  X,
-} from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { css } from '../../../styled-system/css'
-import { token } from '../../../styled-system/tokens'
-import type { Experience } from '../../data/schemas/experiences/__.js'
+import { css } from '#styled-system/css'
+import { token } from '#styled-system/tokens'
+import type { Experience } from '#~/data/schemas/experiences/__.js'
 import {
   eventTypes,
   getColorForExperience,
   getIconForExperience,
   getIconForTag,
   getLabelForTag,
-} from '../../lib/experienceRegistry.js'
-import { F, L, T, UI } from '../__'
+} from '#~/lib/experienceRegistry.js'
+import { useEffect, useState } from 'react'
+import { F, L, Text, UI } from '../__'
 
-const header = css({
-  marginBottom: '8',
-  gap: '4',
-})
-
-const heading = css({
-  flex: '[1]',
-  minWidth: '[0]',
-})
-
-const iconButton = css({
-  position: 'relative',
-  width: '2',
-  height: '2',
-})
-
-const iconLabel = css({
-  position: 'absolute',
-  left: '[0]',
-  top: '[0]',
-  height: 'full',
-  width: 'full',
-  pointerEvents: 'none',
-})
-
-const nodeLink = css({
-  position: 'absolute',
-  left: '[0]',
-  top: '[0]',
-  pointerEvents: 'auto',
-})
-
-const timelineLinesMobile = css({
-  display: 'block',
-  sm: {
-    display: 'none',
-  },
-})
-
-const timelineLinesSm = css({
-  display: 'none',
-  sm: {
-    display: 'block',
-  },
-  md: {
-    display: 'none',
-  },
-})
-
-const timelineLinesMd = css({
-  display: 'none',
-  md: {
-    display: 'block',
-  },
-})
-
-const timeline = css({
-  position: 'relative',
-  paddingLeft: '4',
-})
-
-const event = css({
-  position: 'relative',
-  marginTop: '2',
-})
-
-const eventContent = css({
-  lineHeight: '4',
-  gap: '2',
-})
-
-const eventContentSimple = css({
-  lineHeight: '4',
-})
-
-const inlineBlock = css({
-  display: 'inline-block',
-})
-
-const spacing = css({
-  marginTop: '2',
-})
-
-const linkGroup = css({
-  gap: '2',
-})
-
-const detailLinkInline = css({
-  display: 'inline-block',
-})
-
-const modalContent = css({
-  backgroundColor: 'surface.base',
-  borderRadius: '1',
-  boxShadow: 'lg',
-  padding: '6',
-  maxWidth: '28',
-  border: '[1px solid]',
-  borderColor: 'border.default',
-})
-
-const modalHeader = css({
-  marginBottom: '4',
-})
-
-const dateContainer = css({
-  textAlign: 'right',
-  sm: {
-    whiteSpace: 'nowrap',
-  },
-})
-
-const timelineItem = css({
-  position: 'relative',
-  display: 'grid',
-  gridTemplateColumns: '[78px auto]',
-  gap: '4',
-  paddingBottom: '12',
-  _last: {
-    paddingBottom: '[0]',
-  },
-  scrollMarginTop: '8',
-  marginLeft: '-4',
-  paddingLeft: '4',
-  paddingBlock: '4',
-  borderRadius: '1',
-  transitionProperty: '[background-color]',
-  transitionDuration: 'base',
-  sm: {
-    gridTemplateColumns: '[102px auto]',
-    gap: '6',
-  },
-  md: {
-    gridTemplateColumns: '[138px auto]',
-    gap: '8',
-  },
-})
-
-const iconComponent = css({
-  width: '2',
-  height: '2',
-  flexShrink: '[0]',
-  paddingTop: '1',
-})
-
-const timeScaleButton = css({
-  paddingInline: '2',
-  paddingBlock: '1',
-  borderRadius: '1',
-  transitionProperty: '[opacity]',
-  transitionDuration: 'fast',
-  gap: '2',
-})
-
-const timeScaleButtonInactive = css({
-  opacity: '40',
-})
+// Note: All CSS definitions inlined per project convention (single-use styles must be inlined)
 
 interface Props {
   items: Experience[]
@@ -366,8 +200,8 @@ export const Timeline: React.FC<Props> = ({ items }) => {
   return (
     <>
       {/* Filter and mode toggles */}
-      <L.Flex.Row justify='between' align='start' wrap className={header}>
-        <L.Flex.Row wrap align='center' className={linkGroup}>
+      <L.Flex.Row justify='between' align='start' wrap className={css({ marginBottom: '8', gap: '4' })}>
+        <L.Flex.Row wrap align='center' className={css({ gap: '2' })}>
           {eventTypes.map((eventType) => {
             const IconComponent = getIconForTag(eventType)
 
@@ -375,9 +209,9 @@ export const Timeline: React.FC<Props> = ({ items }) => {
               <F.FilterButton
                 key={eventType}
                 icon={
-                  <UI.Icon size='xs'>
+                  <div className={css({ width: '3', height: '3' })}>
                     <IconComponent />
-                  </UI.Icon>
+                  </div>
                 }
                 label={getLabelForTag(eventType)}
                 active={filters.has(eventType)}
@@ -390,28 +224,24 @@ export const Timeline: React.FC<Props> = ({ items }) => {
             aria-label='Show filter help'
             onClick={() => setShowHelpOverlay(true)}
           >
-            <T.Text
+            <Text.Text
               color='text.tertiary'
               transitionProperty='colors'
               transitionDuration='base'
               _hover={{ color: 'text.secondary' }}
             >
-              <UI.Icon size='sm'>
-                <HelpCircle />
-              </UI.Icon>
-            </T.Text>
+              <UI.Badge icon='HelpCircle' scale='4' />
+            </Text.Text>
           </button>
         </L.Flex.Row>
         <button
           type='button'
-          className={`${timeScaleButton} ${timeScaleMode ? timeScaleButtonInactive : ''}`}
+          className={css({ paddingInline: '2', paddingBlock: '1', borderRadius: '1', transitionProperty: '[opacity]', transitionDuration: 'fast', gap: '2', ...(timeScaleMode ? { opacity: '40' } : {}) })}
           onClick={toggleTimeScale}
         >
           <L.Flex.Row align='center' gap='2'>
-            <UI.Icon size='xs'>
-              <Ruler />
-            </UI.Icon>
-            <T.Text fontSize='2'>Time Scale</T.Text>
+            <UI.Badge icon='Ruler' scale='3' />
+            <Text.Text fontSize='2'>Time Scale</Text.Text>
           </L.Flex.Row>
         </button>
       </L.Flex.Row>
@@ -423,46 +253,44 @@ export const Timeline: React.FC<Props> = ({ items }) => {
           onClick={() => setShowHelpOverlay(false)}
         >
           <div
-            className={`${UI.modalStyles.centeredContent} ${modalContent}`}
+            className={`${UI.modalStyles.centeredContent} ${css({ backgroundColor: 'surface.base', borderRadius: '1', boxShadow: 'lg', padding: '6', maxWidth: '28', border: '[1px solid]', borderColor: 'border.default' })}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <L.Flex.Row justify='between' align='start' className={modalHeader}>
-              <T.H3 fontSize='5' fontWeight='semibold' color='text.primary'>Timeline Filters</T.H3>
+            <L.Flex.Row justify='between' align='start' className={css({ marginBottom: '4' })}>
+              <Text.H3 fontSize='5' fontWeight='semibold' color='text.primary'>Timeline Filters</Text.H3>
               <button
                 onClick={() => setShowHelpOverlay(false)}
               >
-                <T.Text
+                <Text.Text
                   color='text.tertiary'
                   transitionProperty='colors'
                   transitionDuration='base'
                   _hover={{ color: 'text.secondary' }}
                 >
-                  <UI.Icon size='lg'>
-                    <X />
-                  </UI.Icon>
-                </T.Text>
+                  <UI.Badge icon='X' scale='7' />
+                </Text.Text>
               </button>
             </L.Flex.Row>
             <L.Flex.Col gap='2'>
-              <T.P fontSize='2' color='text.secondary'>
-                <T.Text as='strong'>Click</T.Text> a filter button to toggle that category on/off
-              </T.P>
-              <T.P fontSize='2' color='text.secondary'>
-                <T.Text as='strong'>Alt+Click</T.Text> a filter button to show only that category
-              </T.P>
-              <T.P fontSize='2' color='text.secondary'>
-                <T.Text as='strong'>Time Scale</T.Text>{' '}
+              <Text.P fontSize='2' color='text.secondary'>
+                <Text.Text as='strong'>Click</Text.Text> a filter button to toggle that category on/off
+              </Text.P>
+              <Text.P fontSize='2' color='text.secondary'>
+                <Text.Text as='strong'>Alt+Click</Text.Text> a filter button to show only that category
+              </Text.P>
+              <Text.P fontSize='2' color='text.secondary'>
+                <Text.Text as='strong'>Time Scale</Text.Text>{' '}
                 toggles between evenly-spaced and chronologically-accurate layout (1 pixel = 1 day)
-              </T.P>
+              </Text.P>
             </L.Flex.Col>
           </div>
         </div>
       )}
 
-      <div className={event}>
+      <div className={css({ position: 'relative', marginTop: '2' })}>
         {/* SVG Timeline */}
-        <svg className={iconLabel} aria-hidden='true' id='timeline-svg'>
-          <g className={timelineLinesMobile}>
+        <svg className={css({ position: 'absolute', left: '[0]', top: '[0]', height: 'full', width: 'full', pointerEvents: 'none' })} aria-hidden='true' id='timeline-svg'>
+          <g className={css({ display: 'block', sm: { display: 'none' } })}>
             {items.map((item, index) => (
               index < items.length - 1 && (
                 <line
@@ -488,7 +316,7 @@ export const Timeline: React.FC<Props> = ({ items }) => {
               opacity='0.5'
             />
           </g>
-          <g className={timelineLinesSm}>
+          <g className={css({ display: 'none', sm: { display: 'block' }, md: { display: 'none' } })}>
             {items.map((item, index) => (
               index < items.length - 1 && (
                 <line
@@ -514,7 +342,7 @@ export const Timeline: React.FC<Props> = ({ items }) => {
               opacity='0.5'
             />
           </g>
-          <g className={timelineLinesMd}>
+          <g className={css({ display: 'none', md: { display: 'block' } })}>
             {items.map((item, index) => (
               index < items.length - 1 && (
                 <line
@@ -557,13 +385,13 @@ export const Timeline: React.FC<Props> = ({ items }) => {
             <div
               key={itemId}
               id={itemId}
-              className={`timeline-item ${timelineItem} ${anchoredItemId === itemId ? 'is-anchored' : ''}`}
+              className={`timeline-item ${css({ position: 'relative', display: 'grid', gridTemplateColumns: '[78px auto]', gap: '4', paddingBottom: '12', _last: { paddingBottom: '[0]' }, scrollMarginTop: '8', marginLeft: '-4', paddingLeft: '4', paddingBlock: '4', borderRadius: '1', transitionProperty: '[background-color]', transitionDuration: 'base', sm: { gridTemplateColumns: '[102px auto]', gap: '6' }, md: { gridTemplateColumns: '[138px auto]', gap: '8' } })} ${anchoredItemId === itemId ? 'is-anchored' : ''}`}
               data-type={item._tag}
               style={{ minHeight: '180px' }}
             >
               {/* Date on left */}
-              <div className={dateContainer}>
-                <div className={eventContentSimple}>
+              <div className={css({ textAlign: 'right', sm: { whiteSpace: 'nowrap' } })}>
+                <div className={css({ lineHeight: '4' })}>
                   <UI.DateRange
                     startDate={startDate}
                     endDate={endDate}
@@ -572,11 +400,11 @@ export const Timeline: React.FC<Props> = ({ items }) => {
               </div>
 
               {/* Timeline node and content */}
-              <div className={timeline}>
+              <div className={css({ position: 'relative', paddingLeft: '4' })}>
                 {/* SVG Node */}
                 <a
                   href={`#${itemId}`}
-                  className={`timeline-node-link ${nodeLink}`}
+                  className={`timeline-node-link ${css({ position: 'absolute', left: '[0]', top: '[0]', pointerEvents: 'auto' })}`}
                   aria-label={`Jump to ${
                     item._tag === 'WorkExperience' ?
                       item.company :
@@ -586,7 +414,7 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                   }`}
                   onClick={(e) => handleNodeLinkClick(e, itemId)}
                 >
-                  <div className={iconButton}>
+                  <div className={css({ position: 'relative', width: '2', height: '2' })}>
                     <svg
                       width='32'
                       height='32'
@@ -606,148 +434,129 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                 </a>
 
                 {/* Content */}
-                <L.Flex.Row align='start' className={eventContent}>
-                  <T.Text as='div' color='text.secondary'>
-                    <IconComponent className={iconComponent} />
-                  </T.Text>
-                  <div className={heading}>
+                <L.Flex.Row align='start' className={css({ lineHeight: '4', gap: '2' })}>
+                  <Text.Text as='div' color='text.secondary'>
+                    <IconComponent className={css({ width: '2', height: '2', flexShrink: '[0]', paddingTop: '1' })} />
+                  </Text.Text>
+                  <div className={css({ flex: '[1]', minWidth: '[0]' })}>
                     {item._tag === 'WorkExperience' && (
                       <>
-                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
+                        <Text.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </T.H2>
-                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
+                        </Text.H2>
+                        <Text.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
                           @ {item.company}
-                        </T.Text>
-                        {item.overview && <T.P fontSize='2' color='text.secondary' opacity='80'>{item.overview}</T.P>}
+                        </Text.Text>
+                        {item.overview && (
+                          <Text.P fontSize='2' color='text.secondary' opacity='80'>{item.overview}</Text.P>
+                        )}
                       </>
                     )}
                     {item._tag === 'Education' && (
                       <>
-                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
+                        <Text.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.degree}
-                        </T.H2>
-                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
+                        </Text.H2>
+                        <Text.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
                           @ {item.institution}
-                        </T.Text>
+                        </Text.Text>
                         {item.description && (
-                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                          <Text.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</Text.P>
                         )}
                       </>
                     )}
                     {item._tag === 'Achievement' && (
                       <>
-                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
+                        <Text.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </T.H2>
-                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
+                        </Text.H2>
+                        <Text.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
                           @ {item.issuer}
-                        </T.Text>
+                        </Text.Text>
                         {item.description && (
-                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                          <Text.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</Text.P>
                         )}
                       </>
                     )}
                     {item._tag === 'Speaking' && (
                       <>
-                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
+                        <Text.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </T.H2>
-                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='3'>
+                        </Text.H2>
+                        <Text.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='3'>
                           @ {item.venue}
-                        </T.Text>
+                        </Text.Text>
                         <L.Flex.Row gap='2'>
                           {item.links?.repo ?
                             (
-                              <UI.Link
+                              <UI.Link.Ext
                                 href={item.links.repo}
-                                external
                                 className={UI.transitions.opacityHidden}
                               >
-                                <UI.Icon size='sm'>
-                                  <Github />
-                                </UI.Icon>
-                              </UI.Link>
+                                <UI.Badge icon='Github' scale='4' />
+                              </UI.Link.Ext>
                             ) :
                             (
                               <div className={UI.transitions.opacityDimmed}>
-                                <UI.Icon size='sm'>
-                                  <Github />
-                                </UI.Icon>
+                                <UI.Badge icon='Github' scale='4' />
                               </div>
                             )}
                           {item.links?.info ?
                             (
-                              <UI.Link
+                              <UI.Link.Ext
                                 href={item.links.info}
-                                external
                                 className={UI.transitions.opacityHidden}
                               >
-                                <UI.Icon size='sm'>
-                                  <Link />
-                                </UI.Icon>
-                              </UI.Link>
+                                <UI.Badge icon='Link' scale='4' />
+                              </UI.Link.Ext>
                             ) :
                             (
                               <div className={UI.transitions.opacityDimmed}>
-                                <UI.Icon size='sm'>
-                                  <Link />
-                                </UI.Icon>
+                                <UI.Badge icon='Link' scale='4' />
                               </div>
                             )}
                           {item.links?.recording ?
                             (
-                              <UI.Link
+                              <UI.Link.Ext
                                 href={item.links.recording}
-                                external
                                 className={UI.transitions.opacityHidden}
                               >
-                                <UI.Icon size='sm'>
-                                  <Play />
-                                </UI.Icon>
-                              </UI.Link>
+                                <UI.Badge icon='Play' scale='4' />
+                              </UI.Link.Ext>
                             ) :
                             (
                               <div className={UI.transitions.opacityDimmed}>
-                                <UI.Icon size='sm'>
-                                  <Video />
-                                </UI.Icon>
+                                <UI.Badge icon='Video' scale='4' />
                               </div>
                             )}
                           {item.links?.twitter && (
-                            <UI.Link
+                            <UI.Link.Ext
                               href={item.links.twitter}
-                              external
                               className={UI.transitions.opacityHidden}
                             >
-                              <UI.Icon size='sm'>
-                                <X />
-                              </UI.Icon>
-                            </UI.Link>
+                              <UI.Badge icon='X' scale='4' />
+                            </UI.Link.Ext>
                           )}
                         </L.Flex.Row>
                       </>
                     )}
                     {item._tag === 'Personal' && (
                       <>
-                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
+                        <Text.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </T.H2>
+                        </Text.H2>
                         {item.description && (
-                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                          <Text.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</Text.P>
                         )}
                         {item.url && (
-                          <div className={spacing}>
-                            <UI.Link
+                          <div className={css({ marginTop: '2' })}>
+                            <UI.Link.Ext
                               href={item.url}
-                              external
-                              className={`${detailLinkInline} ${UI.transitions.opacityHidden}`}
+                              className={`${css({ display: 'inline-block' })} ${UI.transitions.opacityHidden}`}
                               aria-label='Read more'
                             >
-                              <UI.Icon size='sm'>
-                                <Link />
-                              </UI.Icon>
-                            </UI.Link>
+                              <UI.Badge icon='Link' scale='4' />
+                            </UI.Link.Ext>
                           </div>
                         )}
                       </>

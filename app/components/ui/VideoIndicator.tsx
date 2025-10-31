@@ -1,5 +1,5 @@
 import { Play } from 'lucide-react'
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 
 const indicator = css({
   position: 'absolute',

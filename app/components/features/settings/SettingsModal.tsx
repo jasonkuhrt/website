@@ -10,11 +10,12 @@
  */
 
 import { Dialog } from '@ark-ui/react/dialog'
+import { Portal } from '@ark-ui/react/portal'
 import { SegmentGroup } from '@ark-ui/react/segment-group'
 import { Monitor, Moon, Sun, X } from 'lucide-react'
-import { css } from '../../../../styled-system/css'
-import type { GridOverlay, ThemeMode } from '../../../lib/settings'
-import { useSettings } from '../../../lib/settings'
+import { css } from '#styled-system/css'
+import type { GridOverlay, ThemeMode } from '#~/lib/settings'
+import { useSettings } from '#~/lib/settings'
 import { L } from '../../__'
 
 // Keyframe animations (removed - using inline animation strings instead)
@@ -214,16 +215,11 @@ const icon = css({
   height: '1',
 })
 
-export interface SettingsModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}
-
-export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
+export function SettingsModal() {
   const { settings, setTheme, setGridOverlay } = useSettings()
 
   return (
-    <Dialog.Root open={open} onOpenChange={(e) => onOpenChange(e.open)}>
+    <Portal>
       {/* Backdrop */}
       <Dialog.Backdrop className={overlay} />
 
@@ -329,6 +325,6 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
           </Dialog.CloseTrigger>
         </Dialog.Content>
       </Dialog.Positioner>
-    </Dialog.Root>
+    </Portal>
   )
 }

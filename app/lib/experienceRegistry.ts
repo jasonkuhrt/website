@@ -25,8 +25,8 @@ import {
   Mountain,
   Presentation,
 } from 'lucide-react'
-import { token } from '../../styled-system/tokens'
-import type { Experience } from '../data/schemas/experiences/__.js'
+import { token } from '#styled-system/tokens'
+import type { Experience } from '#~/data/schemas/experiences/__.js'
 import {
   Achievement,
   Education,

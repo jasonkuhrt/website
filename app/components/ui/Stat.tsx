@@ -1,4 +1,4 @@
-import { L, T, UI } from '../__'
+import { L, Text, UI } from '../__'
 
 interface Props {
   /**
@@ -27,15 +27,15 @@ export const Stat: React.FC<Props> = ({ icon, value, label, href }) => {
   const content = (
     <L.Flex.Row align='center' gap='1' title={label}>
       <L.Box width='icon.xs' height='icon.xs'>{icon}</L.Box>
-      <T.Text fontSize='2'>{value}</T.Text>
+      <Text.Text fontSize='2'>{value}</Text.Text>
     </L.Flex.Row>
   )
 
   if (href) {
     return (
-      <UI.Link href={href} external>
+      <UI.Link.Ext href={href}>
         {content}
-      </UI.Link>
+      </UI.Link.Ext>
     )
   }
 

@@ -1,45 +1,29 @@
-import { A, F, L, T, UI } from '../components/__'
-import { createHomePageMeta } from '../lib/metaHelpers'
+import { A, F, L, Text, UI } from '#~/components/__'
+import { profile } from '#~/data/profile'
+import { createHomePageMeta } from '#~/lib/metaHelpers'
 import type { Route } from './+types/home'
 
-export const meta: Route.MetaFunction = () =>
-  createHomePageMeta('Personal website of Jason Kuhrt')
+export const meta: Route.MetaFunction = () => createHomePageMeta('Personal website of Jason Kuhrt')
 
-export default function Home() {
+const Home: React.FC<Route.ComponentProps> = () => {
   return (
     <L.PageSection withContainer={false}>
-      <L.Cover minHeight='[60vh]'>
-        {/* Avatar */}
-        <UI.Avatar
-          src='/images/avatar2@1x.jpg'
-          alt='Jason Kuhrt'
-          size='lg'
-          border
-          width={128}
-          height={128}
-        />
+      <L.Cover>
+        <A.Avatar scale='24' />
 
         {/* Name */}
-        <T.DisplayHero marginBottom='6'>
+        <Text.DisplayHero>
           Jason Kuhrt
-        </T.DisplayHero>
+        </Text.DisplayHero>
 
         {/* Bio */}
-        <T.P
-          fontSize='5'
-          lineHeight='5'
-          textAlign='center'
-          maxWidth='42'
-          marginBottom='8'
-          color='text.secondary'
-        >
-          Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering. Heart humanities. In alternate universes ⊻ Coureur de
-          Bois, Architect, Athlete, Lego Master Builder.
-        </T.P>
+        <Text.P textAlign={'center'}>
+          {profile.tagline}
+        </Text.P>
 
         {/* Location */}
         <L.Flex.Item marginBottom='8'>
-          <A.LocationBadge location='Montreal, Canada' />
+          <UI.Badge icon='MapPin' scale='4'>Montreal, Canada</UI.Badge>
         </L.Flex.Item>
 
         {/* Social Links */}
@@ -48,3 +32,5 @@ export default function Home() {
     </L.PageSection>
   )
 }
+
+export default Home

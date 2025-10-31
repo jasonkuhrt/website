@@ -1,5 +1,5 @@
 import { Cloud, Github, Mail } from 'lucide-react'
-import { socialLinks } from '../../data/profile.js'
+import { socialLinks } from '#~/data/profile.js'
 import { L, UI } from '../__'
 import { Bluesky } from '../icons/Bluesky'
 
@@ -11,11 +11,11 @@ const iconComponents: Record<string, React.ComponentType<{ className?: string }>
   cloud: Cloud,
 }
 
-export interface SocialsProps {
+interface Props {
   className?: string
 }
 
-export function Socials({ className }: SocialsProps) {
+export const Socials: React.FC<Props> = ({ className }) => {
   return (
     <L.Cluster gap='4' className={className}>
       {socialLinks.map((socialLink) => {

@@ -1,6 +1,6 @@
-import { css } from '../../../styled-system/css'
-import { Box } from '../../../styled-system/jsx'
-import { T, UI } from '../__'
+import { css } from '#styled-system/css'
+import { Box } from '#styled-system/jsx'
+import { Text, UI } from '../__'
 
 const linkInline = css({
   display: 'inline-block',
@@ -43,23 +43,22 @@ export const IconLink: React.FC<Props> = ({
 }) => {
   if (href) {
     return (
-      <UI.Link
+      <UI.Link.Ext
         href={href}
         variant='subtle'
-        external
         title={title}
         className={linkInline}
       >
         <Box className={iconClassName}>{icon}</Box>
-      </UI.Link>
+      </UI.Link.Ext>
     )
   }
 
   if (fallback) return <>{fallback}</>
 
   return (
-    <T.Text fontSize='2' color='border.default'>
+    <Text.Text fontSize='2' color='border.default'>
       -
-    </T.Text>
+    </Text.Text>
   )
 }

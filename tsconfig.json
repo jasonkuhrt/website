@@ -1,5 +1,5 @@
 {
-  "include": ["app/**/*", "react-router.config.ts", ".react-router/types/**/*", "vite-env.d.ts"],
+  "include": ["src/**/*", "vite-env.d.ts"],
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
@@ -13,10 +13,10 @@
     "jsx": "react-jsx",
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["@react-router/node", "vite/client"],
-    "rootDirs": [".", "./.react-router/types"],
+    "types": ["vite/client"],
     "paths": {
-      "~/*": ["./app/*"]
+      "#~/*": ["./src/*"],
+      "#styled-system/*": ["./styled-system/*"]
     }
   }
 }

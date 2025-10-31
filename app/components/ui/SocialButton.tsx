@@ -1,4 +1,4 @@
-import { cx, css } from '../../../styled-system/css'
+import { cx, css } from '#styled-system/css'
 import { L, UI } from '../__'
 
 const linkBase = css({
@@ -83,10 +83,10 @@ export const SocialButton: React.FC<Props> = ({ icon, href, title, size = 'md' }
   const iconClass = ICON_SIZE_CLASSES[size]
 
   return (
-    <UI.Link href={href} external className={cx(linkBase, linkClass)} title={title}>
+    <UI.Link.Ext href={href} className={cx(linkBase, linkClass)} title={title}>
       <L.Flex.Row align='center' justify='center' width='[100%]' height='[100%]'>
         <div className={iconClass}>{icon}</div>
       </L.Flex.Row>
-    </UI.Link>
+    </UI.Link.Ext>
   )
 }

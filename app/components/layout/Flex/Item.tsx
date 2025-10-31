@@ -1,4 +1,4 @@
-import { styled } from '../../../../styled-system/jsx'
+import { styled } from '#styled-system/jsx'
 
 /**
  * Flex Item - Child element in a flex container

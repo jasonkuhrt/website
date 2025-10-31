@@ -1,4 +1,4 @@
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 
 /**
  * Shared table styles for consistent table layouts.

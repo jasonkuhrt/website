@@ -1,44 +1,24 @@
-import { useLocation } from 'react-router'
-import { css } from '../../../styled-system/css'
+import type { JsxStyleProps } from '#styled-system/types'
 import { L, UI } from '../__'
+import { Flex } from '../layout/__'
 import { Logo } from './Logo'
-import { NavLink } from './NavLink'
 
-const logoContainer = css({
-  opacity: '[100]',
-  _hover: {
-    opacity: '[80]',
-  },
-  _active: {
-    opacity: '[40]',
-  },
-})
+interface Props extends JsxStyleProps {}
 
-export function Header() {
-  const location = useLocation()
-  const isHomepage = location.pathname === '/'
-
+export const Header: React.FC<Props> = (props) => {
   return (
-    <L.Flex.Col align='center' gap='2' marginTop='12'>
-      {isHomepage ?
-        (
-          <div className={`${UI.transitions.opacityTransition} ${logoContainer}`}>
-            <Logo width={40} height={40} />
-          </div>
-        ) :
-        (
-          <a className={`${UI.transitions.opacityTransition} ${logoContainer}`} href='/'>
-            <Logo width={40} height={40} />
-          </a>
-        )}
+    <Flex.Col align='center' gap='12' {...props}>
+      <UI.Link.Nav href='/'>
+        <Logo scale='7' />
+      </UI.Link.Nav>
       <L.Cluster gap='3'>
-        <NavLink href='/crafting' />
-        <NavLink href='/writing' />
-        {/* <NavLink href='/capturing' /> */}
-        {/* <NavLink href='/designing' /> */}
-        <NavLink href='/speaking' />
-        <NavLink href='/bio' />
+        {/*<UI.Link.Nav href='/crafting'>crafting</UI.Link.Nav>*/}
+        <UI.Link.Nav href='/writing'>writing</UI.Link.Nav>
+        {/* <UI.Link.Nav href='/capturing'>capturing</UI.Link.Nav> */}
+        {/* <UI.Link.Nav href='/designing'>designing</UI.Link.Nav> */}
+        {/*<UI.Link.Nav href='/speaking'>speaking</UI.Link.Nav>*/}
+        {/*<UI.Link.Nav href='/bio'>bio</UI.Link.Nav>*/}
       </L.Cluster>
-    </L.Flex.Col>
+    </Flex.Col>
   )
 }

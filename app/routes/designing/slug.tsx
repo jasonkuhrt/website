@@ -1,6 +1,5 @@
-import { useParams } from 'react-router'
+import { L, Text } from '#~/components/__'
 import portfolioData from 'virtual:designing-data'
-import { L, T } from '../../components/__'
 import type { Route } from './+types/slug'
 
 interface PortfolioProject {
@@ -29,28 +28,28 @@ export const meta: Route.MetaFunction = ({ params }) => {
   ]
 }
 
-export default function DesigningProject() {
-  const { slug } = useParams()
+const DesigningProject: React.FC<Route.ComponentProps> = ({ params }) => {
+  const { slug } = params
   const project = data.projects.find((p) => p.id === slug)
 
   if (!project || project.hide) {
     return (
-      <L.PageSection spacing="xs" width="wide">
-        <T.H1 fontSize='8' fontWeight='bold'>Project Not Found</T.H1>
+      <L.PageSection spacing='8' width='wide'>
+        <Text.H1 fontSize='8' fontWeight='bold'>Project Not Found</Text.H1>
         <L.Box marginTop='4'>
-          <T.Link href='/designing' color='accent.default' _hover={{ textDecoration: 'underline' }}>
+          <Text.Link href='/designing' color='accent.default' _hover={{ textDecoration: 'underline' }}>
             Back to Portfolio
-          </T.Link>
+          </Text.Link>
         </L.Box>
       </L.PageSection>
     )
   }
 
   return (
-    <L.PageSection spacing="xs">
+    <L.PageSection spacing='xs'>
       <L.Box maxWidth='[648px]'>
         {/* Project header */}
-        <T.ArticleHeader
+        <Text.ArticleHeader
           title={project.title}
           subtitle={project.description}
           tags={project.tags}
@@ -75,10 +74,12 @@ export default function DesigningProject() {
         {/* No images placeholder */}
         {project.images.length === 0 && (
           <L.Box textAlign='center' paddingBlock='12'>
-            <T.P color='text.tertiary'>Project images coming soon</T.P>
+            <Text.P color='text.tertiary'>Project images coming soon</Text.P>
           </L.Box>
         )}
       </L.Box>
     </L.PageSection>
   )
 }
+
+export default DesigningProject

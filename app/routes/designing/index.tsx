@@ -1,6 +1,6 @@
 import portfolioData from 'virtual:designing-data'
-import { F, L } from '../../components/__'
-import { createPageMeta } from '../../lib/metaHelpers'
+import { F, L } from '#~/components/__'
+import { createPageMeta } from '#~/lib/metaHelpers'
 import type { Route } from './+types/index'
 
 const data = portfolioData
@@ -8,7 +8,7 @@ const data = portfolioData
 export const meta: Route.MetaFunction = () =>
   createPageMeta('Designing', 'Portfolio by Jason Kuhrt')
 
-export default function Designing() {
+const Designing: React.FC<Route.ComponentProps> = () => {
   const { projects } = data
   const visibleProjects = projects.filter(p => !p.hide)
 
@@ -21,8 +21,10 @@ export default function Designing() {
   })
 
   return (
-    <L.PageSection spacing="xs" width="wide">
+    <L.PageSection spacing="8" width="wide">
       {sortedProjects.length > 0 && <F.PortfolioGrid projects={sortedProjects} />}
     </L.PageSection>
   )
 }
+
+export default Designing

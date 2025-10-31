@@ -1,5 +1,5 @@
-import { css } from '../../../styled-system/css'
-import { T, UI } from '../__'
+import { css } from '#styled-system/css'
+import { Text, UI } from '../__'
 
 const badge = css({
   paddingInline: '1',
@@ -34,9 +34,9 @@ interface Props {
 export const TagBadge: React.FC<Props> = ({ label, href, onClick }) => {
   if (href) {
     return (
-      <UI.Link href={href} external className={badge}>
-        <T.Text fontSize='2'>{label}</T.Text>
-      </UI.Link>
+      <UI.Link.Ext href={href} className={badge}>
+        <Text.Text fontSize='2'>{label}</Text.Text>
+      </UI.Link.Ext>
     )
   }
 
@@ -48,14 +48,14 @@ export const TagBadge: React.FC<Props> = ({ label, href, onClick }) => {
         className={badge}
         aria-label={label}
       >
-        <T.Text fontSize='2'>{label}</T.Text>
+        <Text.Text fontSize='2'>{label}</Text.Text>
       </button>
     )
   }
 
   return (
     <span className={badge}>
-      <T.Text fontSize='2'>{label}</T.Text>
+      <Text.Text fontSize='2'>{label}</Text.Text>
     </span>
   )
 }

@@ -1,4 +1,4 @@
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 
 /**
  * Hide element on small screens, show on small breakpoint and above

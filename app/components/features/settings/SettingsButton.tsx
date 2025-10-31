@@ -4,9 +4,8 @@
  * Simple button with settings icon that opens the modal
  */
 
-import { Settings } from 'lucide-react'
-import { useState } from 'react'
-import { css } from '../../../../styled-system/css'
+import { Dialog } from '@ark-ui/react/dialog'
+import { css } from '#styled-system/css'
 import { UI } from '../../__'
 import { SettingsModal } from './SettingsModal'
 
@@ -22,23 +21,20 @@ const buttonPadding = css({
 })
 
 export function SettingsButton() {
-  const [open, setOpen] = useState(false)
-
   return (
-    <>
-      <UI.Button
-        variant='ghost'
-        className={`${buttonPadding} ${buttonOpacity}`}
-        aria-label='Settings'
-        title='Settings'
-        onClick={() => setOpen(true)}
-      >
-        <UI.Icon size='lg'>
-          <Settings />
-        </UI.Icon>
-      </UI.Button>
+    <Dialog.Root>
+      <Dialog.Trigger asChild>
+        <UI.Button
+          variant='ghost'
+          className={`${buttonPadding} ${buttonOpacity}`}
+          aria-label='Settings'
+          title='Settings'
+        >
+          <UI.Badge icon='Settings' scale='7' />
+        </UI.Button>
+      </Dialog.Trigger>
 
-      <SettingsModal open={open} onOpenChange={setOpen} />
-    </>
+      <SettingsModal />
+    </Dialog.Root>
   )
 }

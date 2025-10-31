@@ -1,4 +1,4 @@
-import { L, T, UI } from '../__'
+import { L, Text, UI } from '../__'
 
 interface Props {
   /**
@@ -33,11 +33,11 @@ export const ArticleHeader: React.FC<Props> = ({
   return (
     <L.Box as='header' textAlign='center' marginBottom='8'>
       {titleVariant === 'display-xl' ?
-        <T.DisplayXL>{title}</T.DisplayXL> :
+        <Text.DisplayXL>{title}</Text.DisplayXL> :
         (
-          <T.H1 fontSize='14' fontWeight='bold' marginBottom='2'>
+          <Text.H1 fontSize='14' fontWeight='bold' marginBottom='2'>
             {title}
-          </T.H1>
+          </Text.H1>
         )}
 
       {tags && tags.length > 0 && (
@@ -46,7 +46,7 @@ export const ArticleHeader: React.FC<Props> = ({
         </L.Flex.Row>
       )}
 
-      {subtitle && <T.P color='text.secondary'>{subtitle}</T.P>}
+      {subtitle && <Text.P color='text.secondary'>{subtitle}</Text.P>}
     </L.Box>
   )
 }

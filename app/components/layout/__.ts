@@ -24,7 +24,7 @@
  */
 
 // Tier 1: Core Primitives
-export { Box } from '../../../styled-system/jsx'
+export { Box } from '#styled-system/jsx'
 export { Center } from './Center'
 export { Cluster } from './Cluster'
 export { Container } from './Container'

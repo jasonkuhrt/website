@@ -1,20 +1,8 @@
-import { css } from '../../../styled-system/css'
+import { css, cx } from '#styled-system/css'
 
 const cardBase = css({
   border: '1px solid',
   borderColor: 'border.default',
-})
-
-const cardRounded = css({
-  borderRadius: '1',
-})
-
-const cardHoverable = css({
-  transitionProperty: '[border-color]',
-  transitionDuration: 'base',
-  _hover: {
-    borderColor: 'border.hover',
-  },
 })
 
 interface Props {
@@ -54,12 +42,21 @@ export const Card: React.FC<Props> = ({
   className = '',
   tabIndex,
 }) => {
-  const roundedClass = rounded ? cardRounded : ''
-  const hoverClass = hoverable ? cardHoverable : ''
-
   return (
     <div
-      className={`${cardBase} ${roundedClass} ${hoverClass} ${className}`}
+      className={cx(
+        cardBase,
+        rounded && css({ borderRadius: '1' }),
+        hoverable &&
+          css({
+            transitionProperty: '[border-color]',
+            transitionDuration: 'base',
+            _hover: {
+              borderColor: 'border.hover',
+            },
+          }),
+        className,
+      )}
       tabIndex={tabIndex}
     >
       {children}

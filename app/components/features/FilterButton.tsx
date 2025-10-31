@@ -1,5 +1,5 @@
-import { css } from '../../../styled-system/css'
-import { L, T, UI } from '../__'
+import { css } from '#styled-system/css'
+import { L, Text, UI } from '../__'
 
 const buttonPadding = css({
   paddingInline: '2',
@@ -39,7 +39,7 @@ export const FilterButton: React.FC<Props> = ({ icon, label, active = true, onCl
     >
       <L.Flex.Row align='center' gap='2'>
         {icon}
-        <T.Text fontSize='2' opacity={active ? '100' : '40'}>{label}</T.Text>
+        <Text.Text fontSize='2' opacity={active ? '100' : '40'}>{label}</Text.Text>
       </L.Flex.Row>
     </UI.Button>
   )

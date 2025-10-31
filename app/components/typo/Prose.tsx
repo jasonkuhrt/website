@@ -1,5 +1,5 @@
 import { type ComponentProps } from 'react'
-import { styled } from '../../../styled-system/jsx'
+import { styled } from '#styled-system/jsx'
 
 const ProseBase = styled('div', {
   base: {

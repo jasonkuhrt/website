@@ -2,7 +2,7 @@
  * Common transition utilities for consistent animations
  */
 
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 
 /**
  * Opacity transition with base duration

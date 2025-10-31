@@ -150,15 +150,26 @@ export const meta = ({ params }: { params: { slug: string } }) => {
 
 **Component Functions**:
 
+**CRITICAL RULE**: All React components (routes AND components) MUST use const arrow function style with `React.FC` type annotation. Function declarations are forbidden.
+
 ```typescript
-// ✅ CORRECT - Typed with Route.ComponentProps
-export default function Post({ loaderData }: Route.ComponentProps) {
+// ✅ CORRECT - Const arrow function with Route.ComponentProps
+const Post: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   const { post } = loaderData // ✅ Full IntelliSense
 }
 
+export default Post
+
 // ✅ ALSO CORRECT - Destructure in parameters
-export default function Post({ loaderData: { post } }: Route.ComponentProps) {
+const Post: React.FC<Route.ComponentProps> = ({ loaderData: { post } }) => {
   // ✅ Direct access to nested data
+}
+
+export default Post
+
+// ❌ WRONG - Function declaration (violates project convention)
+export default function Post({ loaderData }: Route.ComponentProps) {
+  // ❌ Use const arrow function instead
 }
 ```
 
@@ -178,6 +189,35 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
 - ✅ Compile-time type checking of loader data
 - ✅ Refactoring safety - rename fields with confidence
 - ✅ No manual null checks needed (TypeScript knows the shape)
+
+### Import Path Convention
+
+**CRITICAL RULE**: Cross-boundary imports (between top-level `app/` directories) MUST use `#~/*` alias. Imports within the same directory tree use relative paths. Styled-system imports MUST be relative.
+
+**Config**: `package.json`: `"imports": { "#~/*": "./app/*" }` | `tsconfig.json`: `"paths": { "#~/*": ["./app/*"] }`
+
+**Cross-boundary** = Different top-level app dirs: `routes/` ↔ `components/`, `components/` ↔ `data/lib`, `lib/` ↔ `hooks/data`
+
+```typescript
+// ✅ Cross-boundary: Use #~
+import { L, T } from '#~/components/__'
+import { experiences } from '#~/data/experiences.js'
+import { useSettings } from '#~/lib/settings'
+
+// ✅ Within same tree: Relative OK
+import { Flex } from './Flex'
+import { UI } from '../__'
+
+// ✅ Styled-system: MUST use #styled-system alias
+import { css } from '#styled-system/css'
+import { Box } from '#styled-system/jsx'
+import { token } from '#styled-system/tokens'
+
+// ❌ WRONG - Cross-boundary with relative
+import { L, T } from '../../components/__'
+// ❌ WRONG - Styled-system with relative
+import { css } from '../../../styled-system/css'
+```
 
 ### Panda CSS Integration
 
@@ -263,6 +303,68 @@ If a string looks like a token path (contains `.` and starts with token category
 - Before any commit, grep for stringly-typed token references
 - Zero tolerance for bypassing type safety
 - When in doubt, use `token()` - it works everywhere and is always type-safe
+
+### CSS Definition Hoisting Rule
+
+**CRITICAL RULE**: Only hoist CSS definitions when they are reused. Single-use styles must be inlined.
+
+**When to Inline (use `className={css({...})}`):**
+- ✅ CSS used only once in the component
+- ✅ Simple, local styling with no reuse
+- ✅ Component-specific styles
+
+**When to Hoist (create `const name = css({...})`):**
+- ✅ Used multiple times in the same component
+- ✅ Shared across multiple components (in separate file like `transitions.ts`)
+- ✅ Complex variants using `cva()`
+- ✅ Base styles combined with variants
+
+**Examples:**
+
+```typescript
+// ❌ WRONG - Hoisted but only used once
+const padding = css({ padding: '4' })
+
+export const Component = () => (
+  <div className={padding}>Content</div>
+)
+
+// ✅ CORRECT - Inlined for single use
+export const Component = () => (
+  <div className={css({ padding: '4' })}>Content</div>
+)
+
+// ✅ CORRECT - Hoisted because reused
+const cardBase = css({
+  padding: '4',
+  border: '1px solid',
+  borderColor: 'border.default',
+})
+
+export const Component = () => (
+  <>
+    <div className={cardBase}>Card 1</div>
+    <div className={cardBase}>Card 2</div>
+  </>
+)
+
+// ✅ CORRECT - Complex variants warrant hoisting
+const button = cva({
+  base: { padding: '2' },
+  variants: {
+    variant: {
+      primary: { backgroundColor: 'accent.default' },
+      secondary: { backgroundColor: 'bg.subtle' },
+    },
+  },
+})
+```
+
+**Benefits:**
+- Less code to scan
+- Co-located styling (clearer intent)
+- No orphaned definitions during refactoring
+- Easier to see what styles apply where
 
 ## Known Issues
 

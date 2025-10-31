@@ -1,6 +1,6 @@
 import * as S from 'effect/Schema'
 import { useEffect, useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useLocalStorage } from '#~/hooks/useLocalStorage'
 
 // ============================================================================
 // Schemas - Define valid values with runtime validation

@@ -1,8 +1,7 @@
 import { Match } from 'effect'
-import { Github, Link, Play, X } from 'lucide-react'
-import { css } from '../../../styled-system/css'
-import { DateString } from '../../data/schemas/DateString.js'
-import type { Experience } from '../../data/schemas/experiences/__.js'
+import { css } from '#styled-system/css'
+import { DateString } from '#~/data/schemas/DateString.js'
+import type { Experience } from '#~/data/schemas/experiences/__.js'
 import { UI } from '../__'
 
 const table = css({
@@ -42,11 +41,6 @@ const cellIcon = css({
   paddingInline: '2',
   textAlign: 'center',
   verticalAlign: 'top',
-})
-
-const icon = css({
-  width: '1',
-  height: '1',
 })
 
 interface Props {
@@ -135,8 +129,7 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
                   <UI.IconLink
                     href={item._tag === 'Speaking' ? item.links?.repo : undefined}
                     title='Slides'
-                    icon={<Github />}
-                    iconClassName={icon}
+                    icon={<UI.Badge icon='Github' scale='1' />}
                   />
                 </td>
                 <td className={cellIcon}>
@@ -147,24 +140,21 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
                       item.url :
                       undefined}
                     title={item._tag === 'Personal' ? 'Learn more' : 'Event Info'}
-                    icon={<Link />}
-                    iconClassName={icon}
+                    icon={<UI.Badge icon='Link' scale='1' />}
                   />
                 </td>
                 <td className={cellIcon}>
                   <UI.IconLink
                     href={item._tag === 'Speaking' ? item.links?.recording : undefined}
                     title='Recording'
-                    icon={<Play />}
-                    iconClassName={icon}
+                    icon={<UI.Badge icon='Play' scale='1' />}
                   />
                 </td>
                 <td className={cellIcon}>
                   <UI.IconLink
                     href={item._tag === 'Speaking' ? item.links?.twitter : undefined}
                     title='Post'
-                    icon={<X />}
-                    iconClassName={icon}
+                    icon={<UI.Badge icon='X' scale='1' />}
                   />
                 </td>
               </tr>

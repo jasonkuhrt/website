@@ -1,29 +1,8 @@
+import { css } from '#styled-system/css'
+import type { MediaItem, Photo } from '#~/data/schemas/photos.js'
 import { Images } from 'lucide-react'
 import { useState } from 'react'
-import { css } from '../../../styled-system/css'
-import type { MediaItem, Photo } from '../../data/schemas/photos.js'
-import { L, T, UI } from '../__'
-
-const grid = css({
-  display: 'grid',
-  gridTemplateColumns: '[1fr]',
-  gap: '[1px]', // Intentional hairline separation
-  sm: {
-    gridTemplateColumns: '[repeat(2, 1fr)]',
-  },
-  md: {
-    gridTemplateColumns: '[repeat(3, 1fr)]',
-  },
-  lg: {
-    gridTemplateColumns: '[repeat(4, 1fr)]',
-  },
-})
-
-const seriesToggle = css({
-  display: 'block',
-  width: 'full',
-  textAlign: 'left',
-})
+import { L, Text, UI } from '../__'
 
 interface Props {
   photos: Photo[]
@@ -70,92 +49,107 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
   }
 
   return (
-    <div className={grid}>
-        {photos.map((photo) => (
-          <>
-            {/* Main photo cell */}
-            <div
-              key={photo.id}
-              className={UI.transitions.opacityTransition}
-              style={{ opacity: shouldDim(photo) ? 0.1 : 1 }}
-            >
-              {photo.type === 'series' ?
-                (
-                  <button
-                    type='button'
-                    className={seriesToggle}
-                    onClick={(e) => toggleSeries(photo.id, e)}
-                  >
-                    {/* Photo Cell Content */}
-                    <UI.MediaCell
-                      src={photo.media[0].path}
-                      alt={photo.caption || 'Photo'}
-                      type={photo.media[0].type}
-                      overlay={
-                        <>
-                          {/* Series indicator */}
-                          {photo.media.length > 1 && (
-                            <div
-                              onMouseEnter={() => handleSeriesIconEnter(photo.id)}
-                              onMouseLeave={handleSeriesIconLeave}
-                              aria-hidden='true'
-                            >
-                              <UI.BadgeOverlay icon={<Images />} />
-                            </div>
-                          )}
-                          {/* Video indicator */}
-                          {photo.media[0].type === 'video' && <UI.VideoIndicator />}
-                        </>
-                      }
-                    />
-                  </button>
-                ) :
-                (
-                  /* Non-series photo (single or video) */
+    <div
+      className={css({
+        display: 'grid',
+        gridTemplateColumns: '[1fr]',
+        gap: '[1px]',
+        sm: {
+          gridTemplateColumns: '[repeat(2, 1fr)]',
+        },
+        md: {
+          gridTemplateColumns: '[repeat(3, 1fr)]',
+        },
+        lg: {
+          gridTemplateColumns: '[repeat(4, 1fr)]',
+        },
+      })}
+    >
+      {photos.map((photo) => (
+        <>
+          {/* Main photo cell */}
+          <div
+            key={photo.id}
+            className={UI.transitions.opacityTransition}
+            style={{ opacity: shouldDim(photo) ? 0.1 : 1 }}
+          >
+            {photo.type === 'series' ?
+              (
+                <button
+                  type='button'
+                  className={css({ display: 'block', width: 'full', textAlign: 'left' })}
+                  onClick={(e) => toggleSeries(photo.id, e)}
+                >
+                  {/* Photo Cell Content */}
                   <UI.MediaCell
                     src={photo.media[0].path}
                     alt={photo.caption || 'Photo'}
                     type={photo.media[0].type}
-                    overlay={photo.type === 'video' && <UI.VideoIndicator />}
+                    overlay={
+                      <>
+                        {/* Series indicator */}
+                        {photo.media.length > 1 && (
+                          <div
+                            onMouseEnter={() => handleSeriesIconEnter(photo.id)}
+                            onMouseLeave={handleSeriesIconLeave}
+                            aria-hidden='true'
+                          >
+                            <UI.BadgeOverlay icon={<Images />} />
+                          </div>
+                        )}
+                        {/* Video indicator */}
+                        {photo.media[0].type === 'video' && <UI.VideoIndicator />}
+                      </>
+                    }
                   />
-                )}
-            </div>
+                </button>
+              ) :
+              (
+                /* Non-series photo (single or video) */
+                <UI.MediaCell
+                  src={photo.media[0].path}
+                  alt={photo.caption || 'Photo'}
+                  type={photo.media[0].type}
+                  overlay={photo.type === 'video' && <UI.VideoIndicator />}
+                />
+              )}
+          </div>
 
-            {/* Expanded media items (shown after main photo) */}
-            {expandedId === photo.id && (
-              <>
-                {getExpandedMedia(photo).map((mediaItem: MediaItem, index: number) => (
-                  <div
-                    key={`${photo.id}-${index}`}
-                    className={UI.transitions.opacityTransition}
-                    style={{ aspectRatio: '1' }}
-                  >
-                    <UI.MediaCell
-                      src={mediaItem.path}
-                      alt={`${photo.caption || 'Photo'} - ${index + 2}`}
-                      type={mediaItem.type}
-                    />
-                  </div>
-                ))}
+          {/* Expanded media items (shown after main photo) */}
+          {expandedId === photo.id && (
+            <>
+              {getExpandedMedia(photo).map((mediaItem: MediaItem, index: number) => (
+                <div
+                  key={`${photo.id}-${index}`}
+                  className={UI.transitions.opacityTransition}
+                  style={{ aspectRatio: '1' }}
+                >
+                  <UI.MediaCell
+                    src={mediaItem.path}
+                    alt={`${photo.caption || 'Photo'} - ${index + 2}`}
+                    type={mediaItem.type}
+                  />
+                </div>
+              ))}
 
-                {/* Caption cell */}
-                {photo.caption && (
-                  <L.Flex.Col
-                    className={UI.transitions.opacityTransition}
-                    justify='center'
-                    backgroundColor='bg.primary'
-                    padding='4'
-                  >
-                    <T.P fontSize='2' color='text.primary' marginBottom='2'>{photo.caption}</T.P>
-                    <T.Text fontSize='2' color='text.tertiary'>
-                      {new Date(photo.date).toLocaleDateString()}
-                    </T.Text>
-                  </L.Flex.Col>
-                )}
-              </>
-            )}
-          </>
-        ))}
+              {/* Caption cell */}
+              {photo.caption && (
+                <L.Flex.Col
+                  className={UI.transitions.opacityTransition}
+                  justify='center'
+                  backgroundColor='bg.primary'
+                  padding='4'
+                >
+                  <Text.P fontSize='2' color='text.primary' marginBottom='2'>{photo.caption}</Text.P>
+                  <Text.Text fontSize='2' color='text.tertiary'>
+                    {new Date(photo.date).toLocaleDateString()}
+                  </Text.Text>
+                </L.Flex.Col>
+              )}
+            </>
+          )}
+        </>
+      ))}
     </div>
   )
 }

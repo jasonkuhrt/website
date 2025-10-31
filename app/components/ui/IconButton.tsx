@@ -1,4 +1,4 @@
-import { cx, css } from '../../../styled-system/css'
+import { cx, css } from '#styled-system/css'
 import * as transitions from './transitions'
 
 const buttonBase = css({

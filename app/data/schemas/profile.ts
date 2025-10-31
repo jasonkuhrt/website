@@ -13,6 +13,7 @@ export class Profile extends S.Class<Profile>('Profile')({
   }),
   birthDate: S.optional(S.String),
   headline: S.String,
+  tagline: S.String,
   summary: S.String,
   location: S.String,
   industry: S.optional(S.String),

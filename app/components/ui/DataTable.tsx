@@ -1,5 +1,5 @@
-import { Box } from '../../../styled-system/jsx'
-import { T, UI } from '../__'
+import { Box } from '#styled-system/jsx'
+import { Text, UI } from '../__'
 
 interface Header {
   /**
@@ -66,9 +66,9 @@ export const DataTable: React.FC<Props> = ({ headers, rows, onRowHover }) => {
           <tr className={UI.tableStyles.headerRow}>
             {headers.map(($header) => (
               <th key={$header.key} className={getHeaderCellClass($header.align)}>
-                <T.Text fontSize='2' color='text.primary' fontWeight='semibold'>
+                <Text.Text fontSize='2' color='text.primary' fontWeight='semibold'>
                   {$header.label}
-                </T.Text>
+                </Text.Text>
               </th>
             ))}
           </tr>

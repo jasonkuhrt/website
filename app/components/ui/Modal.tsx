@@ -1,6 +1,6 @@
+import { css } from '#styled-system/css'
 import { X } from 'lucide-react'
-import { css } from '../../../styled-system/css'
-import { L, T } from '../__'
+import { L, Text } from '../__'
 
 const overlay = css({
   position: 'fixed',
@@ -73,18 +73,18 @@ export const Modal: React.FC<Props> = ({ open, onClose, children, title, maxWidt
       >
         {title && (
           <L.Flex.Row justify='between' align='start' className={header}>
-            <T.H3 fontSize='5' fontWeight='semibold' color='text.primary'>
+            <Text.H3 fontSize='5' fontWeight='semibold' color='text.primary'>
               {title}
-            </T.H3>
+            </Text.H3>
             <button type='button' onClick={onClose} aria-label='Close modal'>
-              <T.Text
+              <Text.Text
                 color='text.tertiary'
                 transitionProperty='colors'
                 transitionDuration='base'
                 _hover={{ color: 'text.secondary' }}
               >
                 <X className={closeIconSize} />
-              </T.Text>
+              </Text.Text>
             </button>
           </L.Flex.Row>
         )}

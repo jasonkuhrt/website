@@ -1,5 +1,5 @@
-import { css } from '../../../styled-system/css'
-import { L, T, UI } from '../__'
+import { css } from '#styled-system/css'
+import { L, Text, UI } from '../__'
 
 const metadataDivider = css({
   marginInline: '2',
@@ -23,11 +23,11 @@ interface Props {
 export const MetadataRow: React.FC<Props> = ({ label, value }) => {
   return (
     <L.Flex.Row align='center'>
-      <T.Text as='dt' fontSize='2' color='text.tertiary' flexShrink={0}>
+      <Text.Text as='dt' fontSize='2' color='text.tertiary' flexShrink={0}>
         {label}
-      </T.Text>
+      </Text.Text>
       <L.Flex.Item grow className={`${metadataDivider} ${UI.dividers.dotted}`} />
-      <T.Text
+      <Text.Text
         as='dd'
         fontSize='2'
         color='text.tertiary'
@@ -37,7 +37,7 @@ export const MetadataRow: React.FC<Props> = ({ label, value }) => {
         textOverflow='ellipsis'
       >
         {value}
-      </T.Text>
+      </Text.Text>
     </L.Flex.Row>
   )
 }

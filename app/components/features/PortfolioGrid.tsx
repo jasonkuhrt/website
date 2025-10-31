@@ -1,40 +1,5 @@
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 import { UI } from '../__'
-
-const grid = css({
-  display: 'grid',
-  gridTemplateColumns: '1fr',
-  gap: '1',
-  sm: {
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-  lg: {
-    gridTemplateColumns: 'repeat(3, 1fr)',
-  },
-  // xl breakpoint removed - not needed (stays at 3 columns)
-})
-
-const item = css({
-  display: 'block',
-  transform: '[scale(0.792)]', // Design choice for compact portfolio layout
-})
-
-const details = css({
-  paddingInline: '4',
-  paddingBlock: '3',
-})
-
-const title = css({
-  fontSize: '2',
-  color: 'text.primary',
-})
-
-const description = css({
-  fontSize: '2',
-  color: 'text.secondary',
-  marginTop: '1',
-  lineClamp: '[2]',
-})
 
 interface PortfolioProject {
   id: string
@@ -49,12 +14,24 @@ interface Props {
 
 export const PortfolioGrid: React.FC<Props> = ({ projects }) => {
   return (
-    <div className={grid}>
+    <div
+      className={css({
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        gap: '1',
+        sm: {
+          gridTemplateColumns: 'repeat(2, 1fr)',
+        },
+        lg: {
+          gridTemplateColumns: 'repeat(3, 1fr)',
+        },
+      })}
+    >
       {projects.map((project) => (
         <a
           key={project.id}
           href={`/designing/${project.id}`}
-          className={item}
+          className={css({ display: 'block', transform: '[scale(0.792)]' })}
         >
           {/* Cover Image */}
           <UI.MediaCell
@@ -63,9 +40,16 @@ export const PortfolioGrid: React.FC<Props> = ({ projects }) => {
             grayscale
           />
           {/* Title and Description */}
-          <div className={details}>
-            <h3 className={title}>{project.title}</h3>
-            <p className={description}>
+          <div className={css({ paddingInline: '4', paddingBlock: '3' })}>
+            <h3 className={css({ fontSize: '2', color: 'text.primary' })}>{project.title}</h3>
+            <p
+              className={css({
+                fontSize: '2',
+                color: 'text.secondary',
+                marginTop: '1',
+                lineClamp: '[2]',
+              })}
+            >
               {project.description || '\u00A0'}
             </p>
           </div>

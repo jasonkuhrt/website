@@ -1,5 +1,5 @@
 import { SegmentGroup } from '@ark-ui/react/segment-group'
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 import { UI } from '../__'
 
 const toggleGroup = css({
@@ -81,7 +81,7 @@ export const ViewToggle: React.FC<Props> = ({ options, value, onChange }) => {
           title={$option.title}
         >
           <SegmentGroup.ItemText>
-            <UI.Icon size='md'>{$option.icon}</UI.Icon>
+            <div className={css({ width: '6', height: '6' })}>{$option.icon}</div>
           </SegmentGroup.ItemText>
           <SegmentGroup.ItemHiddenInput />
         </SegmentGroup.Item>

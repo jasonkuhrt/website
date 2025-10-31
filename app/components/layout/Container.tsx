@@ -1,4 +1,4 @@
-import { cva, cx } from '../../../styled-system/css'
+import { cva, cx } from '#styled-system/css'
 
 /**
  * Container component - provides consistent width constraints and padding

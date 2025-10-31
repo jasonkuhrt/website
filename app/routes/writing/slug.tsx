@@ -1,6 +1,6 @@
+import { L, Text } from '#~/components/__'
+import * as WritingData from '#~/data/writing'
 import { data } from 'react-router'
-import { L, T } from '../../components/__'
-import * as WritingData from '../../data/writing'
 import type { Route } from './+types/slug'
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
@@ -21,7 +21,7 @@ export const meta: Route.MetaFunction = ({ loaderData }) => {
   return [{ title: `${title} | Jason Kuhrt` }]
 }
 
-export default function Post({ loaderData: { post } }: Route.ComponentProps) {
+const Post: React.FC<Route.ComponentProps> = ({ loaderData: { post } }) => {
   const { slug, title } = post
 
   // Get the MDX component from the central data module
@@ -36,12 +36,14 @@ export default function Post({ loaderData: { post } }: Route.ComponentProps) {
     <L.Box paddingBlock='10'>
       <L.Container variant='content'>
         <article data-article={filename}>
-          <T.ArticleHeader title={title} />
-          <T.Prose>
+          <Text.ArticleHeader title={title} />
+          <Text.Prose>
             <Content />
-          </T.Prose>
+          </Text.Prose>
         </article>
       </L.Container>
     </L.Box>
   )
 }
+
+export default Post

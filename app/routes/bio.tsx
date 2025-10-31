@@ -1,16 +1,16 @@
+import { A, F, L, Text } from '#~/components/__'
+import { experiences as experiencesData } from '#~/data/experiences.js'
+import { profile as profileData } from '#~/data/profile.js'
+import { ExperienceOrder } from '#~/data/schemas/experiences/__.js'
+import { createPageMeta } from '#~/lib/metaHelpers'
 import { Array } from 'effect'
 import { List, Table } from 'lucide-react'
 import { useState } from 'react'
-import { A, F, L, T } from '../components/__'
-import { experiences as experiencesData } from '../data/experiences.js'
-import { profile as profileData } from '../data/profile.js'
-import { ExperienceOrder } from '../data/schemas/experiences/__.js'
-import { createPageMeta } from '../lib/metaHelpers'
 import type { Route } from './+types/bio'
 
 export const meta: Route.MetaFunction = () => createPageMeta('Bio', 'About Jason Kuhrt')
 
-export default function Bio() {
+const Bio: React.FC<Route.ComponentProps> = () => {
   const [viewMode, setViewMode] = useState<'timeline' | 'table'>('timeline')
 
   // Sort experiences
@@ -19,39 +19,39 @@ export default function Bio() {
   return (
     <>
       {/* Photo Gallery Section */}
-      <L.PageSection spacing='sm' withContainer={false}>
+      <L.PageSection spacing='12' withContainer={false}>
         <F.PhotoGallery />
       </L.PageSection>
 
       {/* Hero Section */}
       <L.PageSection>
         <L.Flex.Col align='center' gap='4' marginBottom='10'>
-          <T.H2 marginBottom='[0]'>
+          <Text.H2 marginBottom='[0]'>
             {profileData.name.first} {profileData.name.last}
-          </T.H2>
-          <T.Text textStyle='body.base' color='text.secondary' marginBottom='2' textAlign='center'>
+          </Text.H2>
+          <Text.Text textStyle='body.base' color='text.secondary' marginBottom='2' textAlign='center'>
             {profileData.headline}
-          </T.Text>
+          </Text.Text>
           <L.Flex.Item marginBottom='6'>
-            <A.LocationBadge location={profileData.location} variant='inline' />
+            <UI.Badge icon='MapPin' scale='4'>{profileData.location}</UI.Badge>
           </L.Flex.Item>
           <F.Socials />
         </L.Flex.Col>
 
         {/* Bio */}
         <L.Box marginTop='10'>
-          <T.P textStyle='body.lg' marginBottom='8'>
+          <Text.P textStyle='body.lg' marginBottom='8'>
             {profileData.summary}
-          </T.P>
+          </Text.P>
         </L.Box>
       </L.PageSection>
 
       {/* Timeline */}
-      <L.PageSection spacing='md'>
+      <L.PageSection spacing='16'>
         <L.Flex.Row justify='between' align='center' marginBottom='10'>
-          <T.H2 marginBottom='0'>
+          <Text.H2 marginBottom='0'>
             Experiences
-          </T.H2>
+          </Text.H2>
           <A.ViewToggle
             options={[
               { icon: <List />, value: 'timeline', title: 'Timeline view' },
@@ -66,3 +66,5 @@ export default function Bio() {
     </>
   )
 }
+
+export default Bio

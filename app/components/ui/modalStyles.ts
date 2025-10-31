@@ -1,4 +1,4 @@
-import { css } from '../../../styled-system/css'
+import { css } from '#styled-system/css'
 
 /**
  * Shared modal/overlay styles for centered dialogs and popups.

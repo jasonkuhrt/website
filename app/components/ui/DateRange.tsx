@@ -1,5 +1,5 @@
-import { DateString } from '../../data/schemas/DateString'
-import { T } from '../__'
+import { DateString } from '#~/data/schemas/DateString'
+import { Text } from '../__'
 import { hiddenSmall } from './responsive'
 
 interface Props {
@@ -37,19 +37,19 @@ export const DateRange: React.FC<Props> = ({
 
   return (
     <>
-      <T.Text as='span' display={display} fontSize='2' color='text.secondary'>
+      <Text.Text as='span' display={display} fontSize='2' color='text.secondary'>
         {DateString.format(startDate)}
-      </T.Text>
+      </Text.Text>
       {endDate && (
         <>
           {showDash && (
-            <T.Text as='span' className={hiddenSmall} fontSize='2' color='text.secondary'>
+            <Text.Text as='span' className={hiddenSmall} fontSize='2' color='text.secondary'>
               -
-            </T.Text>
+            </Text.Text>
           )}
-          <T.Text as='span' display={display} fontSize='2' color='text.secondary'>
+          <Text.Text as='span' display={display} fontSize='2' color='text.secondary'>
             {DateString.format(endDate)}
-          </T.Text>
+          </Text.Text>
         </>
       )}
     </>

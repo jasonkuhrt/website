@@ -18,6 +18,11 @@ body {
   line-height: 4rem; /* 24px (4 baselines) - maintains grid alignment */
 }
 
+/* Readable line length for paragraphs */
+p {
+  max-width: 65ch; /* ~60-65 characters for optimal readability */
+}
+
 /* View Transitions */
 @view-transition {
   navigation: auto;

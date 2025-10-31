@@ -1,6 +1,6 @@
+import { css } from '#styled-system/css'
 import { format } from 'date-fns'
-import { css } from '../../../styled-system/css'
-import { T, UI } from '../__'
+import { Text, UI } from '../__'
 
 const postCard = css({
   /* Article wrapper */
@@ -59,12 +59,12 @@ export const PostCard: React.FC<Props> = ({
         href={`${basePath}${post.slug}`}
         className={postLink}
       >
-        <T.Text marginBottom='3' fontSize='2' textTransform='uppercase' letterSpacing='wide' color='text.tertiary'>
+        <Text.Text marginBottom='3' fontSize='2' textTransform='uppercase' letterSpacing='wide' color='text.tertiary'>
           {format(post.date, dateFormat)}
-        </T.Text>
-        <T.H3 className={`${UI.transitions.colorTransition} post-title`} marginBottom='4'>
+        </Text.Text>
+        <Text.H3 className={`${UI.transitions.colorTransition} post-title`} marginBottom='4'>
           {post.title}
-        </T.H3>
+        </Text.H3>
       </a>
     </article>
   )

@@ -1,12 +1,6 @@
+import type { ScaleToken } from '#styled-system/tokens'
 import { Container } from './Container'
 import { Section } from './Section'
-
-const SPACING_MAP = {
-  xs: '8',
-  sm: '12',
-  md: '16',
-  lg: '24',
-} as const
 
 interface Props {
   /**
@@ -14,10 +8,12 @@ interface Props {
    */
   children: React.ReactNode
   /**
-   * Vertical padding preset
-   * @default 'lg'
+   * Vertical padding using grid scale token
+   * @default '24' (144px - 24 baselines)
+   * @example <PageSection spacing="8" /> // 48px padding
+   * @example <PageSection spacing="16" /> // 96px padding
    */
-  spacing?: keyof typeof SPACING_MAP
+  spacing?: ScaleToken
   /**
    * Maximum width variant - maps to Container variants
    * @default 'content'
@@ -45,24 +41,24 @@ interface Props {
  *
  * @example
  * // Full-width section without container
- * <PageSection withContainer={false} spacing="sm">
+ * <PageSection withContainer={false} spacing="12">
  *   <PhotoGallery />
  * </PageSection>
  *
  * @example
  * // Custom spacing and width
- * <PageSection spacing="md" width="wide">
+ * <PageSection spacing="16" width="wide">
  *   <DataTable />
  * </PageSection>
  */
 export const PageSection: React.FC<Props> = ({
   children,
-  spacing = 'lg',
+  spacing = '24',
   width = 'content',
   withContainer = true,
 }) => {
   return (
-    <Section paddingBlock={SPACING_MAP[spacing]}>
+    <Section paddingBlock={spacing}>
       {withContainer ? (
         <Container variant={width}>{children}</Container>
       ) : (

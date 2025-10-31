@@ -1,4 +1,5 @@
 import { defineConfig } from '@pandacss/dev'
+import { Obj } from '@wollybeard/kit'
 
 /****************************************
  * GRID-LOCKED DESIGN SYSTEM
@@ -24,153 +25,101 @@ import { defineConfig } from '@pandacss/dev'
  ****************************************/
 // Positive-only spacing tokens (no negatives)
 // Used for properties that don't support negative values (gap, padding, etc.)
-const POSITIVE_SPACING = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '16', '20', '24'] as const
+const POSITIVE_SPACING = {
+  0: '0',
+  1: '1',
+  2: '2',
+  3: '3',
+  4: '4',
+  5: '5',
+  6: '6',
+  7: '7',
+  8: '8',
+  10: '10',
+  12: '12',
+  16: '16',
+  20: '20',
+  24: '24',
+} as const
+
+const scale = {
+  0: { value: '0' },
+  1: { value: '1rem' }, // 6px
+  2: { value: '2rem' }, // 12px
+  3: { value: '3rem' }, // 18px
+  4: { value: '4rem' }, // 24px
+  5: { value: '5rem' }, // 30px
+  6: { value: '6rem' }, // 36px
+  7: { value: '7rem' }, // 42px
+  8: { value: '8rem' }, // 48px
+  10: { value: '10rem' }, // 60px
+  12: { value: '12rem' }, // 72px
+  14: { value: '14rem' }, // 84px
+  16: { value: '16rem' }, // 96px
+  20: { value: '20rem' }, // 120px
+  24: { value: '24rem' }, // 144px
+  28: { value: '28rem' }, // 168px
+  32: { value: '32rem' }, // 192px
+  128: { value: '128rem' }, // 768px
+  213: { value: '213rem' }, // 1280px
+  267: { value: '267rem' }, // 1600px
+}
 
 export default defineConfig({
-  // CSS reset
   preflight: true,
-
-  /****************************************
-   * TYPE SAFETY & RESTRICTIONS
-   ****************************************/
-  // Enforce strict token type-safety
   strictTokens: true,
-
-  // Validate CSS property values against CSS spec
   strictPropertyValues: true,
-
-  // JSX style props: 'minimal' would force css prop only (too breaking - 103 errors)
-  // Keeping default 'all' for now - can revisit later
-  // jsxStyleProps: 'minimal',
-
-  // Disable CSS shorthands (forces explicit property names)
   shorthands: false,
-
-  // Fail on config validation errors
   validation: 'error',
-
-  /****************************************
-   * CONDITIONS (Pseudo-selectors)
-   * Restrict to only 5 actually used (down from 310 defaults)
-   * CRITICAL: We override ALL conditions (not extend) to remove unused ones
-   ****************************************/
-  conditions: {
-    hover: '&:is(:hover, [data-hover])',
-    focus: '&:is(:focus, [data-focus])',
-    active: '&:is(:active, [data-active])',
-    disabled: '&:is(:disabled, [disabled], [data-disabled])',
-    last: '&:last-child',
-    // Added responsive conditions (required by Panda)
-    base: '@media screen',
-    sm: `@media screen and (min-width: 40rem)`,
-    md: `@media screen and (min-width: 48rem)`,
-    lg: `@media screen and (min-width: 64rem)`,
-  },
-
-  // Where to look for CSS declarations
-  include: ['./app/**/*.{js,jsx,ts,tsx}'],
-
-  // Files to exclude
+  include: ['./src/**/*.{js,jsx,ts,tsx}'],
   exclude: [],
-
   jsxFramework: 'react',
+  presets: [],
+  outdir: 'styled-system',
+  // conditions: {
+  //   hover: '&:is(:hover, [data-hover])',
+  //   focus: '&:is(:focus, [data-focus])',
+  //   active: '&:is(:active, [data-active])',
+  //   disabled: '&:is(:disabled, [disabled], [data-disabled])',
+  //   last: '&:last-child',
+  //   // Added responsive conditions (required by Panda)
+  //   base: '@media screen',
+  //   sm: `@media screen and (min-width: 40rem)`,
+  //   md: `@media screen and (min-width: 48rem)`,
+  //   lg: `@media screen and (min-width: 64rem)`,
+  // },
 
   theme: {
-    /****************************************
-     * BREAKPOINTS
-     * Removed: 2xl, xl (not used)
-     ****************************************/
     breakpoints: {
       sm: '640px',
       md: '768px',
       lg: '1024px',
-      // 2xl, xl removed - not used in codebase
     },
 
     tokens: {
-      /****************************************
-       * UNIFIED SCALE (Baseline Multiples)
-       * Each number = N × 6px when 1rem = 6px
-       * Used across fontSizes, spacing, sizes, radii
-       ****************************************/
-      scale: {
-        0: { value: '0' },
-        1: { value: '1rem' }, // 6px
-        2: { value: '2rem' }, // 12px
-        3: { value: '3rem' }, // 18px
-        4: { value: '4rem' }, // 24px
-        5: { value: '5rem' }, // 30px
-        6: { value: '6rem' }, // 36px
-        7: { value: '7rem' }, // 42px
-        8: { value: '8rem' }, // 48px
-        10: { value: '10rem' }, // 60px
-        12: { value: '12rem' }, // 72px
-        14: { value: '14rem' }, // 84px
-        16: { value: '16rem' }, // 96px
-        20: { value: '20rem' }, // 120px
-        24: { value: '24rem' }, // 144px
-        28: { value: '28rem' }, // 168px
-        32: { value: '32rem' }, // 192px
-        128: { value: '128rem' }, // 768px
-        213: { value: '213rem' }, // 1280px
-        267: { value: '267rem' }, // 1600px
-      },
-
-      /****************************************
-       * FONT SIZES (Reference unified scale)
-       ****************************************/
-      fontSizes: {
-        1: { value: '{scale.1}', description: '6px - Tiny text (1 baseline)' },
-        2: { value: '{scale.2}', description: '12px - Small text (2 baselines)' },
-        3: { value: '{scale.3}', description: '18px - Body text (3 baselines)' },
-        4: { value: '{scale.4}', description: '24px - Emphasized text (4 baselines)' },
-        5: { value: '{scale.5}', description: '30px - H4 headings (5 baselines)' },
-        6: { value: '{scale.6}', description: '36px - H3 headings (6 baselines)' },
-        7: { value: '{scale.7}', description: '42px - H2 headings (7 baselines)' },
-        8: { value: '{scale.8}', description: '48px - H2 large (8 baselines)' },
-        10: { value: '{scale.10}', description: '60px - H1 headings (10 baselines)' },
-        12: { value: '{scale.12}', description: '72px - Display text (12 baselines)' },
-        14: { value: '{scale.14}', description: '84px - Hero display (14 baselines)' },
-      },
-
-      /****************************************
-       * LINE HEIGHTS (Reference unified scale)
-       ****************************************/
-      lineHeights: {
-        3: { value: '{scale.3}' }, // 18px (3 baselines)
-        4: { value: '{scale.4}' }, // 24px (4 baselines)
-        5: { value: '{scale.5}' }, // 30px (5 baselines)
-        6: { value: '{scale.6}' }, // 36px (6 baselines)
-        8: { value: '{scale.8}' }, // 48px (8 baselines)
-        10: { value: '{scale.10}' }, // 60px (10 baselines)
-        14: { value: '{scale.14}' }, // 84px (14 baselines)
-      },
-
-      /****************************************
-       * SPACING (Reference unified scale)
-       ****************************************/
-      spacing: {
-        0: { value: '{scale.0}' },
-        1: { value: '{scale.1}' }, // 6px
-        2: { value: '{scale.2}' }, // 12px
-        3: { value: '{scale.3}' }, // 18px
-        4: { value: '{scale.4}' }, // 24px
-        5: { value: '{scale.5}' }, // 30px
-        6: { value: '{scale.6}' }, // 36px
-        7: { value: '{scale.7}' }, // 42px
-        8: { value: '{scale.8}' }, // 48px
-        10: { value: '{scale.10}' }, // 60px
-        12: { value: '{scale.12}' }, // 72px
-        16: { value: '{scale.16}' }, // 96px
-        20: { value: '{scale.20}' }, // 120px
-        24: { value: '{scale.24}' }, // 144px
-        28: { value: '{scale.28}' }, // 168px
-        32: { value: '{scale.32}' }, // 192px
-      },
-
-      /****************************************
-       * FONT FAMILIES
-       ****************************************/
+      fontSizes: Obj.pick(scale, [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14,
+      ]),
+      lineHeights: Obj.pick(scale, [
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        14,
+      ]),
+      spacing: scale,
       fonts: {
         sans: {
           value: '"Inter Variable", system-ui, sans-serif',
@@ -185,30 +134,18 @@ export default defineConfig({
           description: 'Code font - code blocks (142 ligatures)',
         },
       },
-
-      /****************************************
-       * FONT WEIGHTS
-       ****************************************/
       fontWeights: {
         normal: { value: 400 },
         medium: { value: 500 },
         semibold: { value: 600 },
         bold: { value: 700 },
       },
-
-      /****************************************
-       * LETTER SPACING
-       ****************************************/
       letterSpacings: {
         tighter: { value: '-0.03em', description: 'For large display text' },
         tight: { value: '-0.02em', description: 'For headings' },
         normal: { value: '0em', description: 'Default spacing' },
         wide: { value: '0.05em', description: 'For uppercase text' },
       },
-
-      /****************************************
-       * OPACITY SCALE
-       ****************************************/
       opacity: {
         0: { value: '0' },
         10: { value: '0.1' },
@@ -221,11 +158,6 @@ export default defineConfig({
         80: { value: '0.8' },
         100: { value: '1' },
       },
-
-      /****************************************
-       * COLORS (Modern oklch Color Space)
-       * Perceptually uniform, wide gamut (P3), WCAG-compliant
-       ****************************************/
       colors: {
         // Neutral gray - perceptually uniform 12-step scale
         gray: {
@@ -942,172 +874,144 @@ export default defineConfig({
         */
       },
 
-      /****************************************
-       * BORDER RADIUS (Reference unified scale)
-       ****************************************/
       radii: {
-        1: { value: '{scale.1}' }, // 6px (1 baseline)
-        2: { value: '{scale.2}' }, // 12px (2 baselines)
+        1: scale[1], // 6px (1 baseline)
+        2: scale[2], // 12px (2 baselines)
         full: { value: '9999px' }, // Fully rounded (circles/pills)
       },
 
-      /****************************************
-       * SIZES (Reference unified scale)
-       ****************************************/
       sizes: {
         container: {
-          content: { value: '{scale.128}', description: '768px (128 baselines) - text-heavy content' },
-          standard: { value: '{scale.213}', description: '~1278px (213 baselines) - general layouts' },
-          wide: { value: '{scale.267}', description: '~1602px (267 baselines) - wide content like galleries' },
+          content: scale[128],
+          standard: scale[213],
+          wide: scale[267],
         },
         full: { value: '100%', description: 'Full width (100%)' },
         half: { value: '50%', description: 'Half width (50%)' },
-        icon: {
-          3: { value: '{scale.3}', description: '18px (3 baselines) - extra small icons' },
-          4: { value: '{scale.4}', description: '24px (4 baselines) - small icons' },
-          6: { value: '{scale.6}', description: '36px (6 baselines) - medium icons' },
-          7: { value: '{scale.7}', description: '42px (7 baselines) - large icons' },
-          8: { value: '{scale.8}', description: '48px (8 baselines) - extra large icons' },
-        },
+        // icon: Obj.pick(scale, [3, 4, 6, 7, 8]),
+        ...scale, // Add all scale values to sizes token
       },
+      // gridColumns: {
+      //   1: { value: '1' },
+      //   2: { value: '2' },
+      //   3: { value: '3' },
+      //   4: { value: '4' },
+      //   6: { value: '6' },
+      //   12: { value: '12' },
+      // },
 
-      /****************************************
-       * GRID COLUMNS
-       ****************************************/
-      gridColumns: {
-        1: { value: '1' },
-        2: { value: '2' },
-        3: { value: '3' },
-        4: { value: '4' },
-        6: { value: '6' },
-        12: { value: '12' },
-      },
-
-      /****************************************
-       * TRANSITIONS
-       ****************************************/
-      durations: {
-        fast: { value: '150ms' },
-        base: { value: '200ms' },
-        slow: { value: '300ms' },
-      },
+      // durations: {
+      //   fast: { value: '150ms' },
+      //   base: { value: '200ms' },
+      //   slow: { value: '300ms' },
+      // },
     },
 
-    /****************************************
-     * TEXT STYLES (Typography System)
-     * Using numeric scale: larger font sizes than before due to grid alignment
-     ****************************************/
-    textStyles: {
-      // Display/Marketing
-      'display.hero': {
-        value: {
-          fontSize: 14, // 84px (14 baselines) - was ~67px
-          lineHeight: 14,
-          fontWeight: 'bold',
-          fontFamily: 'serif',
-          letterSpacing: 'tighter',
-        },
-      },
-      'display.xl': {
-        value: {
-          fontSize: 12, // 72px (12 baselines) - was ~67px
-          lineHeight: 14,
-          fontWeight: 'bold',
-          fontFamily: 'serif',
-          letterSpacing: 'tighter',
-        },
-      },
+    // textStyles: {
+    //   'display.hero': {
+    //     value: {
+    //       fontSize: 14, // 84px (14 baselines) - was ~67px
+    //       lineHeight: 14,
+    //       fontWeight: 'bold',
+    //       fontFamily: 'serif',
+    //       letterSpacing: 'tighter',
+    //     },
+    //   },
+    //   'display.xl': {
+    //     value: {
+    //       fontSize: 12, // 72px (12 baselines) - was ~67px
+    //       lineHeight: 14,
+    //       fontWeight: 'bold',
+    //       fontFamily: 'serif',
+    //       letterSpacing: 'tighter',
+    //     },
+    //   },
+    //   'heading.1': {
+    //     value: {
+    //       fontSize: 10, // 60px (10 baselines) - was ~51px
+    //       lineHeight: 10,
+    //       fontWeight: 'bold',
+    //       fontFamily: 'sans',
+    //       letterSpacing: '-0.025em',
+    //     },
+    //   },
+    //   'heading.2': {
+    //     value: {
+    //       fontSize: 8, // 48px (8 baselines) - was ~38px
+    //       lineHeight: 8,
+    //       fontWeight: 'bold',
+    //       fontFamily: 'sans',
+    //       letterSpacing: 'tight',
+    //     },
+    //   },
+    //   'heading.3': {
+    //     value: {
+    //       fontSize: 6, // 36px (6 baselines) - was ~28px
+    //       lineHeight: 6,
+    //       fontWeight: 'semibold',
+    //       fontFamily: 'sans',
+    //     },
+    //   },
+    //   'heading.4': {
+    //     value: {
+    //       fontSize: 5, // 30px (5 baselines) - was ~21px
+    //       lineHeight: 5,
+    //       fontWeight: 'semibold',
+    //       fontFamily: 'sans',
+    //     },
+    //   },
 
-      // Headings
-      'heading.1': {
-        value: {
-          fontSize: 10, // 60px (10 baselines) - was ~51px
-          lineHeight: 10,
-          fontWeight: 'bold',
-          fontFamily: 'sans',
-          letterSpacing: '-0.025em',
-        },
-      },
-      'heading.2': {
-        value: {
-          fontSize: 8, // 48px (8 baselines) - was ~38px
-          lineHeight: 8,
-          fontWeight: 'bold',
-          fontFamily: 'sans',
-          letterSpacing: 'tight',
-        },
-      },
-      'heading.3': {
-        value: {
-          fontSize: 6, // 36px (6 baselines) - was ~28px
-          lineHeight: 6,
-          fontWeight: 'semibold',
-          fontFamily: 'sans',
-        },
-      },
-      'heading.4': {
-        value: {
-          fontSize: 5, // 30px (5 baselines) - was ~21px
-          lineHeight: 5,
-          fontWeight: 'semibold',
-          fontFamily: 'sans',
-        },
-      },
+    //   // Body text
+    //   'body.lg': {
+    //     value: {
+    //       fontSize: 5, // 30px (5 baselines) - was ~21px
+    //       lineHeight: 5,
+    //       fontFamily: 'serif',
+    //     },
+    //   },
+    //   'body.base': {
+    //     value: {
+    //       fontSize: 3, // 18px (3 baselines) - was 16px
+    //       lineHeight: 4, // 24px (4 baselines) for comfortable reading
+    //       fontFamily: 'serif',
+    //     },
+    //   },
+    //   'body.sm': {
+    //     value: {
+    //       fontSize: 2, // 12px (2 baselines) - was ~14px
+    //       lineHeight: 3, // 18px (3 baselines)
+    //       fontFamily: 'serif',
+    //     },
+    //   },
+    //   'body.xs': {
+    //     value: {
+    //       fontSize: 2, // 12px (2 baselines) - was ~12px
+    //       lineHeight: 3, // 18px (3 baselines)
+    //       fontFamily: 'serif',
+    //     },
+    //   },
 
-      // Body text
-      'body.lg': {
-        value: {
-          fontSize: 5, // 30px (5 baselines) - was ~21px
-          lineHeight: 5,
-          fontFamily: 'serif',
-        },
-      },
-      'body.base': {
-        value: {
-          fontSize: 3, // 18px (3 baselines) - was 16px
-          lineHeight: 4, // 24px (4 baselines) for comfortable reading
-          fontFamily: 'serif',
-        },
-      },
-      'body.sm': {
-        value: {
-          fontSize: 2, // 12px (2 baselines) - was ~14px
-          lineHeight: 3, // 18px (3 baselines)
-          fontFamily: 'serif',
-        },
-      },
-      'body.xs': {
-        value: {
-          fontSize: 2, // 12px (2 baselines) - was ~12px
-          lineHeight: 3, // 18px (3 baselines)
-          fontFamily: 'serif',
-        },
-      },
+    //   // Special
+    //   caption: {
+    //     value: {
+    //       fontSize: 2, // 12px (2 baselines)
+    //       lineHeight: 3,
+    //       textTransform: 'uppercase',
+    //       letterSpacing: 'wide',
+    //       color: 'text.tertiary',
+    //     },
+    //   },
 
-      // Special
-      caption: {
-        value: {
-          fontSize: 2, // 12px (2 baselines)
-          lineHeight: 3,
-          textTransform: 'uppercase',
-          letterSpacing: 'wide',
-          color: 'text.tertiary',
-        },
-      },
+    //   label: {
+    //     value: {
+    //       fontSize: 2, // 12px (2 baselines)
+    //       lineHeight: 3,
+    //       fontWeight: 'medium',
+    //       letterSpacing: 'wide',
+    //     },
+    //   },
+    // },
 
-      label: {
-        value: {
-          fontSize: 2, // 12px (2 baselines)
-          lineHeight: 3,
-          fontWeight: 'medium',
-          letterSpacing: 'wide',
-        },
-      },
-    },
-
-    /****************************************
-     * SEMANTIC TOKENS (Dark Mode Support)
-     ****************************************/
     semanticTokens: {
       colors: {
         text: {
@@ -1333,471 +1237,413 @@ export default defineConfig({
           },
         },
       },
-
-      // Shadow system (tokenized elevation)
-      shadows: {
-        xs: {
-          value: '0 1px 2px rgb(0 0 0 / 0.05)',
-          description: 'Extra small shadow',
-        },
-        sm: {
-          value: '0 2px 4px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.06)',
-          description: 'Small shadow',
-        },
-        base: {
-          value: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-          description: 'Base shadow',
-        },
-        md: {
-          value: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-          description: 'Medium shadow',
-        },
-        lg: {
-          value: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-          description: 'Large shadow',
-        },
-        xl: {
-          value: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-          description: 'Extra large shadow',
-        },
-      },
+      // Semantic scale token (positive grid values for sizing)
+      scale: scale,
+      // // Shadow system (tokenized elevation)
+      // shadows: {
+      //   xs: {
+      //     value: '0 1px 2px rgb(0 0 0 / 0.05)',
+      //     description: 'Extra small shadow',
+      //   },
+      //   sm: {
+      //     value: '0 2px 4px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.06)',
+      //     description: 'Small shadow',
+      //   },
+      //   base: {
+      //     value: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+      //     description: 'Base shadow',
+      //   },
+      //   md: {
+      //     value: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+      //     description: 'Medium shadow',
+      //   },
+      //   lg: {
+      //     value: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+      //     description: 'Large shadow',
+      //   },
+      //   xl: {
+      //     value: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
+      //     description: 'Extra large shadow',
+      //   },
+      // },
     },
   },
+  // utilities: {
+  //   display: {
+  //     values: ['flex', 'grid', 'block', 'none', 'inline-flex', 'inline-block', 'inline'],
+  //   },
+  //   position: {
+  //     values: ['relative', 'absolute', 'fixed'],
+  //   },
+  //   inset: {},
+  //   top: {},
+  //   right: {},
+  //   bottom: {},
+  //   left: {},
+  //   zIndex: {},
+  //   overflow: {
+  //     values: ['hidden', 'visible', 'auto'],
+  //   },
+  //   overflowX: {},
 
-  /****************************************
-   * UTILITIES (Property Allowlist)
-   *
-   * CRITICAL: This object REPLACES Panda's default utilities.
-   * Only properties listed here will be available in the type system.
-   * Based on audit of 92 properties actually used in the codebase.
-   ****************************************/
-  utilities: {
-    /****************************************
-     * LAYOUT & DISPLAY
-     ****************************************/
-    display: {
-      values: ['flex', 'grid', 'block', 'none', 'inline-flex', 'inline-block', 'inline'],
-    },
-    position: {
-      values: ['relative', 'absolute', 'fixed'],
-    },
-    inset: {},
-    top: {},
-    right: {},
-    bottom: {},
-    left: {},
-    zIndex: {},
-    overflow: {
-      values: ['hidden', 'visible', 'auto'],
-    },
-    overflowX: {},
+  //   flexDirection: {
+  //     values: ['row', 'column', 'row-reverse', 'column-reverse'],
+  //   },
+  //   flexWrap: {
+  //     values: ['wrap', 'nowrap', 'wrap-reverse'],
+  //   },
+  //   flexGrow: {},
+  //   flexShrink: {},
+  //   justifyContent: {},
+  //   alignItems: {},
+  //   gap: { values: POSITIVE_SPACING },
 
-    /****************************************
-     * FLEXBOX
-     ****************************************/
-    flexDirection: {
-      values: ['row', 'column', 'row-reverse', 'column-reverse'],
-    },
-    flexWrap: {
-      values: ['wrap', 'nowrap', 'wrap-reverse'],
-    },
-    flexGrow: {},
-    flexShrink: {},
-    justifyContent: {},
-    alignItems: {},
-    gap: { values: POSITIVE_SPACING },
+  //   gridTemplateColumns: {},
+  //   gridTemplateRows: {},
+  //   gridColumn: {},
+  //   gridRow: {},
 
-    /****************************************
-     * GRID
-     ****************************************/
-    gridTemplateColumns: {},
-    gridTemplateRows: {},
-    gridColumn: {},
-    gridRow: {},
+  //   padding: { values: POSITIVE_SPACING },
+  //   paddingTop: { values: POSITIVE_SPACING },
+  //   paddingRight: { values: POSITIVE_SPACING },
+  //   paddingBottom: { values: POSITIVE_SPACING },
+  //   paddingLeft: { values: POSITIVE_SPACING },
+  //   paddingBlock: { values: POSITIVE_SPACING },
+  //   paddingInline: { values: POSITIVE_SPACING },
+  //   paddingInlineStart: { values: POSITIVE_SPACING },
+  //   paddingInlineEnd: { values: POSITIVE_SPACING },
 
-    /****************************************
-     * SPACING (Linked to baseline grid)
-     ****************************************/
-    padding: { values: POSITIVE_SPACING },
-    paddingTop: { values: POSITIVE_SPACING },
-    paddingRight: { values: POSITIVE_SPACING },
-    paddingBottom: { values: POSITIVE_SPACING },
-    paddingLeft: { values: POSITIVE_SPACING },
-    paddingBlock: { values: POSITIVE_SPACING },
-    paddingInline: { values: POSITIVE_SPACING },
-    paddingInlineStart: { values: POSITIVE_SPACING },
-    paddingInlineEnd: { values: POSITIVE_SPACING },
+  //   margin: { values: 'spacing' },
+  //   marginTop: { values: 'spacing' },
+  //   marginRight: { values: 'spacing' },
+  //   marginBottom: { values: 'spacing' },
+  //   marginLeft: { values: 'spacing' },
+  //   marginBlock: { values: 'spacing' },
+  //   marginInline: { values: 'spacing' },
 
-    margin: { values: 'spacing' },
-    marginTop: { values: 'spacing' },
-    marginRight: { values: 'spacing' },
-    marginBottom: { values: 'spacing' },
-    marginLeft: { values: 'spacing' },
-    marginBlock: { values: 'spacing' },
-    marginInline: { values: 'spacing' },
+  //   width: {},
+  //   height: {},
+  //   minWidth: {},
+  //   minHeight: {},
+  //   maxWidth: {},
+  //   // maxHeight: {}, // ❌ REMOVED: Never used in codebase
+  //   aspectRatio: {},
 
-    /****************************************
-     * SIZING
-     ****************************************/
-    width: {},
-    height: {},
-    minWidth: {},
-    minHeight: {},
-    maxWidth: {},
-    // maxHeight: {}, // ❌ REMOVED: Never used in codebase
-    aspectRatio: {},
+  //   color: { values: 'colors' },
+  //   fontSize: { values: 'fontSizes' },
+  //   fontFamily: { values: 'fonts' },
+  //   fontWeight: { values: 'fontWeights' },
+  //   fontStyle: {},
+  //   lineHeight: { values: 'lineHeights' },
+  //   letterSpacing: { values: 'letterSpacings' },
+  //   textAlign: {
+  //     values: ['left', 'center', 'right'],
+  //   },
+  //   textDecoration: {},
+  //   textTransform: {},
+  //   textOverflow: {},
+  //   whiteSpace: {},
+  //   verticalAlign: {},
+  //   listStyle: {},
 
-    /****************************************
-     * TYPOGRAPHY
-     ****************************************/
-    color: { values: 'colors' },
-    fontSize: { values: 'fontSizes' },
-    fontFamily: { values: 'fonts' },
-    fontWeight: { values: 'fontWeights' },
-    fontStyle: {},
-    lineHeight: { values: 'lineHeights' },
-    letterSpacing: { values: 'letterSpacings' },
-    textAlign: {
-      values: ['left', 'center', 'right'],
-    },
-    textDecoration: {},
-    textTransform: {},
-    textOverflow: {},
-    whiteSpace: {},
-    verticalAlign: {},
-    listStyle: {},
+  //   backgroundColor: { values: 'colors' },
+  //   border: {},
+  //   borderWidth: {},
+  //   borderColor: { values: 'colors' },
+  //   borderRadius: { values: 'radii' },
+  //   borderTop: {},
+  //   borderRight: {},
+  //   borderBottom: {},
+  //   borderLeft: {},
 
-    /****************************************
-     * BACKGROUND & BORDERS
-     ****************************************/
-    backgroundColor: { values: 'colors' },
-    border: {},
-    borderWidth: {},
-    borderColor: { values: 'colors' },
-    borderRadius: { values: 'radii' },
-    borderTop: {},
-    borderRight: {},
-    borderBottom: {},
-    borderLeft: {},
+  //   opacity: { values: 'opacity' },
+  //   boxShadow: { values: 'shadows' },
+  //   filter: {},
+  //   backdropFilter: {},
+  //   transform: {},
 
-    /****************************************
-     * VISUAL EFFECTS
-     ****************************************/
-    opacity: { values: 'opacity' },
-    boxShadow: { values: 'shadows' },
-    filter: {},
-    backdropFilter: {},
-    transform: {},
+  //   transition: {},
+  //   transitionProperty: {},
+  //   transitionDuration: { values: 'durations' },
+  //   // animation: {}, // ❌ REMOVED: Never used (covered by globalCss for view transitions)
 
-    /****************************************
-     * TRANSITIONS & ANIMATIONS
-     ****************************************/
-    transition: {},
-    transitionProperty: {},
-    transitionDuration: { values: 'durations' },
-    // animation: {}, // ❌ REMOVED: Never used (covered by globalCss for view transitions)
+  //   cursor: {
+  //     values: ['pointer', 'default'],
+  //   },
+  //   pointerEvents: {},
+  //   outline: {},
 
-    /****************************************
-     * INTERACTION
-     ****************************************/
-    cursor: {
-      values: ['pointer', 'default'],
-    },
-    pointerEvents: {},
-    outline: {},
+  //   objectFit: {
+  //     values: ['cover'],
+  //   },
+  //   fill: {},
 
-    /****************************************
-     * IMAGES & MEDIA
-     ****************************************/
-    objectFit: {
-      values: ['cover'],
-    },
-    fill: {},
+  //   scrollMarginTop: { values: 'spacing' },
 
-    /****************************************
-     * SCROLL & NAVIGATION
-     ****************************************/
-    scrollMarginTop: { values: 'spacing' },
+  //   viewTransitionName: {},
 
-    /****************************************
-     * VIEW TRANSITIONS (Experimental)
-     ****************************************/
-    viewTransitionName: {},
+  //   clip: {},
 
-    /****************************************
-     * ACCESSIBILITY
-     ****************************************/
-    clip: {},
+  //   lineClamp: {
+  //     values: { 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6' },
+  //     transform(value) {
+  //       return {
+  //         display: '-webkit-box',
+  //         WebkitBoxOrient: 'vertical',
+  //         WebkitLineClamp: value,
+  //         overflow: 'hidden',
+  //       }
+  //     },
+  //   },
+  // },
 
-    /****************************************
-     * CUSTOM UTILITIES
-     ****************************************/
-    lineClamp: {
-      values: { 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6' },
-      transform(value) {
-        return {
-          display: '-webkit-box',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: value,
-          overflow: 'hidden',
-        }
-      },
-    },
-  },
+  // globalCss: {
+  //   // Apply text-box-trim to all typography elements
+  //   'h1, h2, h3, h4, h5, h6, p': {
+  //     textBoxTrim: 'both',
+  //     textBoxEdge: 'cap alphabetic',
+  //   },
 
-  /****************************************
-   * GLOBAL CSS (Vertical Rhythm with text-box-trim)
-   ****************************************/
-  globalCss: {
-    // Apply text-box-trim to all typography elements
-    'h1, h2, h3, h4, h5, h6, p': {
-      textBoxTrim: 'both',
-      textBoxEdge: 'cap alphabetic',
-    },
+  //   // Focus ring system (accessibility)
+  //   '*:focus': {
+  //     outline: 'none', // Remove default outline
+  //   },
+  //   '*:focus-visible': {
+  //     outline: '2px solid',
+  //     outlineColor: 'focus.ring',
+  //     outlineOffset: '2px',
+  //   },
 
-    // Focus ring system (accessibility)
-    '*:focus': {
-      outline: 'none', // Remove default outline
-    },
-    '*:focus-visible': {
-      outline: '2px solid',
-      outlineColor: 'focus.ring',
-      outlineOffset: '2px',
-    },
+  //   // Typography elements with grid-aligned spacing
+  //   h1: {
+  //     fontFamily: 'sans',
+  //     fontSize: 10, // 60px (10 baselines)
+  //     fontWeight: 'bold',
+  //     lineHeight: 10,
+  //     marginBottom: 10,
+  //     letterSpacing: '-0.025em',
+  //   },
+  //   h2: {
+  //     fontFamily: 'sans',
+  //     fontSize: 8, // 48px (8 baselines)
+  //     fontWeight: 'bold',
+  //     lineHeight: 8,
+  //     marginBottom: 8,
+  //     letterSpacing: '-0.02em',
+  //   },
+  //   h3: {
+  //     fontFamily: 'sans',
+  //     fontSize: 6, // 36px (6 baselines)
+  //     fontWeight: 'semibold',
+  //     lineHeight: 6,
+  //     marginBottom: 6,
+  //   },
+  //   h4: {
+  //     fontFamily: 'sans',
+  //     fontSize: 5, // 30px (5 baselines)
+  //     fontWeight: 'semibold',
+  //     lineHeight: 5,
+  //     marginBottom: 5,
+  //   },
+  //   p: {
+  //     margin: 0,
+  //     fontSize: 3, // 18px (3 baselines)
+  //     lineHeight: 4, // 24px (4 baselines) for comfortable reading
+  //     marginBottom: 4,
+  //   },
 
-    // Typography elements with grid-aligned spacing
-    h1: {
-      fontFamily: 'sans',
-      fontSize: 10, // 60px (10 baselines)
-      fontWeight: 'bold',
-      lineHeight: 10,
-      marginBottom: 10,
-      letterSpacing: '-0.025em',
-    },
-    h2: {
-      fontFamily: 'sans',
-      fontSize: 8, // 48px (8 baselines)
-      fontWeight: 'bold',
-      lineHeight: 8,
-      marginBottom: 8,
-      letterSpacing: '-0.02em',
-    },
-    h3: {
-      fontFamily: 'sans',
-      fontSize: 6, // 36px (6 baselines)
-      fontWeight: 'semibold',
-      lineHeight: 6,
-      marginBottom: 6,
-    },
-    h4: {
-      fontFamily: 'sans',
-      fontSize: 5, // 30px (5 baselines)
-      fontWeight: 'semibold',
-      lineHeight: 5,
-      marginBottom: 5,
-    },
-    p: {
-      margin: 0,
-      fontSize: 3, // 18px (3 baselines)
-      lineHeight: 4, // 24px (4 baselines) for comfortable reading
-      marginBottom: 4,
-    },
+  //   // Optical sizing for variable fonts
+  //   body: {
+  //     fontOpticalSizing: 'auto',
+  //     margin: 0,
+  //     padding: 0,
+  //     fontFamily: 'sans',
+  //     fontSize: 3, // 18px (3 baselines) - body text size set in global.css
+  //     color: 'text.primary',
+  //     backgroundColor: 'bg.primary',
+  //     WebkitFontSmoothing: 'antialiased',
+  //     MozOsxFontSmoothing: 'grayscale',
+  //   },
 
-    // Optical sizing for variable fonts
-    body: {
-      fontOpticalSizing: 'auto',
-      margin: 0,
-      padding: 0,
-      fontFamily: 'sans',
-      fontSize: 3, // 18px (3 baselines) - body text size set in global.css
-      color: 'text.primary',
-      backgroundColor: 'bg.primary',
-      WebkitFontSmoothing: 'antialiased',
-      MozOsxFontSmoothing: 'grayscale',
-    },
+  //   // CSS Reset
+  //   '*, *::before, *::after': {
+  //     boxSizing: 'border-box',
+  //   },
 
-    // CSS Reset
-    '*, *::before, *::after': {
-      boxSizing: 'border-box',
-    },
+  //   // Links
+  //   a: {
+  //     color: 'inherit',
+  //     textDecoration: 'none',
+  //     transition: `color {durations.fast}`,
+  //   },
+  //   'a:hover': {
+  //     color: 'accent.default',
+  //   },
 
-    // Links
-    a: {
-      color: 'inherit',
-      textDecoration: 'none',
-      transition: `color {durations.fast}`,
-    },
-    'a:hover': {
-      color: 'accent.default',
-    },
+  //   // Prose styles for MDX content
+  //   '.prose': {
+  //     fontFamily: 'serif',
+  //     fontOpticalSizing: 'auto',
+  //     maxWidth: '65ch',
+  //     color: 'text.secondary',
+  //   },
+  //   '.prose h1, .prose h2, .prose h3': {
+  //     fontFamily: 'sans',
+  //     color: 'text.primary',
+  //   },
+  //   '.prose h1': {
+  //     marginTop: 0,
+  //     marginBottom: 10, // 60px (10 baselines)
+  //   },
+  //   '.prose h2': {
+  //     marginTop: 8, // 48px (8 baselines)
+  //     marginBottom: 6, // 36px (6 baselines)
+  //   },
+  //   '.prose h3': {
+  //     marginTop: 6, // 36px (6 baselines)
+  //     marginBottom: 4, // 24px (4 baselines)
+  //   },
+  //   '.prose p': {
+  //     marginTop: 6, // 36px (6 baselines)
+  //     marginBottom: 6,
+  //     fontFamily: 'serif',
+  //   },
+  //   '.prose p:first-of-type': {
+  //     fontSize: 4, // 24px (4 baselines) - emphasized first paragraph
+  //     lineHeight: 4,
+  //   },
+  //   '.prose a': {
+  //     color: 'accent.default',
+  //     textDecoration: 'underline',
+  //     textDecorationThickness: '1px',
+  //     textUnderlineOffset: '2px',
+  //     transition: `all {durations.fast}`,
+  //   },
+  //   '.prose a:hover': {
+  //     color: 'accent.dark',
+  //     textDecorationThickness: '2px',
+  //   },
+  //   '.prose strong': {
+  //     fontWeight: 'semibold',
+  //     color: 'text.primary',
+  //   },
+  //   '.prose ul, .prose ol': {
+  //     marginTop: 6, // 36px (6 baselines)
+  //     marginBottom: 6,
+  //     paddingLeft: 5, // 30px (5 baselines)
+  //   },
+  //   '.prose li': {
+  //     marginTop: 4, // 24px (4 baselines)
+  //     marginBottom: 4,
+  //   },
+  //   '.prose blockquote': {
+  //     marginTop: 8, // 48px (8 baselines)
+  //     marginBottom: 8,
+  //     paddingLeft: 4, // 24px (4 baselines)
+  //     borderLeft: '4px solid',
+  //     borderColor: 'accent.default',
+  //     fontStyle: 'italic',
+  //     fontFamily: 'serif',
+  //     fontSize: 6, // 36px (6 baselines) - emphasized quotes
+  //     fontWeight: 'medium',
+  //     lineHeight: 6,
+  //     color: 'text.secondary',
+  //   },
+  //   '.prose hr': {
+  //     marginTop: 16, // 96px (16 baselines)
+  //     marginBottom: 16,
+  //     border: 'none',
+  //     borderTop: '1px solid',
+  //     borderColor: 'border.default',
+  //   },
 
-    // Prose styles for MDX content
-    '.prose': {
-      fontFamily: 'serif',
-      fontOpticalSizing: 'auto',
-      maxWidth: '65ch',
-      color: 'text.secondary',
-    },
-    '.prose h1, .prose h2, .prose h3': {
-      fontFamily: 'sans',
-      color: 'text.primary',
-    },
-    '.prose h1': {
-      marginTop: 0,
-      marginBottom: 10, // 60px (10 baselines)
-    },
-    '.prose h2': {
-      marginTop: 8, // 48px (8 baselines)
-      marginBottom: 6, // 36px (6 baselines)
-    },
-    '.prose h3': {
-      marginTop: 6, // 36px (6 baselines)
-      marginBottom: 4, // 24px (4 baselines)
-    },
-    '.prose p': {
-      marginTop: 6, // 36px (6 baselines)
-      marginBottom: 6,
-      fontFamily: 'serif',
-    },
-    '.prose p:first-of-type': {
-      fontSize: 4, // 24px (4 baselines) - emphasized first paragraph
-      lineHeight: 4,
-    },
-    '.prose a': {
-      color: 'accent.default',
-      textDecoration: 'underline',
-      textDecorationThickness: '1px',
-      textUnderlineOffset: '2px',
-      transition: `all {durations.fast}`,
-    },
-    '.prose a:hover': {
-      color: 'accent.dark',
-      textDecorationThickness: '2px',
-    },
-    '.prose strong': {
-      fontWeight: 'semibold',
-      color: 'text.primary',
-    },
-    '.prose ul, .prose ol': {
-      marginTop: 6, // 36px (6 baselines)
-      marginBottom: 6,
-      paddingLeft: 5, // 30px (5 baselines)
-    },
-    '.prose li': {
-      marginTop: 4, // 24px (4 baselines)
-      marginBottom: 4,
-    },
-    '.prose blockquote': {
-      marginTop: 8, // 48px (8 baselines)
-      marginBottom: 8,
-      paddingLeft: 4, // 24px (4 baselines)
-      borderLeft: '4px solid',
-      borderColor: 'accent.default',
-      fontStyle: 'italic',
-      fontFamily: 'serif',
-      fontSize: 6, // 36px (6 baselines) - emphasized quotes
-      fontWeight: 'medium',
-      lineHeight: 6,
-      color: 'text.secondary',
-    },
-    '.prose hr': {
-      marginTop: 16, // 96px (16 baselines)
-      marginBottom: 16,
-      border: 'none',
-      borderTop: '1px solid',
-      borderColor: 'border.default',
-    },
+  //   // Code blocks
+  //   code: {
+  //     fontFamily: 'mono',
+  //     fontVariantLigatures: 'contextual',
+  //     fontSize: '0.9em', // Relative to parent font
+  //   },
+  //   ':not(pre) > code': {
+  //     padding: '1rem', // 6px (1 baseline)
+  //     borderRadius: 1,
+  //     backgroundColor: 'bg.subtle',
+  //     color: 'text.primary',
+  //   },
+  //   pre: {
+  //     fontFamily: 'mono',
+  //     overflowX: 'auto',
+  //     padding: 4, // 24px (4 baselines)
+  //     borderRadius: 1,
+  //     border: '1px solid',
+  //     borderColor: 'border.default',
+  //     margin: '10 0', // 60px (10 baselines) vertical
+  //     fontSize: '0.875rem', // ~5.25px but relative sizing is acceptable here
+  //     lineHeight: 3, // 18px (3 baselines)
+  //   },
+  //   'pre code': {
+  //     padding: 0,
+  //     background: 'none',
+  //     borderRadius: 0,
+  //     fontSize: 'inherit',
+  //   },
 
-    // Code blocks
-    code: {
-      fontFamily: 'mono',
-      fontVariantLigatures: 'contextual',
-      fontSize: '0.9em', // Relative to parent font
-    },
-    ':not(pre) > code': {
-      padding: '1rem', // 6px (1 baseline)
-      borderRadius: 1,
-      backgroundColor: 'bg.subtle',
-      color: 'text.primary',
-    },
-    pre: {
-      fontFamily: 'mono',
-      overflowX: 'auto',
-      padding: 4, // 24px (4 baselines)
-      borderRadius: 1,
-      border: '1px solid',
-      borderColor: 'border.default',
-      margin: '10 0', // 60px (10 baselines) vertical
-      fontSize: '0.875rem', // ~5.25px but relative sizing is acceptable here
-      lineHeight: 3, // 18px (3 baselines)
-    },
-    'pre code': {
-      padding: 0,
-      background: 'none',
-      borderRadius: 0,
-      fontSize: 'inherit',
-    },
+  //   // Shiki syntax highlighting
+  //   'pre.shiki, pre.shiki span': {
+  //     fontFamily: 'mono',
+  //   },
+  //   'pre.shiki span': {
+  //     color: 'var(--shiki-light)',
+  //   },
+  //   '.dark pre.shiki span': {
+  //     color: 'var(--shiki-dark)',
+  //   },
 
-    // Shiki syntax highlighting
-    'pre.shiki, pre.shiki span': {
-      fontFamily: 'mono',
-    },
-    'pre.shiki span': {
-      color: 'var(--shiki-light)',
-    },
-    '.dark pre.shiki span': {
-      color: 'var(--shiki-dark)',
-    },
+  //   // Images
+  //   img: {
+  //     maxWidth: '100%',
+  //     height: 'auto',
+  //   },
+  //   '.dark img.invert-dark': {
+  //     filter: 'invert(1) hue-rotate(180deg)',
+  //   },
 
-    // Images
-    img: {
-      maxWidth: '100%',
-      height: 'auto',
-    },
-    '.dark img.invert-dark': {
-      filter: 'invert(1) hue-rotate(180deg)',
-    },
+  //   // Selection
+  //   '::selection': {
+  //     backgroundColor: 'accent.default',
+  //     color: 'bg.default',
+  //   },
 
-    // Selection
-    '::selection': {
-      backgroundColor: 'accent.default',
-      color: 'bg.default',
-    },
+  //   // Lists
+  //   'ul, ol': {
+  //     margin: '0',
+  //     padding: '0',
+  //     listStylePosition: 'outside',
+  //   },
+  //   li: {
+  //     marginTop: '6px',
+  //   },
 
-    // Lists
-    'ul, ol': {
-      margin: '0',
-      padding: '0',
-      listStylePosition: 'outside',
-    },
-    li: {
-      marginTop: '6px',
-    },
+  //   // Per-article custom styles
+  //   'article[data-article="forto"] img': {
+  //     filter: 'saturate(0.6)',
+  //   },
 
-    // Per-article custom styles
-    'article[data-article="forto"] img': {
-      filter: 'saturate(0.6)',
-    },
-
-    // View Transitions
-    '::view-transition-group(main-content)': {
-      animationDuration: '100ms',
-      animationTimingFunction: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-    },
-    '::view-transition-old(main-content)': {
-      animation: 'slide-down-fade-out 100ms cubic-bezier(0.33, 1, 0.68, 1) forwards',
-      willChange: 'transform, opacity',
-      backfaceVisibility: 'hidden',
-      perspective: '1000px',
-    },
-    '::view-transition-new(main-content)': {
-      animation: 'slide-up-fade-in 100ms cubic-bezier(0.32, 0, 0.67, 0) forwards',
-      willChange: 'transform, opacity',
-      backfaceVisibility: 'hidden',
-      perspective: '1000px',
-    },
-  },
-
-  // The output directory for your css system
-  outdir: 'styled-system',
+  //   // View Transitions
+  //   '::view-transition-group(main-content)': {
+  //     animationDuration: '100ms',
+  //     animationTimingFunction: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+  //   },
+  //   '::view-transition-old(main-content)': {
+  //     animation: 'slide-down-fade-out 100ms cubic-bezier(0.33, 1, 0.68, 1) forwards',
+  //     willChange: 'transform, opacity',
+  //     backfaceVisibility: 'hidden',
+  //     perspective: '1000px',
+  //   },
+  //   '::view-transition-new(main-content)': {
+  //     animation: 'slide-up-fade-in 100ms cubic-bezier(0.32, 0, 0.67, 0) forwards',
+  //     willChange: 'transform, opacity',
+  //     backfaceVisibility: 'hidden',
+  //     perspective: '1000px',
+  //   },
+  // },
 })
