@@ -12,6 +12,8 @@ interface Post {
   category: 'essays' | 'drivel' | 'scribbles'
 }
 
+type MdxModule = { default: React.ComponentType; frontmatter?: { title?: string; date?: string } }
+
 // Load MDX modules with frontmatter at build time
 const essayModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
   '../../content/essays/*.mdx',
@@ -22,6 +24,20 @@ const drivelModules = import.meta.glob<{ frontmatter?: { title?: string; date?: 
   { eager: true },
 )
 const scribbleModules = import.meta.glob<{ frontmatter?: { title?: string; date?: string } }>(
+  '../../content/scribbles/entries/*.mdx',
+  { eager: true },
+)
+
+// Load full MDX modules (with components) for rendering
+const essayMdxModules = import.meta.glob<MdxModule>(
+  '../../content/essays/*.mdx',
+  { eager: true },
+)
+const drivelMdxModules = import.meta.glob<MdxModule>(
+  '../../content/drivel/*.mdx',
+  { eager: true },
+)
+const scribbleMdxModules = import.meta.glob<MdxModule>(
   '../../content/scribbles/entries/*.mdx',
   { eager: true },
 )
@@ -59,3 +75,38 @@ export const drivel = allDrivel
 export const scribbles = allScribbles
   .filter((post) => !post.slug.split('/').pop()?.startsWith('_'))
   .sort((a, b) => b.date.getTime() - a.date.getTime())
+
+/**
+ * Get a single post by slug (category/filename)
+ * @returns Post if found, undefined otherwise
+ */
+export const getPostBySlug = (slug: string): Post | undefined => {
+  const allPosts = [...essays, ...drivel, ...scribbles]
+  return allPosts.find((post) => post.slug === slug)
+}
+
+/**
+ * Get the MDX component for a given post slug
+ * @returns React component if found, undefined otherwise
+ */
+export const getMdxComponent = (slug: string): React.ComponentType | undefined => {
+  const [category, filename] = slug.split('/')
+
+  let modules: Record<string, MdxModule>
+  let moduleKey: string
+
+  if (category === 'essays') {
+    modules = essayMdxModules
+    moduleKey = `../../content/essays/${filename}.mdx`
+  } else if (category === 'drivel') {
+    modules = drivelMdxModules
+    moduleKey = `../../content/drivel/${filename}.mdx`
+  } else if (category === 'scribbles') {
+    modules = scribbleMdxModules
+    moduleKey = `../../content/scribbles/entries/${filename}.mdx`
+  } else {
+    return undefined
+  }
+
+  return modules[moduleKey]?.default
+}

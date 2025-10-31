@@ -17,8 +17,8 @@ import { useSettings } from '../../lib/settings'
 
 const overlay = css({
   position: 'fixed',
-  inset: 0,
-  zIndex: 49, // Below settings button (z-50)
+  inset: '0',
+  zIndex: '49', // Below settings button (z-50)
   pointerEvents: 'none',
   // Repeating horizontal lines every 6px (baseline unit)
   backgroundImage: `repeating-linear-gradient(
@@ -28,16 +28,14 @@ const overlay = css({
     transparent 1px,
     transparent 6px
   )`,
-  opacity: 0.2,
+  opacity: '20',
 })
 
 export function VerticalRhythmOverlay() {
   const { settings, isHydrated } = useSettings()
 
   // Don't render during SSR or if setting is off
-  if (!isHydrated || settings.gridOverlay === 'off') {
-    return null
-  }
+  if (!isHydrated || settings.gridOverlay === 'off') return null
 
   return <div className={overlay} aria-hidden='true' />
 }

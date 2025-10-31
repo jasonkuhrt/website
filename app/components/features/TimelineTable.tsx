@@ -1,49 +1,18 @@
 import { Match } from 'effect'
-import { css } from '../../../styled-system/css'
 import { Github, Link, Play, X } from 'lucide-react'
-import type { Experience } from '../../data/schemas/experiences/__.js'
+import { css } from '../../../styled-system/css'
 import { DateString } from '../../data/schemas/DateString.js'
-
-const tableWrapper = css({
-  overflowX: 'auto',
-})
+import type { Experience } from '../../data/schemas/experiences/__.js'
+import { UI } from '../__'
 
 const table = css({
-  width: '100%',
-  fontSize: 'sm',
-})
-
-const headerRow = css({
-  borderBottom: '1px solid',
-  borderColor: 'border.default',
+  width: '[100%]',
+  fontSize: '2',
 })
 
 const headerCell = css({
-  paddingBlock: '3',
-  paddingInlineEnd: '4',
   color: 'text.primary',
-  fontWeight: 'fontWeights.semibold',
-})
-
-const headerCellLeft = css({
-  textAlign: 'left',
-})
-
-const headerCellCenter = css({
-  textAlign: 'center',
-  paddingInline: '2',
-})
-
-const row = css({
-  borderBottom: '1px solid',
-  borderColor: 'border.subtle',
-  transition: 'background-color {durations.fast}',
-  '&:last-child': {
-    borderBottom: 0,
-  },
-  _hover: {
-    backgroundColor: 'bg.subtle',
-  },
+  fontWeight: 'semibold',
 })
 
 const cellDate = css({
@@ -75,22 +44,9 @@ const cellIcon = css({
   verticalAlign: 'top',
 })
 
-const iconLink = css({
-  color: 'text.tertiary',
-  transition: 'color {durations.fast}',
-  display: 'inline-block',
-  _hover: {
-    color: 'text.primary',
-  },
-})
-
 const icon = css({
-  width: '1rem',
-  height: '1rem',
-})
-
-const emptyIcon = css({
-  color: 'border.default',
+  width: '1',
+  height: '1',
 })
 
 interface Props {
@@ -108,9 +64,8 @@ const getEventType = (tag: Experience['_tag']): string =>
   )
 
 const getDateRange = (item: Experience): string => {
-  if (item._tag === 'Achievement' || item._tag === 'Speaking' || item._tag === 'Personal') {
+  if (item._tag === 'Achievement' || item._tag === 'Speaking' || item._tag === 'Personal')
     return DateString.format(item.date)
-  }
   return `${DateString.format(item.date)} - ${DateString.format(item.endDate)}`
 }
 
@@ -121,8 +76,8 @@ const getTitle = (item: Experience): string =>
       Education: (exp) => exp.degree,
       Achievement: (exp) => exp.title,
       Speaking: (exp) => exp.title,
-      Personal: (exp) => exp.title
-    })
+      Personal: (exp) => exp.title,
+    }),
   )
 
 const getOrganization = (item: Experience): string =>
@@ -132,24 +87,28 @@ const getOrganization = (item: Experience): string =>
       Education: (exp) => exp.institution,
       Achievement: (exp) => exp.issuer,
       Speaking: (exp) => exp.venue,
-      Personal: () => ''
-    })
+      Personal: () => '',
+    }),
   )
 
 export const TimelineTable: React.FC<Props> = ({ items }) => {
   return (
-    <div className={tableWrapper}>
+    <div className={UI.tableStyles.tableWrapper}>
       <table className={table}>
         <thead>
-          <tr className={headerRow}>
-            <th className={`${headerCell} ${headerCellLeft}`}>Date</th>
-            <th className={`${headerCell} ${headerCellLeft}`}>Type</th>
-            <th className={`${headerCell} ${headerCellLeft}`}>Title</th>
-            <th className={`${headerCell} ${headerCellLeft}`}>Organization</th>
-            <th className={`${headerCell} ${headerCellCenter}`}>Slides</th>
-            <th className={`${headerCell} ${headerCellCenter}`}>Info</th>
-            <th className={`${headerCell} ${headerCellCenter}`}>Recording</th>
-            <th className={`${headerCell} ${headerCellCenter}`}>Post</th>
+          <tr className={UI.tableStyles.headerRow}>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellLeft}`}>Date</th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellLeft}`}>Type</th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellLeft}`}>Title</th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellLeft}`}>
+              Organization
+            </th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellCenter}`}>Slides</th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellCenter}`}>Info</th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellCenter}`}>
+              Recording
+            </th>
+            <th className={`${UI.tableStyles.headerCell} ${headerCell} ${UI.tableStyles.headerCellCenter}`}>Post</th>
           </tr>
         </thead>
         <tbody>
@@ -158,7 +117,7 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
             return (
               <tr
                 key={index}
-                className={row}
+                className={UI.tableStyles.row}
               >
                 <td className={cellDate}>
                   {getDateRange(item)}
@@ -173,76 +132,40 @@ export const TimelineTable: React.FC<Props> = ({ items }) => {
                   {org}
                 </td>
                 <td className={cellIcon}>
-                  {item._tag === 'Speaking' && item.links?.repo ?
-                    (
-                      <a
-                        className={iconLink}
-                        href={item.links.repo}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Slides'
-                      >
-                        <Github className={icon} />
-                      </a>
-                    ) :
-                    <span className={emptyIcon}>-</span>}
+                  <UI.IconLink
+                    href={item._tag === 'Speaking' ? item.links?.repo : undefined}
+                    title='Slides'
+                    icon={<Github />}
+                    iconClassName={icon}
+                  />
                 </td>
                 <td className={cellIcon}>
-                  {item._tag === 'Speaking' && item.links?.info ?
-                    (
-                      <a
-                        className={iconLink}
-                        href={item.links.info}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Event Info'
-                      >
-                        <Link className={icon} />
-                      </a>
-                    ) :
-                    item._tag === 'Personal' && item.url ?
-                    (
-                      <a
-                        className={iconLink}
-                        href={item.url}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Learn more'
-                      >
-                        <Link className={icon} />
-                      </a>
-                    ) :
-                    <span className={emptyIcon}>-</span>}
+                  <UI.IconLink
+                    href={item._tag === 'Speaking' ?
+                      item.links?.info :
+                      item._tag === 'Personal' ?
+                      item.url :
+                      undefined}
+                    title={item._tag === 'Personal' ? 'Learn more' : 'Event Info'}
+                    icon={<Link />}
+                    iconClassName={icon}
+                  />
                 </td>
                 <td className={cellIcon}>
-                  {item._tag === 'Speaking' && item.links?.recording ?
-                    (
-                      <a
-                        className={iconLink}
-                        href={item.links.recording}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Recording'
-                      >
-                        <Play className={icon} />
-                      </a>
-                    ) :
-                    <span className={emptyIcon}>-</span>}
+                  <UI.IconLink
+                    href={item._tag === 'Speaking' ? item.links?.recording : undefined}
+                    title='Recording'
+                    icon={<Play />}
+                    iconClassName={icon}
+                  />
                 </td>
                 <td className={cellIcon}>
-                  {item._tag === 'Speaking' && item.links?.twitter ?
-                    (
-                      <a
-                        className={iconLink}
-                        href={item.links.twitter}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='Post'
-                      >
-                        <X className={icon} />
-                      </a>
-                    ) :
-                    <span className={emptyIcon}>-</span>}
+                  <UI.IconLink
+                    href={item._tag === 'Speaking' ? item.links?.twitter : undefined}
+                    title='Post'
+                    icon={<X />}
+                    iconClassName={icon}
+                  />
                 </td>
               </tr>
             )

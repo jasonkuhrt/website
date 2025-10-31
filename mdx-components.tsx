@@ -5,7 +5,7 @@
  * The @mdx-js/rollup plugin automatically imports and uses this file.
  */
 
-import { Blockquote, Code, H1, H2, H3, H4, Li, Link, Ol, P, Pre, Ul } from './app/components/Typography'
+import { Blockquote, Code, H1, H2, H3, H4, Li, Link, Ol, P, Pre, Ul } from './app/components/typo/__'
 
 export function useMDXComponents() {
   return {

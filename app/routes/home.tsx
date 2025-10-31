@@ -1,67 +1,23 @@
-import { MapPin } from 'lucide-react'
-import { css } from '../../styled-system/css'
-import { token } from '../../styled-system/tokens'
-import { L, F, T } from '../components/__'
+import { A, F, L, T, UI } from '../components/__'
+import { createHomePageMeta } from '../lib/metaHelpers'
 import type { Route } from './+types/home'
 
-const avatar = css({
-  borderRadius: token('radii.full'),
-  overflow: 'hidden',
-  width: '8rem',
-  height: '8rem',
-  marginBottom: token('spacing.8'),
-  border: '1px solid',
-  borderColor: 'border.subtle',
-})
-
-const avatarImage = css({
-  objectFit: 'cover',
-})
-
-const bio = css({
-  fontSize: 'lg',
-  lineHeight: 'lg',
-  fontFamily: 'serif',
-  textAlign: 'center',
-  maxWidth: '42rem',
-  marginBottom: token('spacing.8'),
-  color: 'text.secondary',
-})
-
-const location = css({
-  display: 'flex',
-  alignItems: 'center',
-  gap: token('spacing.2'),
-  color: 'text.tertiary',
-  marginBottom: token('spacing.8'),
-})
-
-const locationIcon = css({
-  width: '1rem',
-  height: '1rem',
-})
-
-export const meta: Route.MetaFunction = () => {
-  return [
-    { title: 'Jason Kuhrt' },
-    { name: 'description', content: 'Personal website of Jason Kuhrt' },
-  ]
-}
+export const meta: Route.MetaFunction = () =>
+  createHomePageMeta('Personal website of Jason Kuhrt')
 
 export default function Home() {
   return (
-    <L.Section spacing='xl'>
-      <L.Cover minHeight='60vh'>
+    <L.PageSection withContainer={false}>
+      <L.Cover minHeight='[60vh]'>
         {/* Avatar */}
-        <div className={avatar}>
-          <img
-            src='/images/avatar2@1x.jpg'
-            alt='Jason Kuhrt'
-            width='128'
-            height='128'
-            className={avatarImage}
-          />
-        </div>
+        <UI.Avatar
+          src='/images/avatar2@1x.jpg'
+          alt='Jason Kuhrt'
+          size='lg'
+          border
+          width={128}
+          height={128}
+        />
 
         {/* Name */}
         <T.DisplayHero marginBottom='6'>
@@ -69,20 +25,26 @@ export default function Home() {
         </T.DisplayHero>
 
         {/* Bio */}
-        <p className={bio}>
+        <T.P
+          fontSize='5'
+          lineHeight='5'
+          textAlign='center'
+          maxWidth='42'
+          marginBottom='8'
+          color='text.secondary'
+        >
           Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering. Heart humanities. In alternate universes ⊻ Coureur de
           Bois, Architect, Athlete, Lego Master Builder.
-        </p>
+        </T.P>
 
         {/* Location */}
-        <div className={location}>
-          <MapPin className={locationIcon} />
-          <span>Montreal, Canada</span>
-        </div>
+        <L.Flex.Item marginBottom='8'>
+          <A.LocationBadge location='Montreal, Canada' />
+        </L.Flex.Item>
 
         {/* Social Links */}
         <F.Socials />
       </L.Cover>
-    </L.Section>
+    </L.PageSection>
   )
 }

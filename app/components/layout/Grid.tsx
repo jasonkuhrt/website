@@ -53,9 +53,9 @@ type GridProps = React.ComponentProps<typeof GridStyled> & {
 }
 
 export const Grid: React.FC<GridProps> = ({ autoFit, minColumnWidth = '300px', style, ...props }) => {
-  const autoFitStyle: React.CSSProperties | undefined = autoFit
-    ? { gridTemplateColumns: `repeat(auto-fit, minmax(min(${minColumnWidth}, 100%), 1fr))` }
-    : undefined
+  const autoFitStyle: React.CSSProperties | undefined = autoFit ?
+    { gridTemplateColumns: `repeat(auto-fit, minmax(min(${minColumnWidth}, 100%), 1fr))` } :
+    undefined
 
   return <GridStyled {...props} style={{ ...autoFitStyle, ...style } as any} />
 }

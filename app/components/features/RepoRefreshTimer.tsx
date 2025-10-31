@@ -1,21 +1,5 @@
 import { useEffect, useState } from 'react'
-import { css } from '../../../styled-system/css'
-
-const container = css({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '2',
-  fontSize: 'xs',
-  color: 'text.tertiary',
-})
-
-const label = css({
-  opacity: 0.6,
-})
-
-const countdown = css({
-  fontFamily: 'mono',
-})
+import { L } from '../__'
 
 interface Props {
   fetchedAt: string
@@ -58,9 +42,9 @@ export const RepoRefreshTimer: React.FC<Props> = ({ fetchedAt }) => {
   }, [fetchedAt])
 
   return (
-    <div className={container}>
-      <span className={label}>Data refreshes in:</span>
-      <span className={countdown}>{countdownText}</span>
-    </div>
+    <L.Flex.Row align='center' gap='2' fontSize='2' color='text.tertiary'>
+      <L.Box as='span' opacity='60'>Data refreshes in:</L.Box>
+      <L.Box as='span' fontFamily='mono'>{countdownText}</L.Box>
+    </L.Flex.Row>
   )
 }

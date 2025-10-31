@@ -20,7 +20,7 @@ export function reposDataPlugin(): Plugin {
         } catch (error) {
           console.error('\n❌ Failed to fetch repos data:', error)
           console.error(
-            '\nMake sure GITHUB_TOKEN is set: gh auth token | xargs -I {} sh -c "GITHUB_TOKEN={} pnpm dev"'
+            '\nMake sure GITHUB_TOKEN is set: gh auth token | xargs -I {} sh -c "GITHUB_TOKEN={} pnpm dev"',
           )
           throw error
         }

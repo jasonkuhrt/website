@@ -1,102 +1,47 @@
 import { data } from 'react-router'
-import { css } from '../../../styled-system/css'
 import { L, T } from '../../components/__'
+import * as WritingData from '../../data/writing'
 import type { Route } from './+types/slug'
-
-const container = css({
-  paddingBlock: '10',
-})
-
-const header = css({
-  textAlign: 'center',
-  marginBottom: '8',
-})
-
-type MdxModule = { default: React.ComponentType; frontmatter?: { title?: string } }
-
-// Eagerly load all MDX files
-const essayModules = import.meta.glob<MdxModule>(
-  '../../../content/essays/*.mdx',
-  { eager: true },
-)
-const drivelModules = import.meta.glob<MdxModule>(
-  '../../../content/drivel/*.mdx',
-  { eager: true },
-)
-const scribbleModules = import.meta.glob<MdxModule>(
-  '../../../content/scribbles/entries/*.mdx',
-  { eager: true },
-)
 
 export const loader = async ({ params }: Route.LoaderArgs) => {
   const slug = params['*']
 
   if (!slug) throw data('No slug provided', { status: 404 })
 
-  // Determine category and filename from slug
-  const parts = slug.split('/')
-  if (parts.length !== 2) throw data('Invalid slug format', { status: 404 })
+  // Find the post in the writing data (validates it exists and isn't a draft)
+  const post = WritingData.getPostBySlug(slug)
 
-  const [category, filename] = parts
+  if (!post) throw data(`Post not found: ${slug}`, { status: 404 })
 
-  // Validate category and file exists
-  let moduleKey: string
-  let modules: Record<string, MdxModule>
-
-  if (category === 'essays') {
-    modules = essayModules
-    moduleKey = `../../../content/essays/${filename}.mdx`
-  } else if (category === 'drivel') {
-    modules = drivelModules
-    moduleKey = `../../../content/drivel/${filename}.mdx`
-  } else if (category === 'scribbles') {
-    modules = scribbleModules
-    moduleKey = `../../../content/scribbles/entries/${filename}.mdx`
-  } else {
-    throw data('Invalid category', { status: 404 })
-  }
-
-  const module = modules[moduleKey]
-
-  if (!module) {
-    throw data(`Post not found: ${slug}`, { status: 404 })
-  }
-
-  return {
-    category,
-    filename,
-    slug,
-    title: module?.frontmatter?.title || 'Untitled',
-  }
+  return { post }
 }
 
-export const meta: Route.MetaFunction = ({ data }) => {
-  const title = data?.title || 'Post'
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+  const title = loaderData.post.title
   return [{ title: `${title} | Jason Kuhrt` }]
 }
 
-export default function Post({ loaderData }: Route.ComponentProps) {
-  const { category, filename, title } = loaderData
+export default function Post({ loaderData: { post } }: Route.ComponentProps) {
+  const { slug, title } = post
 
-  // Get the appropriate module
-  let Content
-  if (category === 'essays') Content = essayModules[`../../../content/essays/${filename}.mdx`]?.default
-  else if (category === 'drivel') Content = drivelModules[`../../../content/drivel/${filename}.mdx`]?.default
-  else if (category === 'scribbles')
-    Content = scribbleModules[`../../../content/scribbles/entries/${filename}.mdx`]?.default
+  // Get the MDX component from the central data module
+  const Content = WritingData.getMdxComponent(slug)
 
   if (!Content) return <div>Post not found</div>
 
+  // Extract filename for article data attribute
+  const filename = slug.split('/')[1]
+
   return (
-    <L.Container variant='content' className={container}>
-      <article data-article={filename}>
-        <header className={header}>
-          <T.DisplayXL>
-            {title}
-          </T.DisplayXL>
-        </header>
-        <Content />
-      </article>
-    </L.Container>
+    <L.Box paddingBlock='10'>
+      <L.Container variant='content'>
+        <article data-article={filename}>
+          <T.ArticleHeader title={title} />
+          <T.Prose>
+            <Content />
+          </T.Prose>
+        </article>
+      </L.Container>
+    </L.Box>
   )
 }

@@ -231,6 +231,7 @@ A compositional layout system built with Panda CSS for type-safe, zero-runtime s
 ```
 
 **Important:** Use **numeric values** for spacing props (gap, padding, margin). Numbers automatically map to the spacing scale:
+
 - `gap={3}` → `spacings.3` → `18px` (3 × 6px baseline)
 - `gap={8}` → `spacings.8` → `48px` (8 × 6px baseline)
 
@@ -252,7 +253,7 @@ const header = css({
 **After (layout component):**
 
 ```tsx
-<Flex direction="column" align="center" marginTop="spacings.12">
+<Flex direction='column' align='center' marginTop='spacings.12'>
   ...
 </Flex>
 ```

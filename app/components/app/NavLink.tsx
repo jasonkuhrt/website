@@ -1,22 +1,22 @@
 import { NavLink as RouterNavLink } from 'react-router'
 import { cva } from '../../../styled-system/css'
+import { UI } from '../__'
 
 const navLink = cva({
   base: {
-    fontSize: 'xs',
-    transition: 'opacity {durations.base}',
+    fontSize: '2', // 12px (2 baselines)
     _hover: {
-      opacity: 1,
+      opacity: '[100]',
     },
   },
   variants: {
     active: {
       true: {
         fontWeight: 'bold',
-        opacity: 1,
+        opacity: '[100]',
       },
       false: {
-        opacity: 0.5,
+        opacity: '[50]',
       },
     },
   },
@@ -25,11 +25,9 @@ const navLink = cva({
 export function NavLink({
   href,
   text,
-  activePath,
 }: {
   href: string
   text?: string
-  activePath?: RegExp
 }) {
   const linkText = text ?? href.replace(/^\//, '').replace(/\/$/, '')
 
@@ -37,7 +35,7 @@ export function NavLink({
     <RouterNavLink
       to={href}
       viewTransition
-      className={({ isActive }) => navLink({ active: isActive })}
+      className={({ isActive }) => `${UI.transitions.opacityTransition} ${navLink({ active: isActive })}`}
     >
       {linkText}
     </RouterNavLink>

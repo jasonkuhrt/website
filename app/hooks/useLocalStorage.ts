@@ -96,14 +96,11 @@ export function useLocalStorage<$value>(
     }
 
     const result = S.decodeUnknownEither(jsonSchema)(stored)
-    if (Either.isRight(result)) {
-      setValue(result.right)
-    } else {
+    if (Either.isRight(result)) setValue(result.right)
+    else {
       console.warn(`Failed to decode localStorage key "${key}"`, result.left)
 
-      if (errorPolicy === 'clear') {
-        localStorage.removeItem(key)
-      }
+      if (errorPolicy === 'clear') localStorage.removeItem(key)
     }
 
     setIsHydrated(true)

@@ -5,12 +5,12 @@
  * Uses Effect Schema for runtime validation and type safety.
  */
 
-import * as S from 'effect/Schema'
 import { Order } from 'effect'
+import * as S from 'effect/Schema'
 
+export * from '../DateString.js'
 export * from './Achievement.js'
 export * from './BaseExperience.js'
-export * from '../DateString.js'
 export * from './Education.js'
 export * from './Personal.js'
 export * from './Speaking.js'
@@ -49,5 +49,5 @@ export type Experiences = typeof Experiences.Type
  */
 export const ExperienceOrder: Order.Order<Experience> = Order.mapInput(
   Order.reverse(Order.Date),
-  (exp: Experience) => exp.date
+  (exp: Experience) => exp.date,
 )

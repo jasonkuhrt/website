@@ -45,6 +45,7 @@ export const P = styled('p', {
 export const Text = styled('span', {
   base: {
     textStyle: 'body.base',
+    fontFamily: 'sans', // Override body.base's serif - T.Text is for UI text
   },
 })
 
@@ -52,7 +53,8 @@ export const Link = styled('a', {
   base: {
     color: 'accent.default',
     textDecoration: 'underline',
-    transition: 'color {durations.fast}',
+    transitionProperty: 'colors',
+    transitionDuration: 'fast',
     _hover: {
       color: 'accent.dark',
     },
@@ -62,20 +64,21 @@ export const Link = styled('a', {
 export const Code = styled('code', {
   base: {
     fontFamily: 'mono',
-    fontSize: 'sm',
+    fontSize: '2',
     backgroundColor: 'bg.subtle',
-    padding: '0.5 1',
-    borderRadius: 'radii.sm',
+    paddingBlock: '1', // 6px (1 baseline) - minimum grid-aligned padding
+    paddingInline: '1',
+    borderRadius: '1',
   },
 })
 
 export const Pre = styled('pre', {
   base: {
     fontFamily: 'mono',
-    fontSize: 'sm',
+    fontSize: '2',
     backgroundColor: 'bg.subtle',
     padding: '4',
-    borderRadius: 'radii.md',
+    borderRadius: '1',
     overflowX: 'auto',
     marginBottom: '4',
   },
@@ -86,7 +89,7 @@ export const Blockquote = styled('blockquote', {
     borderLeft: '4px solid',
     borderColor: 'border.default',
     paddingLeft: '4',
-    marginLeft: 0,
+    marginLeft: '[0]',
     marginBottom: '4',
     fontStyle: 'italic',
     color: 'text.secondary',

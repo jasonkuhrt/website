@@ -1,4 +1,5 @@
 import { css } from '../../../styled-system/css'
+import { UI } from '../__'
 
 const grid = css({
   display: 'grid',
@@ -10,35 +11,12 @@ const grid = css({
   lg: {
     gridTemplateColumns: 'repeat(3, 1fr)',
   },
-  xl: {
-    gridTemplateColumns: 'repeat(4, 1fr)',
-  },
+  // xl breakpoint removed - not needed (stays at 3 columns)
 })
 
 const item = css({
   display: 'block',
-  transform: 'scale(0.792)', // Design choice for compact portfolio layout
-  _hover: {
-    '& .portfolio-image': {
-      filter: 'grayscale(0%)',
-    },
-  },
-})
-
-const imageContainer = css({
-  position: 'relative',
-  aspectRatio: '1',
-  overflow: 'hidden',
-  backgroundColor: 'bg.subtle',
-})
-
-const image = css({
-  display: 'block',
-  height: '100%',
-  width: '100%',
-  objectFit: 'cover',
-  filter: 'grayscale(100%)',
-  transition: 'filter {durations.slow}',
+  transform: '[scale(0.792)]', // Design choice for compact portfolio layout
 })
 
 const details = css({
@@ -47,15 +25,15 @@ const details = css({
 })
 
 const title = css({
-  fontSize: 'xs',
+  fontSize: '2',
   color: 'text.primary',
 })
 
 const description = css({
-  fontSize: 'xs',
+  fontSize: '2',
   color: 'text.secondary',
   marginTop: '1',
-  lineClamp: 2,
+  lineClamp: '[2]',
 })
 
 interface PortfolioProject {
@@ -79,15 +57,11 @@ export const PortfolioGrid: React.FC<Props> = ({ projects }) => {
           className={item}
         >
           {/* Cover Image */}
-          <div className={imageContainer}>
-            <img
-              src={project.coverImage}
-              alt={project.title}
-              className={`${image} portfolio-image`}
-              loading='lazy'
-              decoding='async'
-            />
-          </div>
+          <UI.MediaCell
+            src={project.coverImage}
+            alt={project.title}
+            grayscale
+          />
           {/* Title and Description */}
           <div className={details}>
             <h3 className={title}>{project.title}</h3>

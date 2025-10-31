@@ -3,15 +3,15 @@ import { css } from '../../../styled-system/css'
 
 const gallery = css({
   display: 'grid',
-  gridTemplateColumns: 'repeat(4, 1fr)',
-  gridTemplateRows: 'repeat(2, 230px)', // Fixed height for consistent aspect ratio
-  gap: '1px', // Intentional hairline separation
+  gridTemplateColumns: '[repeat(4, 1fr)]',
+  gridTemplateRows: '[repeat(2, 228px)]', // Fixed height for consistent aspect ratio (38 baselines = 228px)
+  gap: '[1px]', // Intentional hairline separation
   cursor: 'pointer',
-  width: '100%',
-  maxWidth: '1280px', // Standard container width
-  marginInline: 'auto',
+  width: 'full',
+  maxWidth: '80', // Standard container width (480px = 80 baselines)
+  marginInline: '[auto]',
   md: {
-    gridTemplateRows: 'repeat(2, 150px)', // Responsive height for mobile
+    gridTemplateRows: '[repeat(2, 150px)]', // Responsive height for mobile
   },
 })
 
@@ -20,13 +20,14 @@ const photoContainer = css({
 })
 
 const photo = css({
-  width: '100%',
-  height: '100%',
+  width: 'full',
+  height: 'full',
   objectFit: 'cover',
-  filter: 'grayscale(100%)',
-  transition: 'all {durations.slow}',
+  filter: '[grayscale(100%)]',
+  transitionProperty: '[all]',
+  transitionDuration: 'slow',
   _hover: {
-    filter: 'grayscale(0%)',
+    filter: '[grayscale(0%)]',
   },
 })
 
@@ -35,12 +36,12 @@ const photo = css({
 // Photos with same <num> are in same group (only one per group should be shown)
 
 // Automatically discover photos from filesystem using Vite's glob import
-const professionalPhotoModules = import.meta.glob('/public/bio/web-res/professional/*.(jpg|jpeg|png)', {
+const professionalPhotoModules = import.meta.glob('/bio/web-res/professional/*.(jpg|jpeg|png)', {
   eager: true,
   query: '?url',
   import: 'default',
 })
-const hikingPhotoModules = import.meta.glob('/public/bio/web-res/hiking/*.(jpg|jpeg|png)', {
+const hikingPhotoModules = import.meta.glob('/bio/web-res/hiking/*.(jpg|jpeg|png)', {
   eager: true,
   query: '?url',
   import: 'default',
@@ -48,9 +49,9 @@ const hikingPhotoModules = import.meta.glob('/public/bio/web-res/hiking/*.(jpg|j
 
 // Extract filenames from the glob results
 const professionalPhotos = Object.keys(professionalPhotoModules).map((path) =>
-  path.replace('/public/bio/web-res/professional/', '')
+  path.replace('/bio/web-res/professional/', '')
 )
-const hikingPhotos = Object.keys(hikingPhotoModules).map((path) => path.replace('/public/bio/web-res/hiking/', ''))
+const hikingPhotos = Object.keys(hikingPhotoModules).map((path) => path.replace('/bio/web-res/hiking/', ''))
 
 // Single fixed layout: 4 photos in a 4x2 grid
 // [colStart, colEnd, rowStart, rowEnd]

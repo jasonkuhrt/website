@@ -29,7 +29,7 @@ export type Settings = typeof SettingsSchema.Type
 
 const defaultSettings: Settings = {
   theme: 'system',
-  gridOverlay: 'off',
+  gridOverlay: 'on',
 }
 
 // ============================================================================

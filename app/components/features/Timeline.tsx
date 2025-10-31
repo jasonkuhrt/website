@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react'
 import { css } from '../../../styled-system/css'
 import { token } from '../../../styled-system/tokens'
 import type { Experience } from '../../data/schemas/experiences/__.js'
-import { DateString } from '../../data/schemas/DateString.js'
 import {
   eventTypes,
   getColorForExperience,
@@ -20,80 +19,38 @@ import {
   getIconForTag,
   getLabelForTag,
 } from '../../lib/experienceRegistry.js'
+import { F, L, T, UI } from '../__'
 
 const header = css({
   marginBottom: '8',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'flex-start',
-  flexWrap: 'wrap',
   gap: '4',
 })
 
 const heading = css({
-  flex: 1,
-  minWidth: 0,
-})
-
-const controls = css({
-  display: 'flex',
-  gap: '2',
+  flex: '[1]',
+  minWidth: '[0]',
 })
 
 const iconButton = css({
   position: 'relative',
-  width: '2rem',
-  height: '2rem',
-})
-
-const iconHidden = css({
-  opacity: '0.2',
-  transition: 'opacity',
-  _hover: {
-    opacity: '1',
-  },
+  width: '2',
+  height: '2',
 })
 
 const iconLabel = css({
   position: 'absolute',
-  left: 0,
-  top: 0,
-  height: '100%',
-  width: '100%',
+  left: '[0]',
+  top: '[0]',
+  height: 'full',
+  width: 'full',
   pointerEvents: 'none',
-})
-
-const iconLabelDimmed = css({
-  opacity: '0.1',
-})
-
-const iconSizeSmall = css({
-  width: '0.625rem',
-  height: '0.625rem',
-})
-
-const iconSizeMedium = css({
-  width: '0.875rem',
-  height: '0.875rem',
-})
-
-const iconSizeLarge = css({
-  width: '1.25rem',
-  height: '1.25rem',
 })
 
 const nodeLink = css({
   position: 'absolute',
-  left: 0,
-  top: 0,
+  left: '[0]',
+  top: '[0]',
   pointerEvents: 'auto',
-})
-
-const hiddenSmall = css({
-  display: 'none',
-  sm: {
-    display: 'inline',
-  },
 })
 
 const timelineLinesMobile = css({
@@ -122,7 +79,7 @@ const timelineLinesMd = css({
 
 const timeline = css({
   position: 'relative',
-  paddingLeft: '4rem',
+  paddingLeft: '4',
 })
 
 const event = css({
@@ -131,14 +88,12 @@ const event = css({
 })
 
 const eventContent = css({
-  lineHeight: '2rem',
-  display: 'flex',
-  alignItems: 'flex-start',
+  lineHeight: '4',
   gap: '2',
 })
 
 const eventContentSimple = css({
-  lineHeight: '2rem',
+  lineHeight: '4',
 })
 
 const inlineBlock = css({
@@ -149,85 +104,30 @@ const spacing = css({
   marginTop: '2',
 })
 
-const details = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2',
-  fontSize: 'sm',
-  color: 'text.secondary',
-})
-
 const linkGroup = css({
-  display: 'flex',
   gap: '2',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-})
-
-const detailLink = css({
-  opacity: '0.2',
-  transition: 'opacity',
-  _hover: {
-    opacity: '1',
-  },
 })
 
 const detailLinkInline = css({
-  opacity: '0.2',
-  transition: 'opacity',
   display: 'inline-block',
-  _hover: {
-    opacity: '1',
-  },
-})
-
-const modalOverlay = css({
-  position: 'fixed',
-  inset: 0,
-  backgroundColor: 'overlay.medium',
-  zIndex: 40,
 })
 
 const modalContent = css({
-  position: 'fixed',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'bg.default',
-  borderRadius: 'radii.base',
-  boxShadow: 'shadows.lg',
+  backgroundColor: 'surface.base',
+  borderRadius: '1',
+  boxShadow: 'lg',
   padding: '6',
-  maxWidth: '28rem',
-  zIndex: 50,
-  border: '1px solid',
+  maxWidth: '28',
+  border: '[1px solid]',
   borderColor: 'border.default',
 })
 
 const modalHeader = css({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'flex-start',
   marginBottom: '4',
 })
 
-const modalTitle = css({
-  fontSize: 'lg',
-  fontWeight: 'fontWeights.semibold',
-  color: 'text.primary',
-})
-
-const iconButtonColor = css({
-  color: 'text.tertiary',
-  transition: 'color',
-  _hover: {
-    color: 'text.secondary',
-  },
-})
-
-const dateText = css({
+const dateContainer = css({
   textAlign: 'right',
-  fontSize: 'sm',
-  color: 'text.secondary',
   sm: {
     whiteSpace: 'nowrap',
   },
@@ -236,92 +136,47 @@ const dateText = css({
 const timelineItem = css({
   position: 'relative',
   display: 'grid',
-  gridTemplateColumns: '80px auto',
+  gridTemplateColumns: '[78px auto]',
   gap: '4',
   paddingBottom: '12',
   _last: {
-    paddingBottom: 0,
+    paddingBottom: '[0]',
   },
   scrollMarginTop: '8',
-  marginLeft: '-24px',
+  marginLeft: '-4',
   paddingLeft: '4',
   paddingBlock: '4',
-  borderRadius: 'radii.base',
-  transition: 'background-color',
+  borderRadius: '1',
+  transitionProperty: '[background-color]',
+  transitionDuration: 'base',
   sm: {
-    gridTemplateColumns: '100px auto',
+    gridTemplateColumns: '[102px auto]',
     gap: '6',
   },
   md: {
-    gridTemplateColumns: '140px auto',
+    gridTemplateColumns: '[138px auto]',
     gap: '8',
   },
 })
 
-const timelineTitle = css({
-  fontSize: 'lg',
-  fontWeight: 'fontWeights.semibold',
-  color: 'text.primary',
-  marginBottom: '1',
-})
-
-const timelineSubtitle = css({
-  fontSize: 'sm',
-  color: 'text.secondary',
-  opacity: '0.6',
-  marginBottom: '2',
-})
-
-const timelineSubtitle3 = css({
-  fontSize: 'sm',
-  color: 'text.secondary',
-  opacity: '0.6',
-  marginBottom: '3',
-})
-
-const timelineDescription = css({
-  fontSize: 'sm',
-  fontFamily: 'serif',
-  color: 'text.secondary',
-  opacity: '0.8',
-})
-
 const iconComponent = css({
-  width: '1.5rem',
-  height: '1.5rem',
-  color: 'text.secondary',
-  flexShrink: 0,
+  width: '2',
+  height: '2',
+  flexShrink: '[0]',
   paddingTop: '1',
-})
-
-const filterButton = css({
-  paddingInline: '2',
-  paddingBlock: '1',
-  borderRadius: 'radii.base',
-  fontSize: 'xs',
-  transition: 'opacity {durations.fast}',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1.5',
-})
-
-const filterButtonInactive = css({
-  opacity: 'opacity.40',
 })
 
 const timeScaleButton = css({
   paddingInline: '2',
   paddingBlock: '1',
-  borderRadius: 'radii.base',
-  fontSize: 'xs',
-  transition: 'opacity {durations.fast}',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1.5',
+  borderRadius: '1',
+  transitionProperty: '[opacity]',
+  transitionDuration: 'fast',
+  gap: '2',
 })
 
 const timeScaleButtonInactive = css({
-  opacity: 'opacity.40',
+  opacity: '40',
 })
 
 interface Props {
@@ -511,73 +366,95 @@ export const Timeline: React.FC<Props> = ({ items }) => {
   return (
     <>
       {/* Filter and mode toggles */}
-      <div className={header}>
-        <div className={linkGroup}>
+      <L.Flex.Row justify='between' align='start' wrap className={header}>
+        <L.Flex.Row wrap align='center' className={linkGroup}>
           {eventTypes.map((eventType) => {
             const IconComponent = getIconForTag(eventType)
 
             return (
-              <button
+              <F.FilterButton
                 key={eventType}
-                type='button'
-                className={`${filterButton} ${!filters.has(eventType) ? filterButtonInactive : ''}`}
+                icon={
+                  <UI.Icon size='xs'>
+                    <IconComponent />
+                  </UI.Icon>
+                }
+                label={getLabelForTag(eventType)}
+                active={filters.has(eventType)}
                 onClick={(e) => toggleFilter(eventType, e.altKey)}
-              >
-                <IconComponent className={iconSizeSmall} />
-                {getLabelForTag(eventType)}
-              </button>
+              />
             )
           })}
           <button
             type='button'
-            className={iconButtonColor}
             aria-label='Show filter help'
             onClick={() => setShowHelpOverlay(true)}
           >
-            <HelpCircle className={iconSizeMedium} />
+            <T.Text
+              color='text.tertiary'
+              transitionProperty='colors'
+              transitionDuration='base'
+              _hover={{ color: 'text.secondary' }}
+            >
+              <UI.Icon size='sm'>
+                <HelpCircle />
+              </UI.Icon>
+            </T.Text>
           </button>
-        </div>
+        </L.Flex.Row>
         <button
           type='button'
           className={`${timeScaleButton} ${timeScaleMode ? timeScaleButtonInactive : ''}`}
           onClick={toggleTimeScale}
         >
-          <Ruler className={iconSizeSmall} />
-          Time Scale
+          <L.Flex.Row align='center' gap='2'>
+            <UI.Icon size='xs'>
+              <Ruler />
+            </UI.Icon>
+            <T.Text fontSize='2'>Time Scale</T.Text>
+          </L.Flex.Row>
         </button>
-      </div>
+      </L.Flex.Row>
 
       {/* Help overlay */}
       {showHelpOverlay && (
         <div
-          className={modalOverlay}
+          className={UI.modalStyles.overlay}
           onClick={() => setShowHelpOverlay(false)}
         >
           <div
-            className={modalContent}
+            className={`${UI.modalStyles.centeredContent} ${modalContent}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={modalHeader}>
-              <h3 className={modalTitle}>Timeline Filters</h3>
+            <L.Flex.Row justify='between' align='start' className={modalHeader}>
+              <T.H3 fontSize='5' fontWeight='semibold' color='text.primary'>Timeline Filters</T.H3>
               <button
-                className={iconButtonColor}
                 onClick={() => setShowHelpOverlay(false)}
               >
-                <X className={iconSizeLarge} />
+                <T.Text
+                  color='text.tertiary'
+                  transitionProperty='colors'
+                  transitionDuration='base'
+                  _hover={{ color: 'text.secondary' }}
+                >
+                  <UI.Icon size='lg'>
+                    <X />
+                  </UI.Icon>
+                </T.Text>
               </button>
-            </div>
-            <div className={details}>
-              <p>
-                <strong>Click</strong> a filter button to toggle that category on/off
-              </p>
-              <p>
-                <strong>Alt+Click</strong> a filter button to show only that category
-              </p>
-              <p>
-                <strong>Time Scale</strong>{' '}
+            </L.Flex.Row>
+            <L.Flex.Col gap='2'>
+              <T.P fontSize='2' color='text.secondary'>
+                <T.Text as='strong'>Click</T.Text> a filter button to toggle that category on/off
+              </T.P>
+              <T.P fontSize='2' color='text.secondary'>
+                <T.Text as='strong'>Alt+Click</T.Text> a filter button to show only that category
+              </T.P>
+              <T.P fontSize='2' color='text.secondary'>
+                <T.Text as='strong'>Time Scale</T.Text>{' '}
                 toggles between evenly-spaced and chronologically-accurate layout (1 pixel = 1 day)
-              </p>
-            </div>
+              </T.P>
+            </L.Flex.Col>
           </div>
         </div>
       )}
@@ -685,15 +562,12 @@ export const Timeline: React.FC<Props> = ({ items }) => {
               style={{ minHeight: '180px' }}
             >
               {/* Date on left */}
-              <div className={dateText}>
+              <div className={dateContainer}>
                 <div className={eventContentSimple}>
-                  <span className={inlineBlock}>{DateString.format(startDate)}</span>
-                  {(endDate !== undefined || !isSingleDate) && (
-                    <>
-                      <span className={hiddenSmall}>-</span>
-                      <span className={inlineBlock}>{DateString.format(endDate)}</span>
-                    </>
-                  )}
+                  <UI.DateRange
+                    startDate={startDate}
+                    endDate={endDate}
+                  />
                 </div>
               </div>
 
@@ -732,129 +606,154 @@ export const Timeline: React.FC<Props> = ({ items }) => {
                 </a>
 
                 {/* Content */}
-                <div className={eventContent}>
-                  <IconComponent className={iconComponent} />
+                <L.Flex.Row align='start' className={eventContent}>
+                  <T.Text as='div' color='text.secondary'>
+                    <IconComponent className={iconComponent} />
+                  </T.Text>
                   <div className={heading}>
                     {item._tag === 'WorkExperience' && (
                       <>
-                        <div className={timelineTitle}>
+                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </div>
-                        <div className={timelineSubtitle}>@ {item.company}</div>
-                        {item.overview && <p className={timelineDescription}>{item.overview}</p>}
+                        </T.H2>
+                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
+                          @ {item.company}
+                        </T.Text>
+                        {item.overview && <T.P fontSize='2' color='text.secondary' opacity='80'>{item.overview}</T.P>}
                       </>
                     )}
                     {item._tag === 'Education' && (
                       <>
-                        <div className={timelineTitle}>
+                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.degree}
-                        </div>
-                        <div className={timelineSubtitle}>
+                        </T.H2>
+                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
                           @ {item.institution}
-                        </div>
-                        {item.description && <p className={timelineDescription}>{item.description}</p>}
+                        </T.Text>
+                        {item.description && (
+                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                        )}
                       </>
                     )}
                     {item._tag === 'Achievement' && (
                       <>
-                        <div className={timelineTitle}>
+                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </div>
-                        <div className={timelineSubtitle}>@ {item.issuer}</div>
-                        {item.description && <p className={timelineDescription}>{item.description}</p>}
+                        </T.H2>
+                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='2'>
+                          @ {item.issuer}
+                        </T.Text>
+                        {item.description && (
+                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                        )}
                       </>
                     )}
                     {item._tag === 'Speaking' && (
                       <>
-                        <div className={timelineTitle}>
+                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </div>
-                        <div className={timelineSubtitle3}>@ {item.venue}</div>
-                        <div className={controls}>
+                        </T.H2>
+                        <T.Text fontSize='2' color='text.secondary' opacity='60' marginBottom='3'>
+                          @ {item.venue}
+                        </T.Text>
+                        <L.Flex.Row gap='2'>
                           {item.links?.repo ?
                             (
-                              <a
-                                className={iconHidden}
+                              <UI.Link
                                 href={item.links.repo}
-                                target='_blank'
-                                rel='noopener noreferrer'
+                                external
+                                className={UI.transitions.opacityHidden}
                               >
-                                <Github className={iconSizeMedium} />
-                              </a>
+                                <UI.Icon size='sm'>
+                                  <Github />
+                                </UI.Icon>
+                              </UI.Link>
                             ) :
                             (
-                              <div className={iconLabelDimmed}>
-                                <Github className={iconSizeMedium} />
+                              <div className={UI.transitions.opacityDimmed}>
+                                <UI.Icon size='sm'>
+                                  <Github />
+                                </UI.Icon>
                               </div>
                             )}
                           {item.links?.info ?
                             (
-                              <a
-                                className={iconHidden}
+                              <UI.Link
                                 href={item.links.info}
-                                target='_blank'
-                                rel='noopener noreferrer'
+                                external
+                                className={UI.transitions.opacityHidden}
                               >
-                                <Link className={iconSizeMedium} />
-                              </a>
+                                <UI.Icon size='sm'>
+                                  <Link />
+                                </UI.Icon>
+                              </UI.Link>
                             ) :
                             (
-                              <div className={iconLabelDimmed}>
-                                <Link className={iconSizeMedium} />
+                              <div className={UI.transitions.opacityDimmed}>
+                                <UI.Icon size='sm'>
+                                  <Link />
+                                </UI.Icon>
                               </div>
                             )}
                           {item.links?.recording ?
                             (
-                              <a
-                                className={iconHidden}
+                              <UI.Link
                                 href={item.links.recording}
-                                target='_blank'
-                                rel='noopener noreferrer'
+                                external
+                                className={UI.transitions.opacityHidden}
                               >
-                                <Play className={iconSizeMedium} />
-                              </a>
+                                <UI.Icon size='sm'>
+                                  <Play />
+                                </UI.Icon>
+                              </UI.Link>
                             ) :
                             (
-                              <div className={iconLabelDimmed}>
-                                <Video className={iconSizeMedium} />
+                              <div className={UI.transitions.opacityDimmed}>
+                                <UI.Icon size='sm'>
+                                  <Video />
+                                </UI.Icon>
                               </div>
                             )}
                           {item.links?.twitter && (
-                            <a
-                              className={iconHidden}
+                            <UI.Link
                               href={item.links.twitter}
-                              target='_blank'
-                              rel='noopener noreferrer'
+                              external
+                              className={UI.transitions.opacityHidden}
                             >
-                              <X className={iconSizeMedium} />
-                            </a>
+                              <UI.Icon size='sm'>
+                                <X />
+                              </UI.Icon>
+                            </UI.Link>
                           )}
-                        </div>
+                        </L.Flex.Row>
                       </>
                     )}
                     {item._tag === 'Personal' && (
                       <>
-                        <div className={timelineTitle}>
+                        <T.H2 fontSize='5' fontWeight='semibold' color='text.primary' marginBottom='1'>
                           {item.title}
-                        </div>
-                        {item.description && <p className={timelineDescription}>{item.description}</p>}
+                        </T.H2>
+                        {item.description && (
+                          <T.P fontSize='2' color='text.secondary' opacity='80'>{item.description}</T.P>
+                        )}
                         {item.url && (
                           <div className={spacing}>
-                            <a
-                              className={detailLinkInline}
+                            <UI.Link
                               href={item.url}
-                              target='_blank'
-                              rel='noopener noreferrer'
+                              external
+                              className={`${detailLinkInline} ${UI.transitions.opacityHidden}`}
                               aria-label='Read more'
                             >
-                              <Link className={iconSizeMedium} />
-                            </a>
+                              <UI.Icon size='sm'>
+                                <Link />
+                              </UI.Icon>
+                            </UI.Link>
                           </div>
                         )}
                       </>
                     )}
                   </div>
-                </div>
+                </L.Flex.Row>
               </div>
             </div>
           )

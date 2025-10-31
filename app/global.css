@@ -2,9 +2,21 @@
 @layer reset, base, tokens, recipes, utilities;
 
 /* Import variable fonts */
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/newsreader';
-@import '@fontsource/jetbrains-mono';
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/newsreader";
+@import "@fontsource/jetbrains-mono";
+
+/* Grid-Locked Design System Foundation */
+/* Set root font-size to 6px so 1rem = 6px = 1 baseline unit */
+:root {
+  font-size: 6px;
+}
+
+/* Compensate body text size for 6px root */
+body {
+  font-size: 3rem; /* 18px (3 baselines) - comfortable reading size */
+  line-height: 4rem; /* 24px (4 baselines) - maintains grid alignment */
+}
 
 /* View Transitions */
 @view-transition {

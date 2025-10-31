@@ -61,14 +61,12 @@ test.describe('Bio page', () => {
       // - Non-zero height (vertical lines)
       // - Valid stroke color (not 'none', '', or 'transparent')
       // - Opacity > 0
-      const isRendered = (
-        lineInfo.parentDisplay !== 'none' &&
+      const isRendered = lineInfo.parentDisplay !== 'none' &&
         lineInfo.height > 0 &&
         lineInfo.computedStroke !== 'none' &&
         lineInfo.computedStroke !== '' &&
         lineInfo.computedStroke !== 'transparent' &&
         parseFloat(lineInfo.opacity) > 0
-      )
 
       if (isRendered) {
         renderedLine = line

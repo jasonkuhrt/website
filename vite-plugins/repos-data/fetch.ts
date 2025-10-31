@@ -140,7 +140,7 @@ export const fetchAndWriteRepos = async () => {
 
   if (!token) {
     throw new Error(
-      'GITHUB_TOKEN environment variable is required. Run: gh auth token | xargs -I {} sh -c "GITHUB_TOKEN={} pnpm dev"'
+      'GITHUB_TOKEN environment variable is required. Run: gh auth token | xargs -I {} sh -c "GITHUB_TOKEN={} pnpm dev"',
     )
   }
 

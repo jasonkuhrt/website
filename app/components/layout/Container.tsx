@@ -1,5 +1,4 @@
 import { cva, cx } from '../../../styled-system/css'
-import { token } from '../../../styled-system/tokens'
 
 /**
  * Container component - provides consistent width constraints and padding
@@ -12,24 +11,24 @@ import { token } from '../../../styled-system/tokens'
  */
 const container = cva({
   base: {
-    marginInline: 'auto',
+    marginInline: '[auto]',
   },
   variants: {
     variant: {
       content: {
-        maxWidth: token('sizes.container.content'),
-        paddingInline: token('spacing.4'),
+        maxWidth: '[128rem]', // 768px (128 baselines)
+        paddingInline: '4', // 24px (4 baselines)
       },
       standard: {
-        maxWidth: token('sizes.container.standard'),
-        paddingInline: token('spacing.6'),
+        maxWidth: '[213rem]', // 1278px (213 baselines)
+        paddingInline: '6', // 36px (6 baselines)
       },
       wide: {
-        maxWidth: token('sizes.container.wide'),
-        paddingInline: token('spacing.8'),
+        maxWidth: '[267rem]', // 1602px (267 baselines)
+        paddingInline: '8', // 48px (8 baselines)
       },
       full: {
-        width: '100%',
+        width: '[100%]',
       },
     },
   },

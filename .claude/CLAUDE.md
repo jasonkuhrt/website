@@ -121,6 +121,64 @@ content/
 6. Format code (`pnpm format`)
 7. Commit changes
 
+### React Router v7 Route Exports
+
+**CRITICAL RULE**: All route exports MUST use typed Route namespace exports for full type safety.
+
+**Meta Functions**:
+
+```typescript
+// ✅ CORRECT - Typed with Route.MetaFunction
+import type { Route } from './+types/slug'
+
+export const meta: Route.MetaFunction = ({ loaderData }) => {
+  const title = loaderData.post.title // ✅ Full IntelliSense
+  return [{ title: `${title} | Jason Kuhrt` }]
+}
+
+// ❌ WRONG - No type annotation
+export const meta = ({ data }) => {
+  const title = data?.post?.title || 'Post' // ❌ No type safety, manual null checks
+  return [{ title: `${title} | Jason Kuhrt` }]
+}
+
+// ❌ WRONG - Manual type annotation
+export const meta = ({ params }: { params: { slug: string } }) => {
+  // ❌ Loses type inference, manual types
+}
+```
+
+**Component Functions**:
+
+```typescript
+// ✅ CORRECT - Typed with Route.ComponentProps
+export default function Post({ loaderData }: Route.ComponentProps) {
+  const { post } = loaderData // ✅ Full IntelliSense
+}
+
+// ✅ ALSO CORRECT - Destructure in parameters
+export default function Post({ loaderData: { post } }: Route.ComponentProps) {
+  // ✅ Direct access to nested data
+}
+```
+
+**Loader Functions**:
+
+```typescript
+// ✅ CORRECT - Typed with Route.LoaderArgs
+export const loader = async ({ params }: Route.LoaderArgs) => {
+  const slug = params['*'] // ✅ Full IntelliSense on params
+  return { post }
+}
+```
+
+**Benefits**:
+
+- ✅ Full TypeScript IntelliSense and autocomplete
+- ✅ Compile-time type checking of loader data
+- ✅ Refactoring safety - rename fields with confidence
+- ✅ No manual null checks needed (TypeScript knows the shape)
+
 ### Panda CSS Integration
 
 - **Token Configuration**: Edit `panda.config.ts` to modify design tokens

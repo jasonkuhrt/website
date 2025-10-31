@@ -1,74 +1,7 @@
 import { useParams } from 'react-router'
-import { css } from '../../../styled-system/css'
-import { L } from '../../components/__'
-import portfolioData from '../../../public/designing/data.json'
-
-const narrowOverride = css({
-  maxWidth: '650px',
-})
-
-const notFoundTitle = css({
-  fontSize: '2xl',
-  fontWeight: 'bold',
-})
-
-const notFoundText = css({
-  marginTop: '4',
-})
-
-const backLink = css({
-  color: 'accent.default',
-  _hover: {
-    textDecoration: 'underline',
-  },
-})
-
-const header = css({
-  marginBottom: '8',
-  textAlign: 'center',
-})
-
-const title = css({
-  fontSize: '4xl',
-  fontWeight: 'bold',
-  marginBottom: '2',
-})
-
-const tags = css({
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '2',
-  marginBottom: '4',
-  justifyContent: 'center',
-})
-
-const tagStyle = css({
-  fontSize: 'xs',
-  paddingInline: '2',
-  paddingBlock: '1',
-  backgroundColor: 'bg.subtle',
-  borderRadius: 'radii.sm',
-})
-
-const description = css({
-  color: 'text.secondary',
-})
-
-const images = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1px',
-})
-
-const image = css({
-  maxWidth: '100%',
-})
-
-const noImages = css({
-  textAlign: 'center',
-  color: 'text.tertiary',
-  paddingBlock: '12',
-})
+import portfolioData from 'virtual:designing-data'
+import { L, T } from '../../components/__'
+import type { Route } from './+types/slug'
 
 interface PortfolioProject {
   id: string
@@ -88,7 +21,7 @@ interface PortfolioData {
 
 const data = portfolioData as PortfolioData
 
-export const meta = ({ params }: { params: { slug: string } }) => {
+export const meta: Route.MetaFunction = ({ params }) => {
   const project = data.projects.find((p) => p.id === params.slug)
   return [
     { title: project ? `${project.title} – Designing – Kuhrt` : 'Project Not Found' },
@@ -102,59 +35,50 @@ export default function DesigningProject() {
 
   if (!project || project.hide) {
     return (
-      <L.Section spacing='sm'>
-        <L.Container variant='wide'>
-          <h1 className={notFoundTitle}>Project Not Found</h1>
-          <p className={notFoundText}>
-            <a href='/designing' className={backLink}>
-              Back to Portfolio
-            </a>
-          </p>
-        </L.Container>
-      </L.Section>
+      <L.PageSection spacing="xs" width="wide">
+        <T.H1 fontSize='8' fontWeight='bold'>Project Not Found</T.H1>
+        <L.Box marginTop='4'>
+          <T.Link href='/designing' color='accent.default' _hover={{ textDecoration: 'underline' }}>
+            Back to Portfolio
+          </T.Link>
+        </L.Box>
+      </L.PageSection>
     )
   }
 
   return (
-    <L.Section spacing='sm'>
-      <L.Container variant='content' className={narrowOverride}>
-      {/* Project header */}
-      <header className={header}>
-        <h1 className={title}>{project.title}</h1>
-        {project.tags.length > 0 && (
-          <div className={tags}>
-            {project.tags.map((tag) => (
-              <span key={tag} className={tagStyle}>
-                {tag}
-              </span>
-            ))}
-          </div>
+    <L.PageSection spacing="xs">
+      <L.Box maxWidth='[648px]'>
+        {/* Project header */}
+        <T.ArticleHeader
+          title={project.title}
+          subtitle={project.description}
+          tags={project.tags}
+          titleVariant='h1-large'
+        />
+
+        {/* Images container with hairline separations */}
+        <L.Flex.Col gap='[1px]'>
+          {/* Cover image */}
+          <L.Box maxWidth='full'>
+            <img src={project.coverImage} alt={project.title} style={{ maxWidth: '100%' }} loading='eager' />
+          </L.Box>
+
+          {/* Project images */}
+          {project.images.map((image, index) => (
+            <L.Box key={index} maxWidth='full'>
+              <img src={image} alt={`${project.title} ${index + 1}`} style={{ maxWidth: '100%' }} loading='lazy' />
+            </L.Box>
+          ))}
+        </L.Flex.Col>
+
+        {/* No images placeholder */}
+        {project.images.length === 0 && (
+          <L.Box textAlign='center' paddingBlock='12'>
+            <T.P color='text.tertiary'>Project images coming soon</T.P>
+          </L.Box>
         )}
-        {project.description && <p className={description}>{project.description}</p>}
-      </header>
-
-      {/* Images container with hairline separations */}
-      <div className={images}>
-        {/* Cover image */}
-        <div>
-          <img src={project.coverImage} alt={project.title} className={image} loading='eager' />
-        </div>
-
-        {/* Project images */}
-        {project.images.map((image, index) => (
-          <div key={index}>
-            <img src={image} alt={`${project.title} ${index + 1}`} className={image} loading='lazy' />
-          </div>
-        ))}
-      </div>
-
-      {/* No images placeholder */}
-      {project.images.length === 0 && (
-        <div className={noImages}>
-          <p>Project images coming soon</p>
-        </div>
-      )}
-      </L.Container>
-    </L.Section>
+      </L.Box>
+    </L.PageSection>
   )
 }

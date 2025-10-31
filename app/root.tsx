@@ -67,7 +67,7 @@ export default function Root() {
       <div className={settingsButton}>
         <F.Settings.Button />
       </div>
-      {/* Vertical rhythm grid overlay */}
+      {/* Dev tools */}
       <D.VerticalRhythmOverlay />
     </>
   )

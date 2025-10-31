@@ -7,23 +7,18 @@
 import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import { css } from '../../../../styled-system/css'
+import { UI } from '../../__'
 import { SettingsModal } from './SettingsModal'
 
-const button = css({
-  padding: '2',
-  borderRadius: 'radii.md',
-  transition: 'all {durations.base}',
-  color: 'text.secondary',
-  opacity: 0.6,
+const buttonOpacity = css({
+  opacity: '60',
   _hover: {
-    backgroundColor: 'bg.subtle',
-    opacity: 1,
+    opacity: '100',
   },
 })
 
-const icon = css({
-  width: '1.25rem',
-  height: '1.25rem',
+const buttonPadding = css({
+  padding: '2',
 })
 
 export function SettingsButton() {
@@ -31,14 +26,17 @@ export function SettingsButton() {
 
   return (
     <>
-      <button
-        className={button}
+      <UI.Button
+        variant='ghost'
+        className={`${buttonPadding} ${buttonOpacity}`}
         aria-label='Settings'
         title='Settings'
         onClick={() => setOpen(true)}
       >
-        <Settings className={icon} />
-      </button>
+        <UI.Icon size='lg'>
+          <Settings />
+        </UI.Icon>
+      </UI.Button>
 
       <SettingsModal open={open} onOpenChange={setOpen} />
     </>

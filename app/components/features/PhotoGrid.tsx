@@ -1,100 +1,28 @@
-import { Images, Play } from 'lucide-react'
+import { Images } from 'lucide-react'
 import { useState } from 'react'
 import { css } from '../../../styled-system/css'
 import type { MediaItem, Photo } from '../../data/schemas/photos.js'
-
-const photoGrid = css({})
+import { L, T, UI } from '../__'
 
 const grid = css({
   display: 'grid',
-  gridTemplateColumns: '1fr',
-  gap: '1px', // Intentional hairline separation
+  gridTemplateColumns: '[1fr]',
+  gap: '[1px]', // Intentional hairline separation
   sm: {
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: '[repeat(2, 1fr)]',
   },
   md: {
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: '[repeat(3, 1fr)]',
   },
   lg: {
-    gridTemplateColumns: 'repeat(4, 1fr)',
+    gridTemplateColumns: '[repeat(4, 1fr)]',
   },
-})
-
-const photoItem = css({
-  transition: 'opacity {durations.base}',
 })
 
 const seriesToggle = css({
   display: 'block',
-  width: '100%',
+  width: 'full',
   textAlign: 'left',
-})
-
-const photoCell = css({
-  position: 'relative',
-  aspectRatio: '1',
-  overflow: 'hidden',
-  backgroundColor: 'bg.surface',
-})
-
-const media = css({
-  display: 'block',
-  height: '100%',
-  width: '100%',
-  objectFit: 'cover',
-})
-
-const seriesIcon = css({
-  position: 'absolute',
-  top: '2',
-  right: '2',
-  backgroundColor: 'overlay.contrast',
-  color: 'white',
-  borderRadius: 'radii.full',
-  padding: '2',
-  pointerEvents: 'none',
-})
-
-const seriesIconImage = css({
-  width: '1rem',
-  height: '1rem',
-})
-
-const videoIndicator = css({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'overlay.contrast',
-  color: 'white',
-  borderRadius: 'radii.full',
-  padding: '4',
-  pointerEvents: 'none',
-})
-
-const playIcon = css({
-  width: '2rem',
-  height: '2rem',
-  fill: 'currentColor',
-})
-
-const captionCell = css({
-  backgroundColor: 'bg.primary',
-  padding: '4',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-})
-
-const caption = css({
-  fontSize: 'sm',
-  color: 'text.primary',
-  marginBottom: '2',
-})
-
-const date = css({
-  fontSize: 'xs',
-  color: 'text.tertiary',
 })
 
 interface Props {
@@ -142,14 +70,13 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
   }
 
   return (
-    <div className={photoGrid}>
-      <div className={grid}>
+    <div className={grid}>
         {photos.map((photo) => (
           <>
             {/* Main photo cell */}
             <div
               key={photo.id}
-              className={photoItem}
+              className={UI.transitions.opacityTransition}
               style={{ opacity: shouldDim(photo) ? 0.1 : 1 }}
             >
               {photo.type === 'series' ?
@@ -160,76 +87,37 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                     onClick={(e) => toggleSeries(photo.id, e)}
                   >
                     {/* Photo Cell Content */}
-                    <div className={photoCell}>
-                      {photo.media[0].type === 'image' ?
-                        (
-                          <img
-                            src={photo.media[0].path}
-                            alt={photo.caption || 'Photo'}
-                            className={media}
-                            loading='lazy'
-                            decoding='async'
-                          />
-                        ) :
-                        (
-                          <video
-                            src={photo.media[0].path}
-                            className={media}
-                            controls
-                            muted
-                          />
-                        )}
-
-                      {/* Series indicator */}
-                      {photo.media.length > 1 && (
-                        <div
-                          className={seriesIcon}
-                          onMouseEnter={() => handleSeriesIconEnter(photo.id)}
-                          onMouseLeave={handleSeriesIconLeave}
-                          aria-hidden='true'
-                        >
-                          <Images className={seriesIconImage} />
-                        </div>
-                      )}
-
-                      {/* Video indicator */}
-                      {photo.media[0].type === 'video' && (
-                        <div className={videoIndicator}>
-                          <Play className={playIcon} />
-                        </div>
-                      )}
-                    </div>
+                    <UI.MediaCell
+                      src={photo.media[0].path}
+                      alt={photo.caption || 'Photo'}
+                      type={photo.media[0].type}
+                      overlay={
+                        <>
+                          {/* Series indicator */}
+                          {photo.media.length > 1 && (
+                            <div
+                              onMouseEnter={() => handleSeriesIconEnter(photo.id)}
+                              onMouseLeave={handleSeriesIconLeave}
+                              aria-hidden='true'
+                            >
+                              <UI.BadgeOverlay icon={<Images />} />
+                            </div>
+                          )}
+                          {/* Video indicator */}
+                          {photo.media[0].type === 'video' && <UI.VideoIndicator />}
+                        </>
+                      }
+                    />
                   </button>
                 ) :
                 (
                   /* Non-series photo (single or video) */
-                  <div className={photoCell}>
-                    {photo.media[0].type === 'image' ?
-                      (
-                        <img
-                          src={photo.media[0].path}
-                          alt={photo.caption || 'Photo'}
-                          className={media}
-                          loading='lazy'
-                          decoding='async'
-                        />
-                      ) :
-                      (
-                        <video
-                          src={photo.media[0].path}
-                          className={media}
-                          controls
-                          muted
-                        />
-                      )}
-
-                    {/* Video indicator */}
-                    {photo.type === 'video' && (
-                      <div className={videoIndicator}>
-                        <Play className={playIcon} />
-                      </div>
-                    )}
-                  </div>
+                  <UI.MediaCell
+                    src={photo.media[0].path}
+                    alt={photo.caption || 'Photo'}
+                    type={photo.media[0].type}
+                    overlay={photo.type === 'video' && <UI.VideoIndicator />}
+                  />
                 )}
             </div>
 
@@ -239,42 +127,35 @@ export const PhotoGrid: React.FC<Props> = ({ photos }) => {
                 {getExpandedMedia(photo).map((mediaItem: MediaItem, index: number) => (
                   <div
                     key={`${photo.id}-${index}`}
-                    className={photoItem}
+                    className={UI.transitions.opacityTransition}
                     style={{ aspectRatio: '1' }}
                   >
-                    {mediaItem.type === 'image' ?
-                      (
-                        <img
-                          src={mediaItem.path}
-                          alt={`${photo.caption || 'Photo'} - ${index + 2}`}
-                          className={media}
-                        />
-                      ) :
-                      (
-                        <video
-                          src={mediaItem.path}
-                          className={media}
-                          controls
-                          muted
-                        />
-                      )}
+                    <UI.MediaCell
+                      src={mediaItem.path}
+                      alt={`${photo.caption || 'Photo'} - ${index + 2}`}
+                      type={mediaItem.type}
+                    />
                   </div>
                 ))}
 
                 {/* Caption cell */}
                 {photo.caption && (
-                  <div className={`${photoItem} ${captionCell}`}>
-                    <p className={caption}>{photo.caption}</p>
-                    <p className={date}>
+                  <L.Flex.Col
+                    className={UI.transitions.opacityTransition}
+                    justify='center'
+                    backgroundColor='bg.primary'
+                    padding='4'
+                  >
+                    <T.P fontSize='2' color='text.primary' marginBottom='2'>{photo.caption}</T.P>
+                    <T.Text fontSize='2' color='text.tertiary'>
                       {new Date(photo.date).toLocaleDateString()}
-                    </p>
-                  </div>
+                    </T.Text>
+                  </L.Flex.Col>
                 )}
               </>
             )}
           </>
         ))}
-      </div>
     </div>
   )
 }

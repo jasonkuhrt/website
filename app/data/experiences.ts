@@ -68,9 +68,20 @@ export const experiences = [
     location: 'Montreal / New York',
     date: DateString.make('May 2013'),
     endDate: DateString.make('Jan 2016'),
-    overview: 'Built the realtime distributed cloud system that powers the cloudBit. Built micro-service cloud platform, designed APIs, collaborated on product development, maintained service availability.',
+    overview:
+      'Built the realtime distributed cloud system that powers the cloudBit. Built micro-service cloud platform, designed APIs, collaborated on product development, maintained service availability.',
     accomplishments: [],
-    technologies: ['TLS Server', 'HTTPS API', 'WebSocket API', 'Redis', 'RethinkDB', 'Elastic Search', 'AWS/GCP', 'Docker/Kubernetes', 'OAuth 2'],
+    technologies: [
+      'TLS Server',
+      'HTTPS API',
+      'WebSocket API',
+      'Redis',
+      'RethinkDB',
+      'Elastic Search',
+      'AWS/GCP',
+      'Docker/Kubernetes',
+      'OAuth 2',
+    ],
   }),
   WorkExperience.make({
     title: 'Senior Frontend Engineer',
@@ -78,7 +89,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('Mar 2013'),
     endDate: DateString.make('May 2013'),
-    overview: 'Developed modular UI components and implemented hardest UI views. Implemented 300 page webapp (Angular.js) for Optimum.',
+    overview:
+      'Developed modular UI components and implemented hardest UI views. Implemented 300 page webapp (Angular.js) for Optimum.',
     accomplishments: [],
     technologies: ['Angular.js', 'BEM', 'CSS Architecture'],
   }),
@@ -98,7 +110,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('Jul 2012'),
     endDate: DateString.make('Nov 2012'),
-    overview: 'Designed + Built CO2R web app showcasing carbon footprint reduction impact supporting reforestation and community development in Nicaragua',
+    overview:
+      'Designed + Built CO2R web app showcasing carbon footprint reduction impact supporting reforestation and community development in Nicaragua',
   }),
   WorkExperience.make({
     title: 'Art Director / Frontend Engineer',
@@ -106,7 +119,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('Jul 2011'),
     endDate: DateString.make('May 2012'),
-    overview: 'Brainstormed platform features. Designed/Implemented UI Views. Designed brand touch-points (newsletter, documents)',
+    overview:
+      'Brainstormed platform features. Designed/Implemented UI Views. Designed brand touch-points (newsletter, documents)',
   }),
   WorkExperience.make({
     title: 'Graphic Designer',
@@ -114,7 +128,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('Nov 2010'),
     endDate: DateString.make('Feb 2011'),
-    overview: 'Designed poster/website/jewel-case for film Bored in Heaven - a documentary exploring ritualistic tradition renaissance in south-east China',
+    overview:
+      'Designed poster/website/jewel-case for film Bored in Heaven - a documentary exploring ritualistic tradition renaissance in south-east China',
   }),
   WorkExperience.make({
     title: 'UI Designer / Frontend Engineer',
@@ -130,7 +145,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('Sep 2010'),
     endDate: DateString.make('Oct 2010'),
-    overview: 'Designed/Built microsite prototype for CCA Journeys - digital experience for exhibition on global movement research',
+    overview:
+      'Designed/Built microsite prototype for CCA Journeys - digital experience for exhibition on global movement research',
   }),
   WorkExperience.make({
     title: 'Intern UI/X Designer / Fullstack Engineer',
@@ -138,7 +154,8 @@ export const experiences = [
     location: 'Montreal, Canada Area',
     date: DateString.make('May 2009'),
     endDate: DateString.make('Sep 2009'),
-    overview: 'Designed/Built Icograda\'s Biennial Review - reimagined printed booklet as digital platform for World Design Congress',
+    overview:
+      "Designed/Built Icograda's Biennial Review - reimagined printed booklet as digital platform for World Design Congress",
   }),
   WorkExperience.make({
     title: 'Graphic Designer',
@@ -158,18 +175,20 @@ export const experiences = [
   }),
   WorkExperience.make({
     title: 'Graphic Designer',
-    company: 'time\'s thievish progress to eternity FILMS',
+    company: "time's thievish progress to eternity FILMS",
     location: 'Montreal, Canada Area',
     date: DateString.make('Oct 2007'),
     endDate: DateString.make('Oct 2013'),
-    overview: 'Designed poster for Montreal Stories 1944. Designed/Built poster/microsite for At the Bottom of the Hill. Designed poster/package for Woman in Car. Designed/Built website for filmmaker Vanya Rose',
+    overview:
+      'Designed poster for Montreal Stories 1944. Designed/Built poster/microsite for At the Bottom of the Hill. Designed poster/package for Woman in Car. Designed/Built website for filmmaker Vanya Rose',
   }),
   Education.make({
     institution: 'Concordia University',
     degree: 'BFA, Design',
     date: DateString.make('2005'),
     endDate: DateString.make('2010'),
-    description: 'President, Concordia Design Students · Council Member, Fine Arts, Concordia Student Union · Exchange to Bremen (Germany) at Master-level studies · Golden Key Honour Society Member · Graduating project "Sousveillance" included in the Canadian Art and Surveillance database',
+    description:
+      'President, Concordia Design Students · Council Member, Fine Arts, Concordia Student Union · Exchange to Bremen (Germany) at Master-level studies · Golden Key Honour Society Member · Graduating project "Sousveillance" included in the Canadian Art and Surveillance database',
   }),
   Education.make({
     institution: 'HSB Hochschule Bremen – City University of Applied Sciences',
@@ -182,13 +201,15 @@ export const experiences = [
     title: 'Founding Member',
     issuer: 'littleBits',
     date: DateString.make('Jul 2015'),
-    description: 'Recognized as a Founding Member for joining littleBits when it was a small startup in May 2013. Principal role in building the Cloud Platform from scratch',
+    description:
+      'Recognized as a Founding Member for joining littleBits when it was a small startup in May 2013. Principal role in building the Cloud Platform from scratch',
   }),
   Achievement.make({
     title: 'Special Selection',
     issuer: 'Art & Surveillance',
     date: DateString.make('Jun 2015'),
-    description: '"Sousveillance" selected for inclusion in a curated gallery of Canadian Artworks that tackle the topic of Surveillance',
+    description:
+      '"Sousveillance" selected for inclusion in a curated gallery of Canadian Artworks that tackle the topic of Surveillance',
   }),
   Achievement.make({
     title: 'Special Selection',
@@ -206,14 +227,16 @@ export const experiences = [
     title: 'Semi-finalist, Adobe Design Achievement Awards',
     issuer: 'Adobe',
     date: DateString.make('Jun 2008'),
-    description: 'Poster design for the World Design Congress (2007) was a semi-finalist in the 2008 Adobe Design Achievement Awards',
+    description:
+      'Poster design for the World Design Congress (2007) was a semi-finalist in the 2008 Adobe Design Achievement Awards',
   }),
   Speaking.make({
     title: 'Imagining the Future of GraphQL Documentation Tooling',
     venue: 'GraphQLConf 2025',
     date: DateString.make('September 2025'),
     links: {
-      info: 'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
+      info:
+        'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
       repo: 'https://github.com/jasonkuhrt/tech-talk-2025-polen',
     },
   }),
@@ -246,11 +269,13 @@ export const experiences = [
     },
   }),
   Speaking.make({
-    title: 'Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL\'s Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond',
+    title:
+      "Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond",
     venue: 'GraphQL Radio',
     date: DateString.make('August 2022'),
     links: {
-      recording: 'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
+      recording:
+        'https://graphqlradio.com/episodes/jason-kuhrt-on-prisma-nexus-dogfooding-open-source-graphql-early-days-design-education-path-to-coding-prisma-learnings-schema-design-data-modeling-and-beyond',
       twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
     },
   }),
@@ -308,7 +333,8 @@ export const experiences = [
     title: 'Launch cloudBit at TED',
     date: DateString.make('March 2014'),
     icon: 'Heart',
-    description: 'Preview of littleBits cloudBit at TED2014 conference in Vancouver. Official product launch followed in July 2014.',
+    description:
+      'Preview of littleBits cloudBit at TED2014 conference in Vancouver. Official product launch followed in July 2014.',
     url: 'https://en.wikipedia.org/wiki/LittleBits',
   }),
   Personal.make({

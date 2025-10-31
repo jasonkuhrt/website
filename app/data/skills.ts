@@ -13,7 +13,8 @@ export const skills = [
     firstYear: 2017,
     yearsOfExperience: 8,
     status: 'Active',
-    description: 'Deep expertise in advanced type system features, generics, conditional types, and type-level programming',
+    description:
+      'Deep expertise in advanced type system features, generics, conditional types, and type-level programming',
   }),
   Skill.make({
     name: 'JavaScript',

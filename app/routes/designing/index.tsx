@@ -1,14 +1,12 @@
 import portfolioData from 'virtual:designing-data'
-import { L, F } from '../../components/__'
+import { F, L } from '../../components/__'
+import { createPageMeta } from '../../lib/metaHelpers'
+import type { Route } from './+types/index'
 
 const data = portfolioData
 
-export const meta = () => {
-  return [
-    { title: 'Designing – Kuhrt' },
-    { name: 'description', content: 'Portfolio by Jason Kuhrt' },
-  ]
-}
+export const meta: Route.MetaFunction = () =>
+  createPageMeta('Designing', 'Portfolio by Jason Kuhrt')
 
 export default function Designing() {
   const { projects } = data
@@ -23,10 +21,8 @@ export default function Designing() {
   })
 
   return (
-    <L.Section spacing='sm'>
-      <L.Container variant='wide'>
-        {sortedProjects.length > 0 && <F.PortfolioGrid projects={sortedProjects} />}
-      </L.Container>
-    </L.Section>
+    <L.PageSection spacing="xs" width="wide">
+      {sortedProjects.length > 0 && <F.PortfolioGrid projects={sortedProjects} />}
+    </L.PageSection>
   )
 }

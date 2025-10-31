@@ -24,14 +24,16 @@
  */
 
 // Tier 1: Core Primitives
-export { Flex } from './Flex'
+export { Box } from '../../../styled-system/jsx'
 export { Center } from './Center'
-export { Grid } from './Grid'
 export { Cluster } from './Cluster'
-export { Spacer } from './Spacer'
 export { Container } from './Container'
+export * as Flex from './Flex/__.js'
+export { Grid } from './Grid'
+export { PageSection } from './PageSection'
 export { Section } from './Section'
+export { Spacer } from './Spacer'
 
 // Tier 2: Composition Patterns
-export { Cover } from './Cover'
 export { AspectRatio } from './AspectRatio'
+export { Cover } from './Cover'

@@ -1,7 +1,7 @@
 /**
  * Settings Modal - Main Settings Interface
  *
- * Uses Radix UI Dialog for accessibility and UX
+ * Uses Ark UI Dialog for accessibility and UX
  * Features:
  * - Focus trap
  * - ESC to close
@@ -9,30 +9,15 @@
  * - Smooth animations
  */
 
-import * as Dialog from '@radix-ui/react-dialog'
-import * as ToggleGroup from '@radix-ui/react-toggle-group'
+import { Dialog } from '@ark-ui/react/dialog'
+import { SegmentGroup } from '@ark-ui/react/segment-group'
 import { Monitor, Moon, Sun, X } from 'lucide-react'
 import { css } from '../../../../styled-system/css'
-import { token } from '../../../../styled-system/tokens'
 import type { GridOverlay, ThemeMode } from '../../../lib/settings'
 import { useSettings } from '../../../lib/settings'
+import { L } from '../../__'
 
-// Keyframe animations
-const fadeIn = css.raw({
-  animationName: 'fadeIn',
-})
-
-const fadeOut = css.raw({
-  animationName: 'fadeOut',
-})
-
-const modalIn = css.raw({
-  animationName: 'modalIn',
-})
-
-const modalOut = css.raw({
-  animationName: 'modalOut',
-})
+// Keyframe animations (removed - using inline animation strings instead)
 
 // Define keyframes in global styles
 const keyframes = `
@@ -79,10 +64,10 @@ if (typeof document !== 'undefined') {
 
 const overlay = css({
   position: 'fixed',
-  inset: 0,
-  zIndex: 50,
-  backgroundColor: token('colors.overlay.heavy'),
-  backdropFilter: 'blur(4px)',
+  inset: '0',
+  zIndex: '50',
+  backgroundColor: 'overlay.heavy',
+  backdropFilter: '[blur(4px)]',
   '&[data-state="open"]': {
     animation: 'fadeIn 200ms',
   },
@@ -93,20 +78,20 @@ const overlay = css({
 
 const content = css({
   position: 'fixed',
-  left: '50%',
-  top: '50%',
-  zIndex: 50,
-  width: '100%',
-  maxWidth: '32rem',
-  transform: 'translate(-50%, -50%)',
-  gap: token('spacing.4'),
+  left: '[50%]',
+  top: '[50%]',
+  zIndex: '50',
+  width: 'full',
+  maxWidth: '32',
+  transform: '[translate(-50%, -50%)]',
+  gap: '4',
   border: '1px solid',
-  borderColor: token('colors.border.default'),
-  backgroundColor: token('colors.bg.primary'),
-  padding: token('spacing.8'),
-  boxShadow: token('shadows.md'),
-  borderRadius: token('radii.base'),
-  transitionDuration: '200ms',
+  borderColor: 'border.default',
+  backgroundColor: 'bg.primary',
+  padding: '8',
+  boxShadow: 'md',
+  borderRadius: '1',
+  transitionDuration: 'base',
   '&[data-state="open"]': {
     animation: 'modalIn 200ms',
   },
@@ -116,109 +101,108 @@ const content = css({
 })
 
 const title = css({
-  fontSize: token('fontSizes.2xl'),
+  fontSize: '8',
   fontWeight: 'bold',
-  color: token('colors.text.primary'),
+  color: 'text.primary',
   textAlign: 'center',
-  marginBottom: token('spacing.8'),
+  marginBottom: '8',
 })
 
 const srOnly = css({
   position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: 0,
-  margin: '-1px',
+  width: 'px',
+  height: 'px',
+  padding: '0',
+  margin: '[-1px]',
   overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
+  clip: '[rect(0, 0, 0, 0)]',
   whiteSpace: 'nowrap',
-  borderWidth: 0,
+  borderWidth: '0',
 })
 
 const section = css({
-  marginTop: token('spacing.8'),
+  marginTop: '8',
   '&:first-of-type': {
-    marginTop: 0,
+    marginTop: '0',
   },
 })
 
 const label = css({
-  fontSize: token('fontSizes.sm'),
-  color: token('colors.text.secondary'),
-  marginBottom: token('spacing.2'),
+  fontSize: '2',
+  color: 'text.secondary',
+  marginBottom: '2',
   display: 'block',
 })
 
 const themeToggleGroup = css({
   display: 'inline-flex',
   border: '1px solid',
-  borderColor: token('colors.border.default'),
-  borderRadius: token('radii.base'),
+  borderColor: 'border.default',
+  borderRadius: '1',
 })
 
 const themeToggleItem = css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: `${token('spacing.2')} ${token('spacing.3')}`,
+  paddingBlock: '2',
+  paddingInline: '3',
   borderRight: '1px solid',
-  borderColor: token('colors.border.default'),
-  transition: 'all {durations.base}',
+  borderColor: 'border.default',
+  transitionProperty: '[all]',
+  transitionDuration: 'base',
   '&:last-child': {
-    borderRight: 0,
+    borderRight: '0',
   },
   '&[data-state="on"]': {
-    backgroundColor: token('colors.text.primary'),
-    color: token('colors.bg.primary'),
+    backgroundColor: 'text.primary',
+    color: 'bg.primary',
   },
   '&[data-state="off"]': {
-    backgroundColor: token('colors.bg.primary'),
+    backgroundColor: 'bg.primary',
     _hover: {
-      backgroundColor: token('colors.bg.subtle'),
+      backgroundColor: 'bg.subtle',
     },
   },
 })
 
 const textToggleItem = css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: `${token('spacing.2')} ${token('spacing.4')}`,
-  minWidth: token('spacing.16'),
-  fontSize: token('fontSizes.sm'),
+  paddingBlock: '2',
+  paddingInline: '4',
+  minWidth: '6',
+  fontSize: '2',
   borderRight: '1px solid',
-  borderColor: token('colors.border.default'),
-  transition: 'all {durations.base}',
+  borderColor: 'border.default',
+  transitionProperty: '[all]',
+  transitionDuration: 'base',
   '&:last-child': {
-    borderRight: 0,
+    borderRight: '0',
   },
   '&[data-state="on"]': {
-    backgroundColor: token('colors.text.primary'),
-    color: token('colors.bg.primary'),
+    backgroundColor: 'text.primary',
+    color: 'bg.primary',
   },
   '&[data-state="off"]': {
-    backgroundColor: token('colors.bg.primary'),
+    backgroundColor: 'bg.primary',
     _hover: {
-      backgroundColor: token('colors.bg.subtle'),
+      backgroundColor: 'bg.subtle',
     },
   },
 })
 
 const closeButton = css({
   position: 'absolute',
-  right: token('spacing.3'),
-  top: token('spacing.3'),
-  borderRadius: token('radii.sm'),
-  padding: token('spacing.2'),
-  opacity: 0.7,
-  backgroundColor: token('colors.bg.surface'),
-  transition: 'opacity {durations.base}',
+  right: '3',
+  top: '3',
+  borderRadius: '1',
+  padding: '2',
+  opacity: '70',
+  backgroundColor: 'bg.surface',
+  transitionProperty: '[opacity]',
+  transitionDuration: 'base',
   _hover: {
-    opacity: 1,
+    opacity: '100',
   },
   _focus: {
     outline: 'none',
-    boxShadow: `0 0 0 2px ${token('colors.text.primary')}`,
+    boxShadow: '[0 0 0 2px {colors.text.primary}]',
   },
   _disabled: {
     pointerEvents: 'none',
@@ -226,8 +210,8 @@ const closeButton = css({
 })
 
 const icon = css({
-  width: '1rem',
-  height: '1rem',
+  width: '1',
+  height: '1',
 })
 
 export interface SettingsModalProps {
@@ -239,11 +223,11 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const { settings, setTheme, setGridOverlay } = useSettings()
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        {/* Backdrop */}
-        <Dialog.Overlay className={overlay} />
+    <Dialog.Root open={open} onOpenChange={(e) => onOpenChange(e.open)}>
+      {/* Backdrop */}
+      <Dialog.Backdrop className={overlay} />
 
+      <Dialog.Positioner>
         {/* Modal Content */}
         <Dialog.Content className={content}>
           {/* Header */}
@@ -256,72 +240,95 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
           {/* Settings Content */}
           <div className={section}>
             <div className={label}>Theme</div>
-            <ToggleGroup.Root
-              type='single'
+            <SegmentGroup.Root
               value={settings.theme}
-              onValueChange={(value) => value && setTheme(value as ThemeMode)}
+              onValueChange={(details) => setTheme(details.value as ThemeMode)}
               className={themeToggleGroup}
             >
-              <ToggleGroup.Item
+              <SegmentGroup.Item
                 value='light'
                 className={themeToggleItem}
                 aria-label='Light'
               >
-                <Sun className={icon} />
-              </ToggleGroup.Item>
+                <SegmentGroup.ItemText>
+                  <L.Flex.Row align='center' justify='center'>
+                    <Sun className={icon} />
+                  </L.Flex.Row>
+                </SegmentGroup.ItemText>
+                <SegmentGroup.ItemHiddenInput />
+              </SegmentGroup.Item>
 
-              <ToggleGroup.Item
+              <SegmentGroup.Item
                 value='dark'
                 className={themeToggleItem}
                 aria-label='Dark'
               >
-                <Moon className={icon} />
-              </ToggleGroup.Item>
+                <SegmentGroup.ItemText>
+                  <L.Flex.Row align='center' justify='center'>
+                    <Moon className={icon} />
+                  </L.Flex.Row>
+                </SegmentGroup.ItemText>
+                <SegmentGroup.ItemHiddenInput />
+              </SegmentGroup.Item>
 
-              <ToggleGroup.Item
+              <SegmentGroup.Item
                 value='system'
                 className={themeToggleItem}
                 aria-label='System'
               >
-                <Monitor className={icon} />
-              </ToggleGroup.Item>
-            </ToggleGroup.Root>
+                <SegmentGroup.ItemText>
+                  <L.Flex.Row align='center' justify='center'>
+                    <Monitor className={icon} />
+                  </L.Flex.Row>
+                </SegmentGroup.ItemText>
+                <SegmentGroup.ItemHiddenInput />
+              </SegmentGroup.Item>
+            </SegmentGroup.Root>
           </div>
 
           {/* Grid Overlay */}
           <div className={section}>
             <div className={label}>Vertical Rhythm Grid</div>
-            <ToggleGroup.Root
-              type='single'
+            <SegmentGroup.Root
               value={settings.gridOverlay}
-              onValueChange={(value) => value && setGridOverlay(value as GridOverlay)}
+              onValueChange={(details) => setGridOverlay(details.value as GridOverlay)}
               className={themeToggleGroup}
             >
-              <ToggleGroup.Item
+              <SegmentGroup.Item
                 value='off'
                 className={textToggleItem}
                 aria-label='Off'
               >
-                Off
-              </ToggleGroup.Item>
+                <SegmentGroup.ItemText>
+                  <L.Flex.Row align='center' justify='center'>
+                    Off
+                  </L.Flex.Row>
+                </SegmentGroup.ItemText>
+                <SegmentGroup.ItemHiddenInput />
+              </SegmentGroup.Item>
 
-              <ToggleGroup.Item
+              <SegmentGroup.Item
                 value='on'
                 className={textToggleItem}
                 aria-label='On'
               >
-                On
-              </ToggleGroup.Item>
-            </ToggleGroup.Root>
+                <SegmentGroup.ItemText>
+                  <L.Flex.Row align='center' justify='center'>
+                    On
+                  </L.Flex.Row>
+                </SegmentGroup.ItemText>
+                <SegmentGroup.ItemHiddenInput />
+              </SegmentGroup.Item>
+            </SegmentGroup.Root>
           </div>
 
           {/* Close Button */}
-          <Dialog.Close className={closeButton}>
+          <Dialog.CloseTrigger className={closeButton}>
             <X className={icon} />
             <span className={srOnly}>Close</span>
-          </Dialog.Close>
+          </Dialog.CloseTrigger>
         </Dialog.Content>
-      </Dialog.Portal>
+      </Dialog.Positioner>
     </Dialog.Root>
   )
 }
