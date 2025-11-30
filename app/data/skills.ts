@@ -1,4 +1,4 @@
-import { Skill } from './schemas/skills.js'
+import { Skill } from '../../src/content/bio.js'
 
 /**
  * Skills

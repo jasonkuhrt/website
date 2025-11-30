@@ -1,19 +1,19 @@
 import { css } from '#styled-system/css'
 import { L, Text, UI } from '#~/components/__'
-import { experiences as experiencesData } from '#~/data/experiences.js'
-import { DateString } from '#~/data/schemas/DateString.js'
-import { ExperienceOrder } from '#~/data/schemas/experiences/__.js'
-import type { Speaking as SpeakingType } from '#~/data/schemas/experiences/Speaking.js'
+import * as Speaking from '#~/content/speaking.js'
+import { DateString } from '../../src/content/bio.js'
 import { createPageMeta } from '#~/lib/metaHelpers'
-import { Array } from 'effect'
 import type { Route } from './+types/speaking'
+
+export const loader = async () => {
+  const talks = await Speaking.get()
+  return { talks }
+}
 
 export const meta: Route.MetaFunction = () => createPageMeta('Speaking', 'Talks and presentations by Jason Kuhrt')
 
-const Speaking: React.FC<Route.ComponentProps> = () => {
-  // Get speaking engagements from experiences data
-  const experiences = Array.sort(experiencesData, ExperienceOrder)
-  const talks = experiences.filter(($exp): $exp is SpeakingType => $exp._tag === 'Speaking')
+const SpeakingPage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
+  const { talks } = loaderData
 
   const headers = [
     { key: 'date', label: 'Date', align: 'left' as const },
@@ -46,4 +46,4 @@ const Speaking: React.FC<Route.ComponentProps> = () => {
   )
 }
 
-export default Speaking
+export default SpeakingPage

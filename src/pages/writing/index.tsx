@@ -1,15 +1,64 @@
-export default async function WritingPage() {
+import { Meta } from '#~/components/meta.js'
+import { Drivel } from '#~/content/drivel.js'
+import { Essays } from '#~/content/essays.js'
+import { Scribbles } from '#~/content/scribbles.js'
+import { formatDateShort } from '#~/lib/date.js'
+
+const WritingPage = async () => {
+  const essays = await Essays.list()
+  const drivel = await Drivel.list()
+  const scribbles = await Scribbles.list()
+
   return (
     <>
-      <title>Writing | Jason Kuhrt</title>
+      <Meta title='Writing' />
 
       <main>
         <h1>Writing</h1>
-        <p>Essays, drivel, and scribbles</p>
+
+        <div>
+          <section>
+            <h2>Essays</h2>
+            <ul>
+              {essays.map(essay => (
+                <li key={essay.id}>
+                  <a href={`/writing/essays/${essay.id}`}>{essay.title}</a>
+                  <span>— {formatDateShort(essay.date)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2>Drivel</h2>
+            <ul>
+              {drivel.map(post => (
+                <li key={post.id}>
+                  <a href={`/writing/drivel/${post.id}`}>{post.title}</a>
+                  <span>— {formatDateShort(post.date)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h2>Scribbles</h2>
+            <ul>
+              {scribbles.map(post => (
+                <li key={post.id}>
+                  <a href={`/writing/scribbles/${post.id}`}>{post.title}</a>
+                  <span>— {formatDateShort(post.date)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       </main>
     </>
   )
 }
+
+export default WritingPage
 
 export const getConfig = async () => {
   return { render: 'static' } as const

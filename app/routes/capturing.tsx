@@ -1,19 +1,24 @@
 import { F, L } from '#~/components/__'
-import { photoCollection } from '#~/data/photos.js'
+import * as Capturing from '#~/content/capturing.js'
 import { createPageMeta } from '#~/lib/metaHelpers'
 import type { Route } from './+types/capturing'
+
+export const loader = async () => {
+  const photos = await Capturing.get()
+  return { photos }
+}
 
 export const meta: Route.MetaFunction = () =>
   createPageMeta('Capturing', 'Images by Jason Kuhrt')
 
-const Capturing: React.FC<Route.ComponentProps> = () => {
-  const { photos } = photoCollection
+const CapturingPage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
+  const { photos } = loaderData
 
   return (
     <L.PageSection spacing="8" width="standard">
-      {photos.length > 0 && <F.PhotoGrid photos={[...photos]} />}
+      {photos.length > 0 && <F.PhotoGrid photos={photos} />}
     </L.PageSection>
   )
 }
 
-export default Capturing
+export default CapturingPage

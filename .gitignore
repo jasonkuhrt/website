@@ -45,3 +45,9 @@ app/styles/tokens.generated.css
 ## Panda
 styled-system
 styled-system-studio
+
+# Job applications
+/applications
+
+# Content framework cache
+.content

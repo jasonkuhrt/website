@@ -1,4 +1,4 @@
-import { SiteMetadata } from './schemas/site.js'
+import { SiteMetadata } from '../../src/content/site.js'
 
 /**
  * Site Metadata

@@ -8,7 +8,7 @@
  */
 
 import * as S from 'effect/Schema'
-import { GitHubData } from './schemas/repos.js'
+import { GitHubData } from '../../src/content/crafting.js'
 
 export const githubData = S.decodeUnknownSync(GitHubData)({
   'fetchedAt': '2025-10-30T14:14:53.717Z',

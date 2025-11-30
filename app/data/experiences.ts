@@ -5,7 +5,7 @@ import {
   Personal,
   Speaking,
   WorkExperience,
-} from './schemas/experiences/__.js'
+} from '../../src/content/bio.js'
 
 /**
  * Experiences

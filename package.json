@@ -16,7 +16,8 @@
     "check:format": "dprint check",
     "check:types": "tsc --noEmit",
     "test": "playwright test",
-    "cf:deploy": "pnpm build && wrangler pages deploy dist/public"
+    "cf:deploy": "pnpm build && wrangler pages deploy dist/public",
+    "cv:pdf": "md-to-pdf --css 'body { font-size: 9pt; } h1 { page-break-before: always; page-break-after: avoid; font-size: 16pt; } h1:first-of-type { page-break-before: avoid; } h3 { font-size: 12pt; } td { padding-right: 4rem; } hr { page-break-after: always; border: 1px solid rgba(0, 0, 0, 0); }'"
   },
   "dependencies": {
     "@ark-ui/react": "^5.26.2",
@@ -29,12 +30,15 @@
     "@fontsource/space-mono": "^5.2.9",
     "@fontsource/zilla-slab": "^5.2.8",
     "@wollybeard/kit": "^0.98.0",
+    "continent": "workspace:*",
     "date-fns": "^4.1.0",
     "effect": "^3.18.4",
+    "gray-matter": "^4.0.3",
     "lucide-react": "^0.548.0",
     "next-mdx-remote": "^5.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "rehype-urls": "^1.2.0",
     "vite": "^7.1.12",
     "waku": "^0.27.0"
   },
@@ -53,7 +57,7 @@
     "@types/react-dom": "^19.2.2",
     "csstype": "^3.1.3",
     "dprint": "^0.50.2",
-    "glob": "^11.0.3",
+    "md-to-pdf": "^5.2.4",
     "oxlint": "^1.24.0",
     "rehype-slug": "^6.0.0",
     "remark-frontmatter": "^5.0.0",
@@ -62,6 +66,7 @@
     "sharp": "^0.34.4",
     "shiki": "^3.13.0",
     "shiki-twoslash": "^3.1.2",
+    "tinyglobby": "^0.2.14",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "wrangler": "^4.45.0"

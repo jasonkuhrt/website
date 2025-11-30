@@ -1,11 +1,13 @@
+import { Meta } from '#~/components/meta'
+
 export default async function HomePage() {
   return (
     <>
-      <title>Jason Kuhrt</title>
-      <meta name='description' content='Personal website of Jason Kuhrt' />
+      <Meta title='Jason Kuhrt' description='Personal website of Jason Kuhrt' />
 
-      <main>
+      <main style={{ padding: '40px' }}>
         <h1>Jason Kuhrt</h1>
+        <p>Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering</p>
       </main>
     </>
   )

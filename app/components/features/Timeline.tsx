@@ -1,6 +1,6 @@
 import { css } from '#styled-system/css'
 import { token } from '#styled-system/tokens'
-import type { Experience } from '#~/data/schemas/experiences/__.js'
+import type { Experience } from '../../../src/content/bio.js'
 import {
   eventTypes,
   getColorForExperience,

@@ -1,4 +1,4 @@
-import { DateString } from '#~/data/schemas/DateString'
+import { DateString } from '../../../src/content/bio.js'
 import { Text } from '../__'
 import { hiddenSmall } from './responsive'
 

@@ -6,7 +6,7 @@
  */
 
 import * as S from 'effect/Schema'
-import { MediaItem, Photo, PhotoCollection } from './schemas/photos.js'
+import { PhotoMediaItem as MediaItem, Photo, PhotoCollection } from '../../src/content/capturing.js'
 
 export const photoCollection = S.decodeUnknownSync(PhotoCollection)({
   photos: [

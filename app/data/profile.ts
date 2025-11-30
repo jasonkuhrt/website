@@ -1,4 +1,4 @@
-import { Profile, SocialLink } from './schemas/profile.js'
+import { Profile, SocialLink } from '../../src/content/bio.js'
 
 /**
  * Personal Profile

@@ -1,5 +1,55 @@
 # Development Guide
 
+## Writing Content
+
+Content lives in `content/writing/` with three categories:
+
+### Essays (`essays/`)
+Long-form technical essays. Two formats:
+- **Flat file**: `{slug}.mdx` - no assets
+- **Directory**: `{slug}/content.mdx` + assets - for posts with images
+
+### Drivel (`drivel/`)
+Shorter blog posts. Same formats as essays but with date prefix:
+- **Flat file**: `YYYY-MM-DD_{slug}.mdx` - no assets
+- **Directory**: `YYYY-MM-DD_{slug}/content.mdx` + assets
+
+### Scribbles (`scribbles/`)
+Quick notes/TIL. Date-based naming:
+- **Flat file**: `YYYY-MM-DD.mdx` or `YYYY-MM-DD_{slug}.mdx` - no assets
+- **Directory**: `YYYY-MM-DD/content.mdx` + assets
+
+### Asset References
+Use relative paths `./image.png` - automatically rewritten to absolute URLs.
+
+## Dev Server Behavior
+
+### Dev Server Restart Required
+
+The dev server must be restarted when:
+
+**Content Type Definitions** - Changes to content definitions in `src/content/` require restart:
+- Schema changes (adding/removing fields)
+- Discover config changes (strategies, roots, entry patterns)
+- Loader logic changes (ID extraction, date normalization)
+
+**Continent Package** - Changes to `packages/continent/src/`:
+- `definition.ts` - Core discovery and loading logic
+- `vite-plugin.ts` - Asset copying behavior
+
+**Asset Path Changes** - Any change that affects how asset URLs are computed:
+- Changes to `getAssetBasePath()` logic
+- Changes to `getAssetsToCopy()` destination paths
+- ID transformation changes in loaders (e.g., date stripping)
+
+### What Hot Reloads
+
+The following changes are picked up automatically:
+- MDX content changes
+- React component changes
+- CSS/styling changes
+- New content files (detected by watcher)
+
 ## GitHub Repository Data
 
 The coding page displays GitHub repository data that is automatically refreshed daily.

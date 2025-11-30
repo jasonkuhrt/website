@@ -1,5 +1,5 @@
 import { Cloud, Github, Mail } from 'lucide-react'
-import { socialLinks } from '#~/data/profile.js'
+import { socialLinks } from '#~/content/bio.js'
 import { L, UI } from '../__'
 import { Bluesky } from '../icons/Bluesky'
 

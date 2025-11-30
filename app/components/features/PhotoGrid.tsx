@@ -1,5 +1,5 @@
 import { css } from '#styled-system/css'
-import type { MediaItem, Photo } from '#~/data/schemas/photos.js'
+import type { MediaItem, PhotoMeta as Photo } from '../../../src/content/capturing.js'
 import { Images } from 'lucide-react'
 import { useState } from 'react'
 import { L, Text, UI } from '../__'

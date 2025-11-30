@@ -1,5 +1,5 @@
 import { css } from '#styled-system/css'
-import type { GitHubRepo } from '#~/data/schemas/repos'
+import type { GitHubRepo } from '../../../src/content/crafting.js'
 import { formatAbbreviatedDate, formatRelativeDate } from '#~/lib/dateFormatting'
 import { GitFork, Star } from 'lucide-react'
 import { useState } from 'react'

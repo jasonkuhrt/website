@@ -1,5 +1,13 @@
+import { Continent } from 'continent'
 import { defineConfig } from 'waku/config'
+import { Drivel } from './src/content/drivel.js'
+import { Essays } from './src/content/essays.js'
+import { Scribbles } from './src/content/scribbles.js'
 
 export default defineConfig({
-  // Minimal config - no Panda CSS for now
+  vite: {
+    plugins: [Continent.assetsPlugin({
+      definitions: [Essays, Drivel, Scribbles],
+    })],
+  },
 })

@@ -1,7 +1,6 @@
 import { Match } from 'effect'
 import { css } from '#styled-system/css'
-import { DateString } from '#~/data/schemas/DateString.js'
-import type { Experience } from '#~/data/schemas/experiences/__.js'
+import { DateString, type Experience } from '../../../src/content/bio.js'
 import { UI } from '../__'
 
 const table = css({

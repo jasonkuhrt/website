@@ -164,7 +164,7 @@ export const fetchAndWriteRepos = async () => {
  */
 
 import * as S from 'effect/Schema'
-import { GitHubData } from './schemas/repos.js'
+import { GitHubData } from '../../src/content/crafting.js'
 
 export const githubData = S.decodeUnknownSync(GitHubData)(${formatTypeScriptValue(data, 0)})
 

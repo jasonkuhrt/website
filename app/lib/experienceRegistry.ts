@@ -26,14 +26,14 @@ import {
   Presentation,
 } from 'lucide-react'
 import { token } from '#styled-system/tokens'
-import type { Experience } from '#~/data/schemas/experiences/__.js'
 import {
   Achievement,
   Education,
+  type Experience,
   Personal,
   Speaking,
   WorkExperience,
-} from '../data/schemas/experiences/__.js'
+} from '../../src/content/bio.js'
 
 // ============================================================================
 // Event Type Constants

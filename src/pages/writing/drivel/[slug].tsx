@@ -1,0 +1,41 @@
+import { Meta } from '#~/components/meta.js'
+import { Drivel } from '#~/content/drivel.js'
+import { formatDateLong } from '#~/lib/date.js'
+import { compileMDX } from 'next-mdx-remote/rsc'
+import type { PageProps } from 'waku/router'
+
+const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
+  const post = await Drivel.get(slug)
+  if (!post) throw new Error(`Drivel not found: ${slug}`)
+
+  const { content } = await compileMDX({
+    source: post.source,
+    options: { parseFrontmatter: false },
+  })
+
+  return (
+    <>
+      <Meta title={post.title} type='article' publishedAt={post.date.toISOString()} />
+
+      <main>
+        <article>
+          <header>
+            <h1>{post.title}</h1>
+            <time dateTime={post.date.toISOString()}>{formatDateLong(post.date)}</time>
+          </header>
+          {content}
+        </article>
+      </main>
+    </>
+  )
+}
+
+export default DrivelPage
+
+export const getConfig = async () => {
+  const posts = await Drivel.list()
+  return {
+    render: 'static',
+    staticPaths: posts.map(p => p.id),
+  } as const
+}
