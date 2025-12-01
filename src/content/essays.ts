@@ -1,17 +1,19 @@
-import { Continent } from 'continent'
+import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
-import { readFile } from 'fs/promises'
 import matter from 'gray-matter'
-import { basename, dirname } from 'path'
 
 /**
- * Essay schema - long-form technical essays.
+ * Date schema that handles both Date objects and date strings.
+ * gray-matter may return either depending on YAML format.
  */
-const EssaySchema = S.Struct({
-  title: S.String,
-  date: S.DateFromSelf,
-  source: S.String,
-})
+const FlexibleDate = S.transform(
+  S.Union(S.DateFromSelf, S.String),
+  S.DateFromSelf,
+  {
+    decode: (input) => input instanceof Date ? input : new Date(input),
+    encode: (date) => date,
+  },
+)
 
 /**
  * Essays content definition.
@@ -23,40 +25,28 @@ const EssaySchema = S.Struct({
  */
 export const Essays = Continent.define({
   name: 'essays',
-  schema: EssaySchema,
   root: 'content',
-  discover: [
-    { type: 'file', root: 'writing/essays', entry: '*.mdx' },
-    { type: 'dir', root: 'writing/essays', entry: 'content.mdx' },
+  input: S.Struct({
+    title: S.String,
+    date: FlexibleDate,
+  }),
+  explorer: [
+    Explorers.File.create({ root: 'writing/essays', entry: 'mdx' }),
+    Explorers.Dir.create({ root: 'writing/essays', entry: 'content.mdx' }),
   ],
-  async load({ filePath, strategy }) {
-    const raw = await readFile(filePath, 'utf-8')
-    const { data: frontmatter, content } = matter(raw)
-
-    // Extract ID based on strategy type
-    const id = strategy.type === 'dir'
-      ? basename(dirname(filePath))
-      : basename(filePath, '.mdx')
+  async loadOne(exploration, ctx) {
+    const { data: frontmatterRaw, content } = matter(exploration.matches.entry)
+    const frontmatter = S.decodeUnknownSync(ctx.inputSchema)(frontmatterRaw)
 
     // Rewrite relative asset URLs (both HTML src and markdown image syntax)
     const source = content
-      .replace(/src="\.\/([^"]+)"/g, `src="/${strategy.root}/${id}/$1"`)
-      .replace(/\]\(\.\/([^)]+)\)/g, `](/${strategy.root}/${id}/$1)`)
-
-    // Normalize date
-    const date = frontmatter.date instanceof Date
-      ? frontmatter.date
-      : new Date(frontmatter.date as string)
+      .replace(/src="\.\/([^"]+)"/g, `src="/${exploration.config.root}/${exploration.id}/$1"`)
+      .replace(/\]\(\.\/([^)]+)\)/g, `](/${exploration.config.root}/${exploration.id}/$1)`)
 
     return {
-      id,
-      title: frontmatter.title as string,
-      date,
+      id: exploration.id,
+      ...frontmatter,
       source,
     }
   },
 })
-
-export namespace Essays {
-  export type Entry = Awaited<ReturnType<typeof Essays.list>>[number]
-}

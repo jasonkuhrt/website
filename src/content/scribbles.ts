@@ -1,17 +1,28 @@
-import { Continent } from 'continent'
+import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
-import { readFile } from 'fs/promises'
 import matter from 'gray-matter'
-import { basename, dirname } from 'path'
 
 /**
- * Scribbles schema - quick notes and TIL entries.
+ * Date schema that handles both Date objects and date strings.
+ * gray-matter may return either depending on YAML format.
+ */
+const FlexibleDate = S.transform(
+  S.Union(S.DateFromSelf, S.String),
+  S.DateFromSelf,
+  {
+    decode: (input) => input instanceof Date ? input : new Date(input),
+    encode: (date) => date,
+  },
+)
+
+/**
+ * Scribbles schema - input fields (what author writes in frontmatter).
+ * Note: `source` is NOT in schema - it's loader output, not input.
  */
 const ScribblesSchema = S.Struct({
   title: S.String,
-  date: S.DateFromSelf,
+  date: FlexibleDate,
   tags: S.optional(S.Array(S.String)),
-  source: S.String,
 })
 
 /**
@@ -23,42 +34,37 @@ const ScribblesSchema = S.Struct({
  */
 export const Scribbles = Continent.define({
   name: 'scribbles',
-  schema: ScribblesSchema,
+  input: ScribblesSchema,
   root: 'content',
-  discover: [
-    { type: 'file', root: 'writing/scribbles', entry: '*.mdx' },
-    { type: 'dir', root: 'writing/scribbles', entry: 'content.mdx' },
+  explorer: [
+    Explorers.File.create({ root: 'writing/scribbles', entry: 'mdx' }),
+    Explorers.Dir.create({ root: 'writing/scribbles', entry: 'content.mdx' }),
   ],
-  async load({ filePath, strategy }) {
-    const raw = await readFile(filePath, 'utf-8')
-    const { data: frontmatter, content } = matter(raw)
+  async loadOne(exploration, ctx) {
+    // matches.entry is typed as MatchWithContent (string shorthand = required single match with content)
+    const { content: rawContent } = exploration.matches.entry
 
-    // Extract ID based on strategy type, stripping any _slug suffix to keep just the date
-    const rawId = strategy.type === 'dir'
-      ? basename(dirname(filePath))
-      : basename(filePath, '.mdx')
-    const id = rawId.replace(/_.*$/, '')
+    // Parse frontmatter from content
+    const { data: frontmatter, content } = matter(rawContent)
+
+    // Decode frontmatter through schema
+    const input = S.decodeUnknownSync(ctx.inputSchema)(frontmatter)
+
+    // ID is now directly available on exploration
+    // Strip any _slug suffix to keep just the date
+    const id = exploration.id.replace(/_.*$/, '')
 
     // Rewrite relative asset URLs (both HTML src and markdown image syntax)
     const source = content
-      .replace(/src="\.\/([^"]+)"/g, `src="/${strategy.root}/${id}/$1"`)
-      .replace(/\]\(\.\/([^)]+)\)/g, `](/${strategy.root}/${id}/$1)`)
-
-    // Normalize date
-    const date = frontmatter.date instanceof Date
-      ? frontmatter.date
-      : new Date(frontmatter.date as string)
+      .replace(/src="\.\/([^"]+)"/g, `src="/${exploration.config.root}/${id}/$1"`)
+      .replace(/\]\(\.\/([^)]+)\)/g, `](/${exploration.config.root}/${id}/$1)`)
 
     return {
       id,
-      title: frontmatter.title as string,
-      date,
-      tags: frontmatter.tags as string[] | undefined,
+      title: input.title,
+      date: input.date,
+      tags: input.tags,
       source,
     }
   },
 })
-
-export namespace Scribbles {
-  export type Entry = Awaited<ReturnType<typeof Scribbles.list>>[number]
-}

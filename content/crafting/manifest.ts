@@ -2,9 +2,11 @@
  * Crafting Manifest
  *
  * List of GitHub repositories to display on the crafting page.
- * GitHub data (stars, description, etc.) is fetched automatically by GitHubKind.
+ * GitHub data (stars, description, etc.) is fetched automatically.
+ *
+ * Format: { repo: 'owner/name', featured?: boolean }
  */
-export const repos = [
+export default [
   { repo: 'graffle-js/graffle', featured: true },
   { repo: 'jasonkuhrt/polen' },
   { repo: 'jasonkuhrt/oak' },
@@ -26,4 +28,4 @@ export const repos = [
   { repo: 'jasonkuhrt/purry' },
   { repo: 'jasonkuhrt/research-node-package-exports' },
   { repo: 'pakadev/paka' },
-] as const
+]

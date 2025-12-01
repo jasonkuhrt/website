@@ -1,296 +1,330 @@
 import * as S from 'effect/Schema'
-import { existsSync } from 'node:fs'
-import { basename, dirname, join } from 'node:path'
-import { globSync } from 'tinyglobby'
+import * as Cache from './cache.js'
+import { Explorers } from './explorers/_.js'
+import type { AssetMapping } from './explorers/types.js'
+
+// ============================================================================
+// Cache Entry Type
+// ============================================================================
 
 /**
- * Base schema - all content types must have an id.
+ * Cache entry storing loaded data and exploration context.
  */
-export const BaseSchema = S.Struct({
-  id: S.String,
-})
-
-/**
- * Entry types - base schema merged with user schema.
- */
-export namespace Entry {
-  export type Encoded<$Schema extends S.Schema.AnyNoContext = S.Schema<{}, {}>> =
-    & S.Schema.Encoded<typeof BaseSchema>
-    & S.Schema.Encoded<$Schema>
-  export type Type<$Schema extends S.Schema.AnyNoContext = S.Schema<{}, {}>> =
-    & S.Schema.Type<typeof BaseSchema>
-    & S.Schema.Type<$Schema>
+interface LoadedEntry<$Data extends { id: string } = { id: string }> {
+  /** Loaded entry data. */
+  data: $Data
+  /** Explorer instance that discovered this entry. */
+  explorer: Explorers.Explorer
+  /** Original exploration result. */
+  exploration: Explorers.Exploration
 }
 
-/**
- * Default ignore patterns applied to all strategies.
- */
-const DEFAULT_IGNORE = ['_*']
+// ============================================================================
+// Type Utilities for Explorer → Exploration Mapping
+// ============================================================================
 
 /**
- * File strategy - entries are individual files at root.
+ * Extract exploration type from an Explorer.
  */
-export type FileStrategy = {
-  type: 'file'
-  root: string
-  entry: string
-  /** Patterns to ignore. Defaults to ['_*']. */
-  ignore?: string[]
+type ExplorationFromExplorer<$Explorer> =
+  $Explorer extends Explorers.Explorer<infer $Exploration> ? $Exploration : never
+
+/**
+ * Extract exploration union from array of explorers or single explorer.
+ */
+type ExplorationFromExplorers<$Explorers> =
+  $Explorers extends readonly (infer $E)[]
+    ? ExplorationFromExplorer<$E>
+    : ExplorationFromExplorer<$Explorers>
+
+// ============================================================================
+// Loader and Input Types
+// ============================================================================
+
+/**
+ * Context provided to the load function.
+ * Gives access to definition metadata for decoding frontmatter/data.
+ */
+export interface LoadContext<$Input extends S.Schema.AnyNoContext> {
+  /** The input schema for decoding frontmatter/manifest data. */
+  inputSchema: $Input
 }
-
-/**
- * Dir strategy - entries are directories containing an entry file.
- * Assets are automatically all other files in the directory.
- */
-export type DirStrategy = {
-  type: 'dir'
-  root: string
-  entry: string
-  /** Patterns to ignore. Defaults to ['_*']. */
-  ignore?: string[]
-}
-
-/**
- * Discovery strategy.
- */
-export type Strategy = FileStrategy | DirStrategy
-
-/**
- * Load context passed to loader function.
- * Both strategies always provide assets (empty array if none).
- */
-export type LoadContext =
-  | { filePath: string; strategy: FileStrategy; assets: string[] }
-  | { filePath: string; strategy: DirStrategy; assets: string[] }
-
-/**
- * Loader function type.
- */
-export type LoadFn<$Schema extends S.Schema.AnyNoContext> = (
-  context: LoadContext,
-) => Entry.Encoded<$Schema> | Promise<Entry.Encoded<$Schema>>
 
 /**
  * Input configuration for defining a content type.
+ * Generic over explorer config to provide type-safe load function.
+ *
+ * @typeParam $Loaded - Optional schema for loaded entries. When provided,
+ *   constrains the loader return type to S.Schema.Type<$Loaded>.
  */
-export interface Input<$Schema extends S.Schema.AnyNoContext> {
+/**
+ * Loader output type based on whether loaded schema is provided.
+ */
+type LoaderOutput<$Loaded extends S.Schema.AnyNoContext | undefined, $Output> =
+  undefined extends $Loaded
+    ? $Output | Promise<$Output>
+    : S.Schema.Type<NonNullable<$Loaded>> | Promise<S.Schema.Type<NonNullable<$Loaded>>>
+
+export interface Input<
+  $Input extends S.Schema.AnyNoContext,
+  $Loaded extends S.Schema.AnyNoContext | undefined,
+  $Output extends { id: string },
+  $Explorer extends Explorers.Explorer | readonly Explorers.Explorer[] = Explorers.Explorer | Explorers.Explorer[],
+> {
   name: string
-  schema: $Schema
+  input: $Input
+  /**
+   * Optional schema for loaded entries.
+   * When provided, the loader return type is constrained to S.Schema.Type<$Loaded>.
+   * This enables future disk caching via encode/decode.
+   */
+  loaded?: $Loaded
   /** Content source root. Discarded when computing public asset paths. */
   root?: string
-  discover: Strategy | Strategy[]
-  load: LoadFn<$Schema>
+  explorer: $Explorer
+  /**
+   * Load a single entry. Called per-exploration when cache is mostly warm.
+   * At least one of loadOne or loadAll must be provided.
+   */
+  loadOne?: (
+    exploration: ExplorationFromExplorers<$Explorer>,
+    ctx: LoadContext<$Input>,
+  ) => LoaderOutput<$Loaded, $Output>
+  /**
+   * Load all entries in batch. Called when cache is cold or has significant misses.
+   * More efficient for external API calls (e.g., GitHub GraphQL batch query).
+   * At least one of loadOne or loadAll must be provided.
+   */
+  loadAll?: (
+    explorations: ExplorationFromExplorers<$Explorer>[],
+    ctx: LoadContext<$Input>,
+  ) => undefined extends $Loaded
+    ? $Output[] | Promise<$Output[]>
+    : S.Schema.Type<NonNullable<$Loaded>>[] | Promise<S.Schema.Type<NonNullable<$Loaded>>[]>
 }
 
 /**
  * Asset copy mapping.
  */
-export interface AssetMapping {
-  src: string
-  dest: string
-}
+export type { AssetMapping } from './explorers/types.js'
 
-/**
- * Internal entry metadata for tracking which strategy loaded an entry.
- */
-type EntryMeta =
-  | { strategy: 'file'; assetDirPath: string | null }
-  | { strategy: 'dir'; dirPath: string }
-
-/**
- * Internal cache entry.
- */
-interface LoadedEntry {
-  entry: Entry.Type
-  meta: EntryMeta
-}
+// ============================================================================
+// Definition Interface
+// ============================================================================
 
 /**
  * A content definition with type-safe query methods.
+ *
+ * @typeParam $Loaded - Optional schema for loaded entries (undefined if not provided)
+ * @typeParam $Output - The effective output type (derived from $Loaded when provided)
  */
-export interface Definition<$Schema extends S.Schema.AnyNoContext = any> {
+export interface Definition<
+  $Input extends S.Schema.AnyNoContext = S.Schema<{}, {}>,
+  $Loaded extends S.Schema.AnyNoContext | undefined = undefined,
+  $Output extends { id: string } = { id: string },
+> {
   readonly name: string
-  list(): Promise<Entry.Type<$Schema>[]>
-  get(id: string): Promise<Entry.Type<$Schema> | null>
+
+  /** Get all entries. */
+  list(): Promise<$Output[]>
+
+  /** Get a single entry by ID. */
+  get(id: string): Promise<$Output | null>
+
+  /** Get asset mappings for copying/serving. */
   getAssetMappings(): Promise<AssetMapping[]>
+
+  /** Get paths to watch for changes. */
   getWatchPaths(): string[]
-  getAssetsRootPath(entry: Entry.Type<$Schema>): string | null
+
+  /** Get the asset root path for an entry. */
+  getAssetsRootPath(entry: $Output): string | null
+
+  /** Invalidate the cache (called by Vite plugin on file change). */
+  invalidateCache(): void
+
+  /** Type-safe constructor for a single manifest entry. */
+  make(entry: S.Schema.Encoded<$Input>): S.Schema.Type<$Input>
+
+  /** Type-safe constructor for multiple manifest entries. */
+  makeMany(...entries: S.Schema.Encoded<$Input>[]): S.Schema.Type<$Input>[]
 }
 
+// ============================================================================
+// Type Utilities
+// ============================================================================
+
 /**
- * Define a content type with file or directory-based discovery strategies.
+ * Resolve the effective output type based on whether a loaded schema is provided.
+ * - If $Loaded is a schema: use S.Schema.Type<$Loaded>
+ * - Otherwise: use $Output (inferred from loader)
  */
-export const define = <$Schema extends S.Schema.AnyNoContext>(
-  input: Input<$Schema>,
-): Definition<$Schema> => {
-  const internalSchema = S.extend(BaseSchema, input.schema)
-  const strategies = Array.isArray(input.discover) ? input.discover : [input.discover]
+type ResolveOutput<$Loaded, $Output> =
+  undefined extends $Loaded ? $Output : S.Schema.Type<NonNullable<$Loaded>>
 
-  let cache: LoadedEntry[] | null = null
+/**
+ * Extract the entry type (loader output) from a Definition.
+ *
+ * @example
+ * ```ts
+ * type Post = Continent.EntryType<typeof Posts>
+ * ```
+ */
+export type EntryType<$Definition> = $Definition extends Definition<infer _$Input, infer _$Loaded, infer $Output> ? $Output : never
 
-  const loadAll = async (): Promise<Array<LoadedEntry>> => {
-    if (cache) return cache
+/**
+ * Extract the entry input type (for make/makeMany) from a Definition.
+ *
+ * @example
+ * ```ts
+ * type PostInput = Continent.EntryInput<typeof Posts>
+ * ```
+ */
+export type EntryInput<$Definition> = $Definition extends Definition<infer $Input, infer _$Loaded, infer _$Output> ?
+  S.Schema.Encoded<$Input> :
+  never
 
-    const results: Array<LoadedEntry> = []
+// ============================================================================
+// Definition Factory
+// ============================================================================
 
-    for (const strategy of strategies) {
-      // Compute full content path by joining definition root with strategy root
-      const contentRoot = join(input.root ?? '', strategy.root)
+/**
+ * Define a content type with file, directory, or manifest-based exploration.
+ */
+export const define = <
+  $Input extends S.Schema.AnyNoContext,
+  $Loaded extends S.Schema.AnyNoContext | undefined,
+  $Output extends { id: string },
+  $Explorer extends Explorers.Explorer | readonly Explorers.Explorer[],
+>(
+  input: Input<$Input, $Loaded, $Output, $Explorer>,
+): Definition<$Input, $Loaded, ResolveOutput<$Loaded, $Output>> => {
+  // Normalize to array of explorers
+  const explorers = (Array.isArray(input.explorer) ? input.explorer : [input.explorer]) as Explorers.Explorer[]
+  const root = input.root ?? ''
 
-      if (strategy.type === 'file') {
-        // File strategy: find files matching entry pattern
-        const matches = globSync(strategy.entry, {
-          cwd: contentRoot,
-          ignore: strategy.ignore ?? DEFAULT_IGNORE,
-        })
+  // Create cache with optional disk persistence
+  const entryCache = Cache.create({
+    path: `.continent/cache/${input.name}`,
+    schema: input.loaded,
+  })
 
-        for (const file of matches) {
-          const filePath = join(contentRoot, file)
+  // Validate that at least one loader is provided
+  if (!input.loadOne && !input.loadAll) {
+    throw new Error(`Content definition "${input.name}" must provide at least one of loadOne or loadAll`)
+  }
 
-          // Check for sibling asset directory (same name without extension)
-          const fileBasename = basename(file, '.mdx')
-          const assetDirPath = join(contentRoot, fileBasename)
-          const hasAssetDir = existsSync(assetDirPath)
-          const assets = hasAssetDir ?
-            globSync('*', { cwd: assetDirPath, onlyFiles: true }) :
-            []
+  // Context object passed to load function
+  const ctx: LoadContext<$Input> = {
+    inputSchema: input.input,
+  }
 
-          const raw = await input.load({
-            filePath,
-            strategy,
-            assets,
-          })
+  // Cache hit threshold for smart dispatch (50%)
+  const BATCH_THRESHOLD = 0.5
 
-          try {
-            const entry = S.decodeUnknownSync(internalSchema as any)(raw) as Entry.Type<$Schema>
-            results.push({
-              entry,
-              meta: { strategy: 'file', assetDirPath: hasAssetDir ? assetDirPath : null },
-            })
-          } catch (error) {
-            throw new Error(
-              `Content validation failed in ${input.name}:\n` +
-                `  File: ${filePath}\n` +
-                `  Error: ${error instanceof Error ? error.message : String(error)}`,
-            )
-          }
+  const loadAllEntries = async (): Promise<LoadedEntry[]> => {
+    const loadedEntries: LoadedEntry[] = []
+
+    for (const explorer of explorers) {
+      const explorations = await explorer.run(root)
+
+      // Separate cached and uncached explorations
+      const cached: LoadedEntry[] = []
+      const uncached: Explorers.Exploration[] = []
+
+      for (const exploration of explorations) {
+        // Check cache by explorer's cache key
+        const cacheKey = JSON.stringify(explorer.getCacheKey(exploration))
+        const cachedData = await entryCache.get(cacheKey)
+
+        if (cachedData !== null) {
+          // Cache hit - reconstruct LoadedEntry with fresh exploration
+          cached.push({ data: cachedData as any, explorer, exploration })
+        } else {
+          uncached.push(exploration)
+        }
+      }
+
+      // Add cached entries to results
+      loadedEntries.push(...cached)
+
+      // If no uncached entries, we're done with this explorer
+      if (uncached.length === 0) continue
+
+      // Smart dispatch: choose loadAll vs loadOne based on cache hit rate
+      const totalCount = explorations.length
+      const cacheHitRate = cached.length / totalCount
+      const shouldBatch = input.loadAll && cacheHitRate < BATCH_THRESHOLD
+
+      if (shouldBatch) {
+        // Batch load all uncached entries
+        const results = await input.loadAll!(uncached as any, ctx)
+
+        // Cache and collect results
+        for (let i = 0; i < results.length; i++) {
+          const data = results[i]
+          const exploration = uncached[i]!
+          const cacheKey = JSON.stringify(explorer.getCacheKey(exploration))
+          await entryCache.set(cacheKey, data as any)
+          loadedEntries.push({ data, explorer, exploration })
         }
       } else {
-        // Dir strategy: find directories containing entry file
-        const entryFiles = globSync(`*/${strategy.entry}`, {
-          cwd: contentRoot,
-          ignore: strategy.ignore ?? DEFAULT_IGNORE,
-        })
-
-        for (const entryFile of entryFiles) {
-          const dirName = dirname(entryFile)
-          const dirPath = join(contentRoot, dirName)
-          const filePath = join(contentRoot, entryFile)
-
-          // Discover assets (everything except entry file)
-          const allFiles = globSync('*', { cwd: dirPath, onlyFiles: true })
-          const assets = allFiles.filter(f => f !== strategy.entry)
-
-          const raw = await input.load({
-            filePath,
-            strategy,
-            assets,
-          })
-
-          try {
-            const entry = S.decodeUnknownSync(internalSchema as any)(raw) as Entry.Type<$Schema>
-            results.push({
-              entry,
-              meta: {
-                strategy: 'dir',
-                dirPath,
-              },
-            })
-          } catch (error) {
-            throw new Error(
-              `Content validation failed in ${input.name}:\n` +
-                `  File: ${filePath}\n` +
-                `  Error: ${error instanceof Error ? error.message : String(error)}`,
-            )
-          }
+        // Load one at a time (loadOne must exist if loadAll doesn't or cache is warm)
+        for (const exploration of uncached) {
+          const data = await input.loadOne!(exploration as any, ctx)
+          const cacheKey = JSON.stringify(explorer.getCacheKey(exploration))
+          await entryCache.set(cacheKey, data as any)
+          loadedEntries.push({ data, explorer, exploration })
         }
       }
     }
 
-    cache = results
-    return results
+    return loadedEntries
   }
 
-  // Find strategies for computing asset URLs
-  const getFileStrategy = (): FileStrategy | null => {
-    for (const s of strategies) if (s.type === 'file') return s
-    return null
-  }
-
-  const getDirStrategy = (): DirStrategy | null => {
-    for (const s of strategies) if (s.type === 'dir') return s
-    return null
-  }
+  // Schema decoder for make/makeMany
+  const make = S.decodeUnknownSync(input.input)
 
   return {
     name: input.name,
 
-    list: async () => (await loadAll()).map(r => r.entry) as any,
+    list: async () => {
+      const all = await loadAllEntries()
+      return all.map(r => r.data) as any
+    },
 
     get: async (id) => {
-      const all = await loadAll()
-      return (all.find(r => r.entry.id === id)?.entry ?? null) as any
+      // Load all and find by ID (cache handles efficiency)
+      const all = await loadAllEntries()
+      return all.find(r => r.data.id === id)?.data ?? null as any
     },
 
     getWatchPaths: () => {
-      return [...new Set(strategies.map(s => join(input.root ?? '', s.root)))]
+      const paths = explorers.map(e => e.getWatchPath(root))
+      return [...new Set(paths)]
     },
 
     getAssetMappings: async () => {
-      const assetMappings: AssetMapping[] = []
-      const all = await loadAll()
-
-      for (const { entry, meta } of all) {
-        if (meta.strategy === 'file' && meta.assetDirPath) {
-          const fileStrategy = getFileStrategy()
-          if (!fileStrategy) continue
-
-          const assets = globSync('*', { cwd: meta.assetDirPath, onlyFiles: true })
-          for (const asset of assets) {
-            assetMappings.push({
-              src: join(meta.assetDirPath, asset),
-              dest: join(fileStrategy.root, entry.id, asset),
-            })
-          }
-        } else if (meta.strategy === 'dir') {
-          const dirStrategy = getDirStrategy()
-          if (!dirStrategy) continue
-
-          // Get assets in the directory
-          const allFiles = globSync('*', { cwd: meta.dirPath, onlyFiles: true })
-          const assets = allFiles.filter(f => f !== dirStrategy.entry)
-
-          for (const asset of assets) {
-            assetMappings.push({
-              src: join(meta.dirPath, asset),
-              dest: join(dirStrategy.root, entry.id, asset),
-            })
-          }
-        }
-      }
-
-      return assetMappings
+      const loadedEntries = await loadAllEntries()
+      return loadedEntries.flatMap(({ data, explorer, exploration }) => explorer.getAssetMappings(exploration, data.id))
     },
 
     getAssetsRootPath: (entry) => {
-      // Try dir strategy first, then file strategy
-      const dirStrategy = getDirStrategy()
-      if (dirStrategy) return `${dirStrategy.root}/${entry.id}`
-
-      const fileStrategy = getFileStrategy()
-      if (fileStrategy) return `${fileStrategy.root}/${entry.id}`
-
+      for (const explorer of explorers) {
+        const path = explorer.getAssetsRootPath(entry.id)
+        if (path) return path
+      }
       return null
+    },
+
+    invalidateCache: () => {
+      entryCache.invalidate()
+    },
+
+    make,
+
+    makeMany: (...entries) => {
+      return entries.map(e => make(e))
     },
   }
 }

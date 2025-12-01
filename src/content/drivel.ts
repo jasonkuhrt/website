@@ -1,16 +1,27 @@
-import { Continent } from 'continent'
+import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
-import { readFile } from 'fs/promises'
 import matter from 'gray-matter'
-import { basename, dirname } from 'path'
 
 /**
- * Drivel schema - shorter blog posts.
+ * Date schema that handles both Date objects and date strings.
+ * gray-matter may return either depending on YAML format.
+ */
+const FlexibleDate = S.transform(
+  S.Union(S.DateFromSelf, S.String),
+  S.DateFromSelf,
+  {
+    decode: (input) => input instanceof Date ? input : new Date(input),
+    encode: (date) => date,
+  },
+)
+
+/**
+ * Drivel schema - input fields (what author writes in frontmatter).
+ * Note: `source` is NOT in schema - it's loader output, not input.
  */
 const DrivelSchema = S.Struct({
   title: S.String,
-  date: S.DateFromSelf,
-  source: S.String,
+  date: FlexibleDate,
 })
 
 /**
@@ -23,43 +34,33 @@ const DrivelSchema = S.Struct({
  */
 export const Drivel = Continent.define({
   name: 'drivel',
-  schema: DrivelSchema,
+  input: DrivelSchema,
   root: 'content',
-  discover: [
-    { type: 'file', root: 'writing/drivel', entry: '*.mdx' },
-    { type: 'dir', root: 'writing/drivel', entry: 'content.mdx' },
+  explorer: [
+    Explorers.File.create({ root: 'writing/drivel', entry: 'mdx' }),
+    Explorers.Dir.create({ root: 'writing/drivel', entry: 'content.mdx' }),
   ],
-  async load({ filePath, strategy }) {
-    const raw = await readFile(filePath, 'utf-8')
-    const { data: frontmatter, content } = matter(raw)
+  async loadOne(exploration, ctx) {
+    // Parse frontmatter from content
+    const { data: frontmatter, content } = matter(exploration.matches.entry)
 
-    // Extract ID based on strategy type
-    const rawId = strategy.type === 'dir'
-      ? basename(dirname(filePath))
-      : basename(filePath, '.mdx')
+    // Decode frontmatter through schema
+    const input = S.decodeUnknownSync(ctx.inputSchema)(frontmatter)
 
+    // ID is now directly available on exploration
     // Strip date prefix (YYYY-MM-DD_) if present
-    const id = rawId.replace(/^\d{4}-\d{2}-\d{2}_/, '')
+    const id = exploration.id.replace(/^\d{4}-\d{2}-\d{2}_/, '')
 
     // Rewrite relative asset URLs (both HTML src and markdown image syntax)
     const source = content
-      .replace(/src="\.\/([^"]+)"/g, `src="/${strategy.root}/${id}/$1"`)
-      .replace(/\]\(\.\/([^)]+)\)/g, `](/${strategy.root}/${id}/$1)`)
-
-    // Normalize date (gray-matter may return string or Date depending on format)
-    const date = frontmatter.date instanceof Date
-      ? frontmatter.date
-      : new Date(frontmatter.date as string)
+      .replace(/src="\.\/([^"]+)"/g, `src="/${exploration.config.root}/${id}/$1"`)
+      .replace(/\]\(\.\/([^)]+)\)/g, `](/${exploration.config.root}/${id}/$1)`)
 
     return {
       id,
-      title: frontmatter.title as string,
-      date,
+      title: input.title,
+      date: input.date,
       source,
     }
   },
 })
-
-export namespace Drivel {
-  export type Entry = Awaited<ReturnType<typeof Drivel.list>>[number]
-}
