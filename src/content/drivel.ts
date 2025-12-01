@@ -1,28 +1,7 @@
 import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
 import matter from 'gray-matter'
-
-/**
- * Date schema that handles both Date objects and date strings.
- * gray-matter may return either depending on YAML format.
- */
-const FlexibleDate = S.transform(
-  S.Union(S.DateFromSelf, S.String),
-  S.DateFromSelf,
-  {
-    decode: (input) => input instanceof Date ? input : new Date(input),
-    encode: (date) => date,
-  },
-)
-
-/**
- * Drivel schema - input fields (what author writes in frontmatter).
- * Note: `source` is NOT in schema - it's loader output, not input.
- */
-const DrivelSchema = S.Struct({
-  title: S.String,
-  date: FlexibleDate,
-})
+import { FlexibleDate } from './_helpers.js'
 
 /**
  * Drivel content definition.
@@ -34,17 +13,17 @@ const DrivelSchema = S.Struct({
  */
 export const Drivel = Continent.define({
   name: 'drivel',
-  input: DrivelSchema,
   root: 'content',
+  input: S.Struct({
+    title: S.String,
+    date: FlexibleDate,
+  }),
   explorer: [
     Explorers.File.create({ root: 'writing/drivel', entry: 'mdx' }),
     Explorers.Dir.create({ root: 'writing/drivel', entry: 'content.mdx' }),
   ],
   async loadOne(exploration, ctx) {
-    // Parse frontmatter from content
     const { data: frontmatter, content } = matter(exploration.matches.entry)
-
-    // Decode frontmatter through schema
     const input = S.decodeUnknownSync(ctx.inputSchema)(frontmatter)
 
     // ID is now directly available on exploration

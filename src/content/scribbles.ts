@@ -1,29 +1,7 @@
 import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
 import matter from 'gray-matter'
-
-/**
- * Date schema that handles both Date objects and date strings.
- * gray-matter may return either depending on YAML format.
- */
-const FlexibleDate = S.transform(
-  S.Union(S.DateFromSelf, S.String),
-  S.DateFromSelf,
-  {
-    decode: (input) => input instanceof Date ? input : new Date(input),
-    encode: (date) => date,
-  },
-)
-
-/**
- * Scribbles schema - input fields (what author writes in frontmatter).
- * Note: `source` is NOT in schema - it's loader output, not input.
- */
-const ScribblesSchema = S.Struct({
-  title: S.String,
-  date: FlexibleDate,
-  tags: S.optional(S.Array(S.String)),
-})
+import { FlexibleDate } from './_helpers.js'
 
 /**
  * Scribbles content definition.
@@ -34,20 +12,18 @@ const ScribblesSchema = S.Struct({
  */
 export const Scribbles = Continent.define({
   name: 'scribbles',
-  input: ScribblesSchema,
+  input: S.Struct({
+    title: S.String,
+    date: FlexibleDate,
+    tags: S.optional(S.Array(S.String)),
+  }),
   root: 'content',
   explorer: [
     Explorers.File.create({ root: 'writing/scribbles', entry: 'mdx' }),
     Explorers.Dir.create({ root: 'writing/scribbles', entry: 'content.mdx' }),
   ],
   async loadOne(exploration, ctx) {
-    // matches.entry is typed as MatchWithContent (string shorthand = required single match with content)
-    const { content: rawContent } = exploration.matches.entry
-
-    // Parse frontmatter from content
-    const { data: frontmatter, content } = matter(rawContent)
-
-    // Decode frontmatter through schema
+    const { data: frontmatter, content } = matter(exploration.matches.entry)
     const input = S.decodeUnknownSync(ctx.inputSchema)(frontmatter)
 
     // ID is now directly available on exploration

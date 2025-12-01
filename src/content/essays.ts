@@ -1,19 +1,7 @@
 import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
 import matter from 'gray-matter'
-
-/**
- * Date schema that handles both Date objects and date strings.
- * gray-matter may return either depending on YAML format.
- */
-const FlexibleDate = S.transform(
-  S.Union(S.DateFromSelf, S.String),
-  S.DateFromSelf,
-  {
-    decode: (input) => input instanceof Date ? input : new Date(input),
-    encode: (date) => date,
-  },
-)
+import { FlexibleDate } from './_helpers.js'
 
 /**
  * Essays content definition.
