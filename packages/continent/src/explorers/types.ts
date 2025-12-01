@@ -4,6 +4,20 @@ import type * as File from './file.js'
 import type * as Manifest from './manifest.js'
 
 // ============================================================================
+// Definition Context
+// ============================================================================
+
+/**
+ * Context from the content definition passed to explorer.run().
+ */
+export interface DefinitionContext {
+  /** Content type name from the definition. */
+  name: string
+  /** Content source root from the definition. */
+  root: string
+}
+
+// ============================================================================
 // Match Types
 // ============================================================================
 
@@ -161,7 +175,7 @@ export interface AssetMapping {
  * Generic over Exploration type to preserve type info through definition.
  */
 export interface Explorer<$Exploration extends Exploration = Exploration> {
-  run(root: string): Promise<$Exploration[]>
+  run(ctx: DefinitionContext): Promise<$Exploration[]>
   getCacheKey(exploration: $Exploration): unknown
   getWatchPath(root: string): string
   getAssetMappings(exploration: $Exploration, dataId: string): AssetMapping[]

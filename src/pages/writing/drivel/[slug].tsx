@@ -1,17 +1,12 @@
+import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
 import { Drivel } from '#~/content/drivel.js'
 import { formatDateLong } from '#~/lib/date.js'
-import { compileMDX } from 'next-mdx-remote/rsc'
 import type { PageProps } from 'waku/router'
 
 const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
   const post = await Drivel.get(slug)
   if (!post) throw new Error(`Drivel not found: ${slug}`)
-
-  const { content } = await compileMDX({
-    source: post.source,
-    options: { parseFrontmatter: false },
-  })
 
   return (
     <>
@@ -23,7 +18,7 @@ const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
             <h1>{post.title}</h1>
             <time dateTime={post.date.toISOString()}>{formatDateLong(post.date)}</time>
           </header>
-          {content}
+          <MdxContent compiledJs={post.compiledJs} />
         </article>
       </main>
     </>

@@ -2,6 +2,16 @@ import * as S from 'effect/Schema'
 import * as Cache from './cache.js'
 import { Explorers } from './explorers/_.js'
 import type { AssetMapping } from './explorers/types.js'
+import * as SchemaUtils from './lib/schema.js'
+
+// ============================================================================
+// Default Loaders
+// ============================================================================
+
+// Default loaders assume Manifest explorer (which has .entry)
+const defaultLoadOne = (exploration: Explorers.Exploration) => (exploration as any).entry
+
+const defaultLoadAll = (explorations: Explorers.Exploration[]) => explorations.map(e => (e as any).entry)
 
 // ============================================================================
 // Cache Entry Type
@@ -66,12 +76,13 @@ type LoaderOutput<$Loaded extends S.Schema.AnyNoContext | undefined, $Output> =
     : S.Schema.Type<NonNullable<$Loaded>> | Promise<S.Schema.Type<NonNullable<$Loaded>>>
 
 export interface Input<
+  $Name extends string,
   $Input extends S.Schema.AnyNoContext,
   $Loaded extends S.Schema.AnyNoContext | undefined,
   $Output extends { id: string },
   $Explorer extends Explorers.Explorer | readonly Explorers.Explorer[] = Explorers.Explorer | Explorers.Explorer[],
 > {
-  name: string
+  name: $Name
   input: $Input
   /**
    * Optional schema for loaded entries.
@@ -81,7 +92,8 @@ export interface Input<
   loaded?: $Loaded
   /** Content source root. Discarded when computing public asset paths. */
   root?: string
-  explorer: $Explorer
+  /** Explorer(s) for discovering content entries. Defaults to Manifest explorer. */
+  explorer?: $Explorer
   /**
    * Load a single entry. Called per-exploration when cache is mostly warm.
    * At least one of loadOne or loadAll must be provided.
@@ -192,16 +204,21 @@ export type EntryInput<$Definition> = $Definition extends Definition<infer $Inpu
  * Define a content type with file, directory, or manifest-based exploration.
  */
 export const define = <
+  $Name extends string,
   $Input extends S.Schema.AnyNoContext,
   $Loaded extends S.Schema.AnyNoContext | undefined,
   $Output extends { id: string },
   $Explorer extends Explorers.Explorer | readonly Explorers.Explorer[],
 >(
-  input: Input<$Input, $Loaded, $Output, $Explorer>,
-): Definition<$Input, $Loaded, ResolveOutput<$Loaded, $Output>> => {
-  // Normalize to array of explorers
-  const explorers = (Array.isArray(input.explorer) ? input.explorer : [input.explorer]) as Explorers.Explorer[]
-  const root = input.root ?? ''
+  input: Input<$Name, $Input, $Loaded, $Output, $Explorer>,
+): Definition<$Input, $Loaded, ResolveOutput<$Loaded, $Output>> & SchemaUtils.UnionNamespace<$Input, $Name> => {
+  // Normalize to array of explorers (default to Manifest explorer)
+  const explorers = (
+    input.explorer === undefined
+      ? [Explorers.Manifest.create()]
+      : Array.isArray(input.explorer) ? input.explorer : [input.explorer]
+  ) as Explorers.Explorer[]
+  const root = input.root ?? 'content'
 
   // Create cache with optional disk persistence
   const entryCache = Cache.create({
@@ -209,10 +226,12 @@ export const define = <
     schema: input.loaded,
   })
 
-  // Validate that at least one loader is provided
-  if (!input.loadOne && !input.loadAll) {
-    throw new Error(`Content definition "${input.name}" must provide at least one of loadOne or loadAll`)
-  }
+  // Use default loaders if not provided
+  // If loadOne provided but not loadAll, derive loadAll from loadOne
+  const loadOne = input.loadOne ?? defaultLoadOne
+  const loadAll = input.loadAll ?? (input.loadOne
+    ? (explorations: any[], ctx: any) => Promise.all(explorations.map(e => input.loadOne!(e, ctx)))
+    : defaultLoadAll)
 
   // Context object passed to load function
   const ctx: LoadContext<$Input> = {
@@ -226,7 +245,7 @@ export const define = <
     const loadedEntries: LoadedEntry[] = []
 
     for (const explorer of explorers) {
-      const explorations = await explorer.run(root)
+      const explorations = await explorer.run({ name: input.name, root })
 
       // Separate cached and uncached explorations
       const cached: LoadedEntry[] = []
@@ -254,11 +273,11 @@ export const define = <
       // Smart dispatch: choose loadAll vs loadOne based on cache hit rate
       const totalCount = explorations.length
       const cacheHitRate = cached.length / totalCount
-      const shouldBatch = input.loadAll && cacheHitRate < BATCH_THRESHOLD
+      const shouldBatch = cacheHitRate < BATCH_THRESHOLD
 
       if (shouldBatch) {
         // Batch load all uncached entries
-        const results = await input.loadAll!(uncached as any, ctx)
+        const results = await loadAll(uncached as any, ctx)
 
         // Cache and collect results
         for (let i = 0; i < results.length; i++) {
@@ -269,9 +288,9 @@ export const define = <
           loadedEntries.push({ data, explorer, exploration })
         }
       } else {
-        // Load one at a time (loadOne must exist if loadAll doesn't or cache is warm)
+        // Load one at a time
         for (const exploration of uncached) {
-          const data = await input.loadOne!(exploration as any, ctx)
+          const data = await loadOne(exploration as any, ctx)
           const cacheKey = JSON.stringify(explorer.getCacheKey(exploration))
           await entryCache.set(cacheKey, data as any)
           loadedEntries.push({ data, explorer, exploration })
@@ -285,7 +304,7 @@ export const define = <
   // Schema decoder for make/makeMany
   const make = S.decodeUnknownSync(input.input)
 
-  return {
+  const base = {
     name: input.name,
 
     list: async () => {
@@ -293,7 +312,7 @@ export const define = <
       return all.map(r => r.data) as any
     },
 
-    get: async (id) => {
+    get: async (id: string) => {
       // Load all and find by ID (cache handles efficiency)
       const all = await loadAllEntries()
       return all.find(r => r.data.id === id)?.data ?? null as any
@@ -309,7 +328,7 @@ export const define = <
       return loadedEntries.flatMap(({ data, explorer, exploration }) => explorer.getAssetMappings(exploration, data.id))
     },
 
-    getAssetsRootPath: (entry) => {
+    getAssetsRootPath: (entry: { id: string }) => {
       for (const explorer of explorers) {
         const path = explorer.getAssetsRootPath(entry.id)
         if (path) return path
@@ -323,8 +342,13 @@ export const define = <
 
     make,
 
-    makeMany: (...entries) => {
+    makeMany: (...entries: S.Schema.Encoded<$Input>[]) => {
       return entries.map(e => make(e))
     },
   }
+
+  // If input is a union, expose members as namespace properties
+  const unionNamespace = SchemaUtils.buildUnionNamespace(input.input, input.name)
+
+  return Object.assign(base, unionNamespace) as any
 }

@@ -1,8 +1,8 @@
-import { Capturing, type PhotoMeta } from '#~/content/capturing.js'
+import { Frame, type FrameMeta } from '#~/content/frame.js'
 import { Meta } from '#~/components/meta.js'
 
 const CapturingPage = async () => {
-  const photos = await Capturing.list()
+  const photos = await Frame.list()
 
   // Sort by date descending (newest first)
   const sorted = [...photos].sort((a, b) => b.date.localeCompare(a.date))
@@ -27,7 +27,7 @@ const CapturingPage = async () => {
   )
 }
 
-const PhotoCard: React.FC<{ photo: PhotoMeta }> = ({ photo }) => {
+const PhotoCard: React.FC<{ photo: FrameMeta }> = ({ photo }) => {
   const firstMedia = photo.media[0]
   if (!firstMedia) return null
 

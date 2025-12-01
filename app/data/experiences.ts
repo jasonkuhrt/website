@@ -5,7 +5,7 @@ import {
   Personal,
   Speaking,
   WorkExperience,
-} from '../../src/content/bio.js'
+} from '../../src/content/experience.js'
 
 /**
  * Experiences

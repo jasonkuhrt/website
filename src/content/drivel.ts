@@ -1,45 +1,50 @@
 import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
-import matter from 'gray-matter'
 import { FlexibleDate } from './_helpers.js'
+import { processMdx } from './_mdx.js'
+
+export class DrivelLoaded extends S.Class<DrivelLoaded>('DrivelLoaded')({
+  id: S.String,
+  title: S.String,
+  date: S.Date,
+  compiledJs: S.String,
+}) {}
 
 /**
  * Drivel content definition.
  *
- * Drivel are MDX files in content/writing/drivel/.
+ * Drivel are MDX files in content/drivel/.
  * Supports two formats:
  * - Flat file: {slug}.mdx (file strategy)
  * - Nested dir: {slug}/content.mdx (dir strategy, with assets)
  */
 export const Drivel = Continent.define({
   name: 'drivel',
-  root: 'content',
   input: S.Struct({
     title: S.String,
     date: FlexibleDate,
   }),
+  loaded: DrivelLoaded,
   explorer: [
-    Explorers.File.create({ root: 'writing/drivel', entry: 'mdx' }),
-    Explorers.Dir.create({ root: 'writing/drivel', entry: 'content.mdx' }),
+    Explorers.File.create({ entry: 'mdx' }),
+    Explorers.Dir.create({ entry: 'content.mdx' }),
   ],
   async loadOne(exploration, ctx) {
-    const { data: frontmatter, content } = matter(exploration.matches.entry)
-    const input = S.decodeUnknownSync(ctx.inputSchema)(frontmatter)
-
-    // ID is now directly available on exploration
     // Strip date prefix (YYYY-MM-DD_) if present
     const id = exploration.id.replace(/^\d{4}-\d{2}-\d{2}_/, '')
+    const assetBasePath = `${exploration.config.root}/${id}`
 
-    // Rewrite relative asset URLs (both HTML src and markdown image syntax)
-    const source = content
-      .replace(/src="\.\/([^"]+)"/g, `src="/${exploration.config.root}/${id}/$1"`)
-      .replace(/\]\(\.\/([^)]+)\)/g, `](/${exploration.config.root}/${id}/$1)`)
+    const { frontmatter, compiledJs } = await processMdx(
+      exploration.matches.entry.content,
+      ctx.inputSchema,
+      { assetBasePath }
+    )
 
-    return {
+    return new DrivelLoaded({
       id,
-      title: input.title,
-      date: input.date,
-      source,
-    }
+      title: frontmatter.title,
+      date: frontmatter.date,
+      compiledJs,
+    })
   },
 })

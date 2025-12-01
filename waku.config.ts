@@ -1,14 +1,16 @@
 import { Continent } from 'continent'
 import { defineConfig } from 'waku/config'
-import { Capturing } from './src/content/capturing.js'
 import { Drivel } from './src/content/drivel.js'
-import { Essays } from './src/content/essays.js'
-import { Scribbles } from './src/content/scribbles.js'
+import { Essay } from './src/content/essay.js'
+import { Frame } from './src/content/frame.js'
+import { Module } from './src/content/module.js'
+import { Scribble } from './src/content/scribble.js'
+import { Site } from './src/content/site.js'
 
 export default defineConfig({
   vite: {
     plugins: [Continent.continentPlugin({
-      definitions: [Essays, Drivel, Scribbles, Capturing],
+      definitions: [Drivel, Essay, Frame, Module, Scribble, Site],
     })],
   },
 })

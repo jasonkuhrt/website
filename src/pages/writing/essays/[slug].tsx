@@ -1,17 +1,12 @@
+import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
-import { Essays } from '#~/content/essays.js'
+import { Essay } from '#~/content/essay.js'
 import { formatDateLong } from '#~/lib/date.js'
-import { compileMDX } from 'next-mdx-remote/rsc'
 import type { PageProps } from 'waku/router'
 
 const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
-  const essay = await Essays.get(slug)
+  const essay = await Essay.get(slug)
   if (!essay) throw new Error(`Essay not found: ${slug}`)
-
-  const { content } = await compileMDX({
-    source: essay.source,
-    options: { parseFrontmatter: false },
-  })
 
   return (
     <>
@@ -23,7 +18,7 @@ const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
             <h1>{essay.title}</h1>
             <time dateTime={essay.date.toISOString()}>{formatDateLong(essay.date)}</time>
           </header>
-          {content}
+          <MdxContent compiledJs={essay.compiledJs} />
         </article>
       </main>
     </>
@@ -33,7 +28,7 @@ const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
 export default EssayPage
 
 export const getConfig = async () => {
-  const essays = await Essays.list()
+  const essays = await Essay.list()
   return {
     render: 'static',
     staticPaths: essays.map(e => e.id),

@@ -1,6 +1,6 @@
-import { basename } from 'node:path'
 import { Continent, Explorers } from 'continent'
 import * as S from 'effect/Schema'
+import { basename } from 'node:path'
 
 /**
  * Meta schema for optional metadata file.
@@ -10,21 +10,19 @@ const MetaSchema = S.Struct({
 })
 
 /**
- * Capturing content definition.
+ * Frame content definition.
  *
- * Discovers photo directories in content/capturing/.
+ * Discovers photo/video directories in content/capturing/.
  * Each directory contains:
  * - One or more media files (jpg, jpeg, png, mp4, mov)
  * - Optional meta.ts with caption and other metadata
  *
  * Directory format: {date}_{time} e.g. "2024-09-16_01-00-48-000"
  */
-export const Capturing = Continent.define({
-  name: 'capturing',
-  root: 'content',
+export const Frame = Continent.define({
+  name: 'frame',
   input: MetaSchema,
   explorer: Explorers.Dir.create({
-    root: 'capturing',
     entry: [
       { name: 'media', glob: '*.{jpg,jpeg,png,mp4,mov}' },
       { name: 'meta', glob: 'meta.ts', read: true, optional: true },
@@ -34,14 +32,14 @@ export const Capturing = Continent.define({
     // Build media array from matches
     const media = exploration.matches.media.map(m => ({
       type: inferMediaType(m.path),
-      path: `/capturing/${exploration.id}/${basename(m.path)}`,
+      path: `/frame/${exploration.id}/${basename(m.path)}`,
     }))
 
     // Parse optional metadata
     let meta: S.Schema.Type<typeof MetaSchema> = {}
     if (exploration.matches.meta) {
       // Dynamic import the meta.ts module
-      const metaModule = await import(exploration.matches.meta.path)
+      const metaModule = await import(/* @vite-ignore */ exploration.matches.meta.path)
       meta = S.decodeUnknownSync(ctx.inputSchema)(metaModule.default)
     }
 
@@ -67,10 +65,10 @@ const inferMediaType = (path: string): 'image' | 'video' => {
 }
 
 // Type exports for consumers (PhotoGrid, etc.)
-export type PhotoMeta = Continent.EntryType<typeof Capturing>
-export type MediaItem = PhotoMeta['media'][number]
+export type FrameMeta = Continent.EntryType<typeof Frame>
+export type MediaItem = FrameMeta['media'][number]
 
 /**
- * Get all photos.
+ * Get all frames.
  */
-export const get = () => Capturing.list()
+export const get = () => Frame.list()

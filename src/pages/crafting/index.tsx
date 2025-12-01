@@ -1,8 +1,8 @@
-import { Crafting } from '#~/content/crafting.js'
+import { Module } from '#~/content/module.js'
 import { Meta } from '#~/components/meta.js'
 
 const CraftingPage = async () => {
-  const repos = await Crafting.list()
+  const repos = await Module.list()
   const featured = repos.filter((r) => r.featured)
   const others = repos.filter((r) => !r.featured)
 
@@ -40,7 +40,7 @@ const CraftingPage = async () => {
   )
 }
 
-type Repo = Awaited<ReturnType<typeof Crafting.list>>[number]
+type Repo = Awaited<ReturnType<typeof Module.list>>[number]
 
 const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
   return (

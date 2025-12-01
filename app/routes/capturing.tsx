@@ -1,10 +1,10 @@
 import { F, L } from '#~/components/__'
-import * as Capturing from '#~/content/capturing.js'
+import * as Frame from '#~/content/frame.js'
 import { createPageMeta } from '#~/lib/metaHelpers'
 import type { Route } from './+types/capturing'
 
 export const loader = async () => {
-  const photos = await Capturing.get()
+  const photos = await Frame.get()
   return { photos }
 }
 

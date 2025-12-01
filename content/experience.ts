@@ -1,19 +1,7 @@
-import {
-  Achievement,
-  DateString,
-  Education,
-  Personal,
-  Speaking,
-  WorkExperience,
-} from '../../src/content/bio.js'
+import { DateString, Experience } from '../src/content/experience.js'
 
-/**
- * Experiences
- *
- * Unified timeline of professional experience, education, speaking, achievements, and personal milestones.
- */
 export default [
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Software Engineer',
     company: 'The Guild Software',
     location: 'Montreal, Quebec, Canada · Remote',
@@ -22,7 +10,7 @@ export default [
     accomplishments: [],
     technologies: [],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Tech Lead',
     company: 'Prisma',
     location: 'Montreal, Quebec, Canada · Remote',
@@ -32,7 +20,7 @@ export default [
     accomplishments: [],
     technologies: ['TypeScript', 'System Architecture', 'Mentoring', 'GraphQL', 'Cloudflare'],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Prisma Labs Lead',
     company: 'Prisma',
     location: 'Montreal, Canada Area',
@@ -42,7 +30,7 @@ export default [
     accomplishments: [],
     technologies: [],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Software Engineer',
     company: 'Dialogue',
     location: 'Montreal, Canada Area · On-site',
@@ -52,7 +40,7 @@ export default [
     accomplishments: [],
     technologies: ['Python', 'FastAPI', 'Amazon Web Services (AWS)', 'Kubernetes', 'DevOps'],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Tech Lead',
     company: 'SSENSE',
     location: 'Montreal',
@@ -62,7 +50,7 @@ export default [
     accomplishments: [],
     technologies: ['Kubernetes', 'GraphQL', 'Continuous Deployment'],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Lead Platform Architect',
     company: 'littleBits',
     location: 'Montreal / New York',
@@ -83,7 +71,7 @@ export default [
       'OAuth 2',
     ],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Senior Frontend Engineer',
     company: 'Kenzan Media',
     location: 'Montreal, Canada Area',
@@ -94,7 +82,7 @@ export default [
     accomplishments: [],
     technologies: ['Angular.js', 'BEM', 'CSS Architecture'],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Senior Frontend Engineer',
     company: 'Presstube Inc',
     location: 'Montreal, Canada Area',
@@ -104,7 +92,7 @@ export default [
     accomplishments: [],
     technologies: ['Grunt', 'LESS', 'Angular', 'Karma'],
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Designer / Frontend Engineer',
     company: 'Taking Root',
     location: 'Montreal, Canada Area',
@@ -113,7 +101,7 @@ export default [
     overview:
       'Designed + Built CO2R web app showcasing carbon footprint reduction impact supporting reforestation and community development in Nicaragua',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Art Director / Frontend Engineer',
     company: 'Artfox',
     location: 'Montreal, Canada Area',
@@ -122,7 +110,7 @@ export default [
     overview:
       'Brainstormed platform features. Designed/Implemented UI Views. Designed brand touch-points (newsletter, documents)',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Graphic Designer',
     company: 'Kenneth Dean, Prof., McGill University',
     location: 'Montreal, Canada Area',
@@ -131,7 +119,7 @@ export default [
     overview:
       'Designed poster/website/jewel-case for film Bored in Heaven - a documentary exploring ritualistic tradition renaissance in south-east China',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'UI Designer / Frontend Engineer',
     company: 'TANK',
     location: 'Montreal, Canada Area',
@@ -139,7 +127,7 @@ export default [
     endDate: DateString.make('Jan 2011'),
     overview: 'Built modular CSS system. Designed UI views',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'UI/X Designer / Frontend Engineer',
     company: 'Bluesponge',
     location: 'Montreal, Canada Area',
@@ -148,7 +136,7 @@ export default [
     overview:
       'Designed/Built microsite prototype for CCA Journeys - digital experience for exhibition on global movement research',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Intern UI/X Designer / Fullstack Engineer',
     company: 'Icograda',
     location: 'Montreal, Canada Area',
@@ -157,7 +145,7 @@ export default [
     overview:
       "Designed/Built Icograda's Biennial Review - reimagined printed booklet as digital platform for World Design Congress",
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Graphic Designer',
     company: 'Concordia University',
     location: 'Montreal, Canada Area',
@@ -165,7 +153,7 @@ export default [
     endDate: DateString.make('Oct 2008'),
     overview: 'Designed/Built poster/microsite for Portfolio Day in Montreal',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Graphic Designer Intern',
     company: 'Icograda',
     location: 'Montreal, Canada Area',
@@ -173,7 +161,7 @@ export default [
     endDate: DateString.make('Sep 2007'),
     overview: 'Designed poster for the World Design Congress 2007',
   }),
-  WorkExperience.make({
+  Experience.Work.make({
     title: 'Graphic Designer',
     company: "time's thievish progress to eternity FILMS",
     location: 'Montreal, Canada Area',
@@ -182,7 +170,7 @@ export default [
     overview:
       'Designed poster for Montreal Stories 1944. Designed/Built poster/microsite for At the Bottom of the Hill. Designed poster/package for Woman in Car. Designed/Built website for filmmaker Vanya Rose',
   }),
-  Education.make({
+  Experience.Education.make({
     institution: 'Concordia University',
     degree: 'BFA, Design',
     date: DateString.make('2005'),
@@ -190,47 +178,47 @@ export default [
     description:
       'President, Concordia Design Students · Council Member, Fine Arts, Concordia Student Union · Exchange to Bremen (Germany) at Master-level studies · Golden Key Honour Society Member · Graduating project "Sousveillance" included in the Canadian Art and Surveillance database',
   }),
-  Education.make({
+  Experience.Education.make({
     institution: 'HSB Hochschule Bremen – City University of Applied Sciences',
     degree: 'Design',
     date: DateString.make('2007'),
     endDate: DateString.make('2008'),
     description: 'Exchange program',
   }),
-  Achievement.make({
+  Experience.Achievement.make({
     title: 'Founding Member',
     issuer: 'littleBits',
     date: DateString.make('Jul 2015'),
     description:
       'Recognized as a Founding Member for joining littleBits when it was a small startup in May 2013. Principal role in building the Cloud Platform from scratch',
   }),
-  Achievement.make({
+  Experience.Achievement.make({
     title: 'Special Selection',
     issuer: 'Art & Surveillance',
     date: DateString.make('Jun 2015'),
     description:
       '"Sousveillance" selected for inclusion in a curated gallery of Canadian Artworks that tackle the topic of Surveillance',
   }),
-  Achievement.make({
+  Experience.Achievement.make({
     title: 'Special Selection',
     issuer: 'Justseeds',
     date: DateString.make('Oct 2012'),
     description: '"Wall" selected for inclusion in the Justseeds collection, an Artists\' Cooperative',
   }),
-  Achievement.make({
+  Experience.Achievement.make({
     title: 'Special Invitation',
     issuer: 'Golden Key Honour Society',
     date: DateString.make('Nov 2010'),
     description: 'Admitted into the Golden Key Honour Society following the completion of BFA',
   }),
-  Achievement.make({
+  Experience.Achievement.make({
     title: 'Semi-finalist, Adobe Design Achievement Awards',
     issuer: 'Adobe',
     date: DateString.make('Jun 2008'),
     description:
       'Poster design for the World Design Congress (2007) was a semi-finalist in the 2008 Adobe Design Achievement Awards',
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Imagining the Future of GraphQL Documentation Tooling',
     venue: 'GraphQLConf 2025',
     date: DateString.make('September 2025'),
@@ -240,7 +228,7 @@ export default [
       repo: 'https://github.com/jasonkuhrt/tech-talk-2025-polen',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Hello Graffle! A Modular Type Safe GraphQL Client',
     venue: 'GraphQLConf 2025',
     date: DateString.make('September 2025'),
@@ -249,7 +237,7 @@ export default [
       repo: 'https://github.com/graffle-js/tech-talk-2025-gql-conf',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Discovering Graffle and Some of its TypeScript Techniques',
     venue: 'Montreal TypeScript Meetup',
     date: DateString.make('November 2024'),
@@ -258,7 +246,7 @@ export default [
       repo: 'https://github.com/graffle-js/tech-talk-2024-11',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Introduction to Data Modeling with Algebraic Data Types in TypeScript with Alge',
     venue: 'Berlin TypeScript Meetup #9',
     date: DateString.make('August 2022'),
@@ -268,7 +256,7 @@ export default [
       twitter: 'https://twitter.com/NWoroniec/status/1559506067977011202',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title:
       "Jason Kuhrt on Prisma, Nexus, Dogfooding Open Source, GraphQL's Early Days, Design Education, Path To Coding, Prisma Learnings, Schema Design, Data Modeling, and beyond",
     venue: 'GraphQL Radio',
@@ -279,7 +267,7 @@ export default [
       twitter: 'https://twitter.com/graphqlradio/status/1554117177480863745',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Diving into the new Nexus Prisma',
     venue: 'Berlin GraphQL Meetup #25',
     date: DateString.make('February 2022'),
@@ -289,7 +277,7 @@ export default [
       twitter: 'https://twitter.com/prisma/status/1492136994834628613',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Introduction to Nexus',
     venue: 'SF Node Meetup',
     date: DateString.make('February 2021'),
@@ -299,7 +287,7 @@ export default [
       twitter: 'https://twitter.com/sfnode/status/1360305708449689601',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Nexus Schema in the Context of Building a Small API',
     venue: 'Node.js Wroclaw Meetup #8',
     date: DateString.make('November 2020'),
@@ -309,7 +297,7 @@ export default [
       twitter: 'https://twitter.com/prisma/status/1328653494010736646',
     },
   }),
-  Speaking.make({
+  Experience.Speaking.make({
     title: 'Building a type-safe GraphQL server with Nexus and Prisma',
     venue: 'Prisma Day',
     date: DateString.make('June 2020'),
@@ -319,17 +307,17 @@ export default [
       twitter: 'https://twitter.com/JasonKuhrt/status/1274421971997134851',
     },
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'My first son Roman is born',
     date: DateString.make('July 2011'),
     icon: 'Baby',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'Move to NYC',
     date: DateString.make('March 2014'),
     icon: 'MapPin',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'Launch cloudBit at TED',
     date: DateString.make('March 2014'),
     icon: 'Heart',
@@ -337,27 +325,27 @@ export default [
       'Preview of littleBits cloudBit at TED2014 conference in Vancouver. Official product launch followed in July 2014.',
     url: 'https://en.wikipedia.org/wiki/LittleBits',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'Move back to Montreal',
     date: DateString.make('July 2015'),
     icon: 'Home',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'My second son Willem is born',
     date: DateString.make('March 2016'),
     icon: 'Baby',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'First Rocky Mountains Expedition',
     date: DateString.make('July 2023'),
     icon: 'Mountain',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'ADHD positive assessment',
     date: DateString.make('December 2023'),
     icon: 'Brain',
   }),
-  Personal.make({
+  Experience.Personal.make({
     title: 'Second Rocky Mountains Expedition',
     date: DateString.make('August 2025'),
     icon: 'Mountain',

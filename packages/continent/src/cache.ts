@@ -90,12 +90,10 @@ export const create = <$Schema extends S.Schema.AnyNoContext | undefined = undef
     try {
       const raw = await readFile(path, 'utf-8')
       return decode(raw)
-    } catch (err: any) {
-      // File doesn't exist
-      if (err.code === 'ENOENT') return null
-
-      // Corrupted cache file - delete it
-      await rm(path, { force: true })
+    } catch (err) {
+      // Any error = cache miss (missing file, corrupt JSON, schema mismatch)
+      console.error(`[continent] Cache read failed for ${id}:`, err)
+      await rm(path, { force: true }).catch(() => {})
       return null
     }
   }

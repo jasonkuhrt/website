@@ -1,5 +1,6 @@
 {
   "include": ["src/**/*", "vite-env.d.ts"],
+  "exclude": ["app/**/*"],
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,

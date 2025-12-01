@@ -1,12 +1,6 @@
-/**
- * Crafting Manifest
- *
- * List of GitHub repositories to display on the crafting page.
- * GitHub data (stars, description, etc.) is fetched automatically.
- *
- * Format: { repo: 'owner/name', featured?: boolean }
- */
-export default [
+import { Module } from '../src/content/module.js'
+
+export default Module.makeMany([
   { repo: 'graffle-js/graffle', featured: true },
   { repo: 'jasonkuhrt/polen' },
   { repo: 'jasonkuhrt/oak' },
@@ -28,4 +22,4 @@ export default [
   { repo: 'jasonkuhrt/purry' },
   { repo: 'jasonkuhrt/research-node-package-exports' },
   { repo: 'pakadev/paka' },
-]
+])

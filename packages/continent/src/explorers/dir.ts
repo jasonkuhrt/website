@@ -2,14 +2,15 @@ import { readFileSync, statSync } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import { globSync } from 'tinyglobby'
 import { DEFAULT_IGNORE } from './defaults.js'
-import type { AssetMapping, DirEntryPattern, DirMatchesRecord, Explorer, GlobConfig, Match } from './types.js'
+import type { AssetMapping, DefinitionContext, DirEntryPattern, DirMatchesRecord, Explorer, GlobConfig, Match } from './types.js'
 
 /**
  * Dir explorer configuration.
  * Groups files by directory.
  */
 export interface Config<$Entry extends string | readonly DirEntryPattern[] = string | readonly DirEntryPattern[]> {
-  root: string
+  /** Root directory relative to content root. Defaults to definition name. */
+  root?: string
   /** Glob shorthand or array of entry patterns. */
   entry: $Entry
 }
@@ -96,8 +97,9 @@ export const create = <const $Entry extends string | readonly DirEntryPattern[]>
   }
 
   return {
-    run(root) {
-      const contentRoot = join(root, config.root)
+    run(ctx) {
+      const effectiveRoot = config.root ?? ctx.name
+      const contentRoot = join(ctx.root, effectiveRoot)
       const patterns = normalizePatterns(config.entry as string | readonly DirEntryPattern[])
       const discoveryPattern = findDiscoveryPattern(patterns)
 
@@ -159,7 +161,7 @@ export const create = <const $Entry extends string | readonly DirEntryPattern[]>
             id: dirName,
             dirPath,
             matches: matches as any,
-            config: config as any,
+            config: { ...config, root: effectiveRoot } as any,
           })
         }
       }
@@ -190,13 +192,15 @@ export const create = <const $Entry extends string | readonly DirEntryPattern[]>
     },
 
     getWatchPath(root) {
-      return join(root, config.root)
+      return join(root, config.root ?? '')
     },
 
     getAssetMappings(exploration, dataId): AssetMapping[] {
       const exp = exploration as Exploration
       const patterns = normalizePatterns(config.entry as string | readonly DirEntryPattern[])
       const mappings: AssetMapping[] = []
+      // Use resolved root from exploration config
+      const effectiveRoot = exp.config.root
 
       for (const pattern of patterns) {
         // Skip patterns marked with read: true (they're content, not assets)
@@ -209,7 +213,7 @@ export const create = <const $Entry extends string | readonly DirEntryPattern[]>
         for (const match of matches) {
           mappings.push({
             src: match.path,
-            dest: `${config.root}/${dataId}/${basename(match.path)}`,
+            dest: `${effectiveRoot}/${dataId}/${basename(match.path)}`,
           })
         }
       }
@@ -218,7 +222,10 @@ export const create = <const $Entry extends string | readonly DirEntryPattern[]>
     },
 
     getAssetsRootPath(dataId) {
-      return `${config.root}/${dataId}`
+      // Note: config.root may be undefined if defaulting to definition name.
+      // The resolved root is stored in exploration.config, but we don't have
+      // access to exploration here. Return null if root not explicitly set.
+      return config.root ? `${config.root}/${dataId}` : null
     },
   }
 }

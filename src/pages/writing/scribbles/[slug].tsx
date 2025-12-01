@@ -1,17 +1,12 @@
+import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
-import { Scribbles } from '#~/content/scribbles.js'
+import { Scribble } from '#~/content/scribble.js'
 import { formatDateLong } from '#~/lib/date.js'
-import { compileMDX } from 'next-mdx-remote/rsc'
 import type { PageProps } from 'waku/router'
 
 const ScribblePage = async ({ slug }: PageProps<'/writing/scribbles/[slug]'>) => {
-  const post = await Scribbles.get(slug)
+  const post = await Scribble.get(slug)
   if (!post) throw new Error(`Scribble not found: ${slug}`)
-
-  const { content } = await compileMDX({
-    source: post.source,
-    options: { parseFrontmatter: false },
-  })
 
   return (
     <>
@@ -23,7 +18,7 @@ const ScribblePage = async ({ slug }: PageProps<'/writing/scribbles/[slug]'>) =>
             <h1>{post.title}</h1>
             <time dateTime={post.date.toISOString()}>{formatDateLong(post.date)}</time>
           </header>
-          {content}
+          <MdxContent compiledJs={post.compiledJs} />
         </article>
       </main>
     </>
@@ -33,7 +28,7 @@ const ScribblePage = async ({ slug }: PageProps<'/writing/scribbles/[slug]'>) =>
 export default ScribblePage
 
 export const getConfig = async () => {
-  const posts = await Scribbles.list()
+  const posts = await Scribble.list()
   return {
     render: 'static',
     staticPaths: posts.map(p => p.id),

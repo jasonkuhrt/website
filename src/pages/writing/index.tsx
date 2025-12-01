@@ -1,13 +1,13 @@
 import { Meta } from '#~/components/meta.js'
 import { Drivel } from '#~/content/drivel.js'
-import { Essays } from '#~/content/essays.js'
-import { Scribbles } from '#~/content/scribbles.js'
+import { Essay } from '#~/content/essay.js'
+import { Scribble } from '#~/content/scribble.js'
 import { formatDateShort } from '#~/lib/date.js'
 
 const WritingPage = async () => {
-  const essays = await Essays.list()
+  const essays = await Essay.list()
   const drivel = await Drivel.list()
-  const scribbles = await Scribbles.list()
+  const scribbles = await Scribble.list()
 
   return (
     <>

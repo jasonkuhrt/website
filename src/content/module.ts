@@ -23,27 +23,6 @@ const DefaultBranchRef = S.Struct({
 })
 
 // ============================================================================
-// Loaded Schema (enables disk caching)
-// ============================================================================
-
-const LoadedSchema = S.Struct({
-  id: S.String,
-  repo: S.String,
-  owner: S.String,
-  name: S.String,
-  featured: S.Boolean,
-  description: S.NullOr(S.String),
-  stargazerCount: S.Number,
-  forkCount: S.Number,
-  primaryLanguage: S.NullOr(PrimaryLanguage),
-  pushedAt: S.String,
-  url: S.String,
-  topics: S.Array(S.String),
-  latestRelease: S.NullOr(LatestRelease),
-  defaultBranchRef: S.NullOr(DefaultBranchRef),
-})
-
-// ============================================================================
 // GitHub API Response Schemas
 // ============================================================================
 
@@ -217,29 +196,42 @@ const transformRepoData = (
 })
 
 // ============================================================================
-// Crafting Content Definition
+// Module Content Definition
 // ============================================================================
 
 /**
- * Crafting content definition.
+ * Module content definition.
  *
- * Crafting entries are defined in content/crafting/manifest.ts.
+ * Module entries are defined in content/crafting/manifest.ts.
  * Each entry is a GitHub repository that gets enriched with API data.
  *
  * Uses smart dispatch:
  * - loadAll: Batch fetch when cache is cold (single GraphQL request)
  * - loadOne: Individual fetch when cache is warm (incremental updates)
  */
-export const Crafting = Continent.define({
-  name: 'crafting',
-  root: 'content',
+export const Module = Continent.define({
+  name: 'module',
   input: S.Struct({
     repo: S.String.pipe(S.pattern(/^[a-zA-Z0-9-]+\/[a-zA-Z0-9._-]+$/)),
     featured: S.optional(S.Boolean),
   }),
-  loaded: LoadedSchema,
-  explorer: Explorers.Manifest.create({ file: 'crafting/manifest.ts' }),
-  // Single repo fetch (used when cache is warm)
+  loaded: S.Struct({
+    id: S.String,
+    repo: S.String,
+    owner: S.String,
+    name: S.String,
+    featured: S.Boolean,
+    description: S.NullOr(S.String),
+    stargazerCount: S.Number,
+    forkCount: S.Number,
+    primaryLanguage: S.NullOr(PrimaryLanguage),
+    pushedAt: S.String,
+    url: S.String,
+    topics: S.Array(S.String),
+    latestRelease: S.NullOr(LatestRelease),
+    defaultBranchRef: S.NullOr(DefaultBranchRef),
+  }),
+  explorer: Explorers.Manifest.create(),
   async loadOne(exploration) {
     const { entry } = exploration
 
@@ -249,8 +241,6 @@ export const Crafting = Continent.define({
     const repoData = await fetchGitHubRepo(owner, name)
     return transformRepoData(entry, owner, name, repoData)
   },
-
-  // Batch fetch (used when cache is cold for efficiency)
   async loadAll(explorations) {
     // Parse all repos
     const repoInfos = explorations.map((e) => {
