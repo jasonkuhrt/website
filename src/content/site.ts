@@ -1,12 +1,15 @@
-import { Continent } from 'continent'
 import * as S from 'effect/Schema'
+import { Content, Store } from 'continent'
 
-export class SiteSchema extends S.Class<SiteSchema>('SiteSchema')({
-  title: S.String,
-  description: S.String,
-}) {}
-
-export const Site = Continent.define({
-  name: 'site',
-  input: SiteSchema,
+export const Site = Content('site', {
+  store: Store.js({
+    path: 'content/site.ts',
+    cardinality: '1',
+    schema: S.Struct({
+      title: S.String,
+      description: S.String,
+    }),
+  }),
 })
+
+export type Site = typeof Site.Type

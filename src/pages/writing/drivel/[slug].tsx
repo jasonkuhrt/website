@@ -5,7 +5,7 @@ import { formatDateLong } from '#~/lib/date.js'
 import type { PageProps } from 'waku/router'
 
 const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
-  const post = await Drivel.get(slug)
+  const post = await Drivel.get({ slug })
   if (!post) throw new Error(`Drivel not found: ${slug}`)
 
   return (
@@ -31,6 +31,6 @@ export const getConfig = async () => {
   const posts = await Drivel.list()
   return {
     render: 'static',
-    staticPaths: posts.map(p => p.id),
+    staticPaths: posts.map(p => p.slug),
   } as const
 }

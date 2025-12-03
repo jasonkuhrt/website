@@ -21,7 +21,7 @@ const CraftingPage = async () => {
             <h2>Featured</h2>
             <div>
               {featured.map((repo) => (
-                <RepoCard key={repo.id} repo={repo} />
+                <RepoCard key={repo.repo} repo={repo} />
               ))}
             </div>
           </section>
@@ -31,7 +31,7 @@ const CraftingPage = async () => {
           <h2>Projects</h2>
           <div>
             {others.map((repo) => (
-              <RepoCard key={repo.id} repo={repo} />
+              <RepoCard key={repo.repo} repo={repo} />
             ))}
           </div>
         </section>

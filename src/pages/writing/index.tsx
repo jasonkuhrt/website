@@ -21,8 +21,8 @@ const WritingPage = async () => {
             <h2>Essays</h2>
             <ul>
               {essays.map(essay => (
-                <li key={essay.id}>
-                  <a href={`/writing/essays/${essay.id}`}>{essay.title}</a>
+                <li key={essay.slug}>
+                  <a href={`/writing/essays/${essay.slug}`}>{essay.title}</a>
                   <span>— {formatDateShort(essay.date)}</span>
                 </li>
               ))}
@@ -33,8 +33,8 @@ const WritingPage = async () => {
             <h2>Drivel</h2>
             <ul>
               {drivel.map(post => (
-                <li key={post.id}>
-                  <a href={`/writing/drivel/${post.id}`}>{post.title}</a>
+                <li key={post.slug}>
+                  <a href={`/writing/drivel/${post.slug}`}>{post.title}</a>
                   <span>— {formatDateShort(post.date)}</span>
                 </li>
               ))}
@@ -45,8 +45,8 @@ const WritingPage = async () => {
             <h2>Scribbles</h2>
             <ul>
               {scribbles.map(post => (
-                <li key={post.id}>
-                  <a href={`/writing/scribbles/${post.id}`}>{post.title}</a>
+                <li key={post.slug}>
+                  <a href={`/writing/scribbles/${post.slug}`}>{post.title}</a>
                   <span>— {formatDateShort(post.date)}</span>
                 </li>
               ))}

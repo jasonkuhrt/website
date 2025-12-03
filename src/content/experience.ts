@@ -1,7 +1,7 @@
 import { Str } from '@wollybeard/kit'
-import { Continent } from 'continent'
 import { Order } from 'effect'
 import * as S from 'effect/Schema'
+import { Content, Store } from 'continent'
 
 // ============================================================================
 // DateString
@@ -50,7 +50,7 @@ export class BaseExperience extends S.Class<BaseExperience>('BaseExperience')({
 // ============================================================================
 
 export class ExperienceWork extends BaseExperience.extend<ExperienceWork>('ExperienceWork')({
-  _tag: S.tag('ExperienceWork'),
+  _tag: S.tag('work'),
   title: S.String,
   company: S.String,
   location: S.String,
@@ -62,7 +62,7 @@ export class ExperienceWork extends BaseExperience.extend<ExperienceWork>('Exper
 }) {}
 
 export class ExperienceEducation extends BaseExperience.extend<ExperienceEducation>('ExperienceEducation')({
-  _tag: S.tag('ExperienceEducation'),
+  _tag: S.tag('education'),
   institution: S.String,
   degree: S.String,
   endDate: S.optional(DateString),
@@ -70,14 +70,14 @@ export class ExperienceEducation extends BaseExperience.extend<ExperienceEducati
 }) {}
 
 export class ExperienceAchievement extends BaseExperience.extend<ExperienceAchievement>('ExperienceAchievement')({
-  _tag: S.tag('ExperienceAchievement'),
+  _tag: S.tag('achievement'),
   title: S.String,
   issuer: S.String,
   description: S.optional(S.String),
 }) {}
 
 export class ExperienceSpeaking extends BaseExperience.extend<ExperienceSpeaking>('ExperienceSpeaking')({
-  _tag: S.tag('ExperienceSpeaking'),
+  _tag: S.tag('speaking'),
   title: S.String,
   venue: S.String,
   description: S.optional(S.String),
@@ -90,14 +90,26 @@ export class ExperienceSpeaking extends BaseExperience.extend<ExperienceSpeaking
 }) {}
 
 export class ExperiencePersonal extends BaseExperience.extend<ExperiencePersonal>('ExperiencePersonal')({
-  _tag: S.tag('ExperiencePersonal'),
+  _tag: S.tag('personal'),
   title: S.String,
   icon: S.String,
   description: S.optional(S.String),
   url: S.optional(S.String),
 }) {}
 
-export const Experience = Continent.define({
-  name: 'experience',
-  input: S.Union(ExperienceWork, ExperienceEducation, ExperienceAchievement, ExperienceSpeaking, ExperiencePersonal),
+const ExperienceData = S.Union(
+  ExperienceWork,
+  ExperienceEducation,
+  ExperienceAchievement,
+  ExperienceSpeaking,
+  ExperiencePersonal,
+)
+type ExperienceData = S.Schema.Type<typeof ExperienceData>
+
+export const Experience = Content('experience', {
+  store: Store.js({
+    path: 'content/experience.ts',
+    schema: ExperienceData,
+  }),
 })
+export type Experience = typeof Experience.Type

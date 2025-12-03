@@ -1,158 +1,150 @@
-import { existsSync, rmSync } from 'node:fs'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import * as S from 'effect/Schema'
+import { existsSync } from 'node:fs'
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { HashMap, Schema as S } from 'effect'
 
-/**
- * Unified cache with in-memory and optional disk persistence.
- *
- * - Memory cache: Always active, stores by ID
- * - Disk cache: Only when schema is provided, enables persistence across restarts
- * - Invalidation: Clears both memory and disk
- */
-export interface Cache<$Data> {
-  /**
-   * Get cached data by ID.
-   * Checks memory first, then disk (if schema provided).
-   * Returns null if not found.
-   */
-  get(id: string): Promise<$Data | null>
+// ============================================================================
+// Cache Manager
+// ============================================================================
 
-  /**
-   * Set cached data by ID.
-   * Writes to memory, and disk (if schema provided).
-   */
-  set(id: string, data: $Data): Promise<void>
-
-  /**
-   * Check if an ID exists in cache (memory or disk).
-   */
-  has(id: string): Promise<boolean>
-
-  /**
-   * Invalidate entire cache.
-   * Clears both memory and disk.
-   */
-  invalidate(): void
-}
-
-export interface CreateOptions<$Schema extends S.Schema.AnyNoContext | undefined = undefined> {
-  /** Disk cache path relative to cwd. */
+export interface CacheManagerConfig<$Record> {
+  /** Path to cache file relative to cwd. */
   path: string
-  /** Schema for disk persistence. When provided, enables encode/decode for disk storage. */
-  schema?: $Schema
+  /** Schema for records. */
+  recordSchema: S.Schema<$Record>
+  /** Keys to build indices for (enables O(1) lookup by key). */
+  uniqueKeys?: string[]
+}
+
+export interface CacheManager<$Record> {
+  /** Get record by content hash. */
+  get: (hash: number) => $Record | undefined
+
+  /** Set record at content hash. */
+  set: (hash: number, record: $Record) => void
+
+  /** Get record by unique key (O(1) lookup). */
+  getByKey: (keyName: string, keyValue: string) => $Record | undefined
+
+  /** Set index entry for a unique key. */
+  setIndex: (keyName: string, keyValue: string, hash: number) => void
+
+  /** Flush cache to disk. */
+  flush: () => Promise<void>
+
+  /** Load cache from disk. */
+  load: () => Promise<void>
 }
 
 /**
- * Infer data type from schema, or unknown if no schema.
+ * Create a content-addressable cache manager.
+ * Key = Hash.hash(rawData), Value = transformed record.
  */
-type DataFromSchema<$Schema> =
-  $Schema extends S.Schema.AnyNoContext ? S.Schema.Type<$Schema> : unknown
+export const createCacheManager = <$Record>(
+  config: CacheManagerConfig<$Record>,
+): CacheManager<$Record> => {
+  const cacheSchema = S.HashMap({
+    key: S.Number,
+    value: config.recordSchema,
+  })
 
-/**
- * Slugify an ID for filesystem compatibility.
- * Replaces `/` with `__` and removes unsafe characters.
- */
-const slugify = (id: string): string => {
-  return id
-    .replace(/\//g, '__')
-    .replace(/[^a-zA-Z0-9_.-]/g, '_')
-}
+  const cachePath = join(process.cwd(), config.path)
 
-/**
- * Create a new cache instance.
- */
-export const create = <$Schema extends S.Schema.AnyNoContext | undefined = undefined>(
-  options: CreateOptions<$Schema>,
-): Cache<DataFromSchema<$Schema>> => {
-  const memory = new Map<string, unknown>()
+  // In-memory cache state
+  let cache: HashMap.HashMap<number, $Record> = HashMap.empty()
+  let bootMtime = 0
 
-  // Create JSON-wrapped schema for disk serialization
-  // S.parseJson handles both JSON.parse/stringify AND schema encode/decode
-  const jsonSchema = options.schema ? S.parseJson(options.schema) : null
-  const encode = jsonSchema ? S.encodeSync(jsonSchema as any) : null
-  const decode = jsonSchema ? S.decodeSync(jsonSchema as any) : null
+  // In-memory indices (keyName → keyValue → hash)
+  // Indices are ephemeral and rebuilt from cache when list() is called
+  const indices = new Map<string, Map<string, number>>()
 
-  const getDiskPath = (id: string): string => {
-    return join(process.cwd(), options.path, `${slugify(id)}.json`)
-  }
+  // Encode/decode functions
+  const encode = S.encodeSync(S.parseJson(cacheSchema))
+  const decode = S.decodeSync(S.parseJson(cacheSchema))
 
-  const ensureDiskDir = async (): Promise<void> => {
-    const dir = join(process.cwd(), options.path)
-    await mkdir(dir, { recursive: true })
-  }
-
-  const readFromDisk = async (id: string): Promise<unknown | null> => {
-    if (!decode) return null
-
-    const path = getDiskPath(id)
-
+  const readFromDisk = async (): Promise<HashMap.HashMap<number, $Record> | null> => {
     try {
-      const raw = await readFile(path, 'utf-8')
-      return decode(raw)
-    } catch (err) {
-      // Any error = cache miss (missing file, corrupt JSON, schema mismatch)
-      console.error(`[continent] Cache read failed for ${id}:`, err)
-      await rm(path, { force: true }).catch(() => {})
+      const content = await readFile(cachePath, 'utf-8')
+      return decode(content)
+    } catch (err: any) {
+      if (err?.code !== 'ENOENT') {
+        console.error(`[cache] Read failed: ${err?.message || err}`)
+      }
       return null
     }
   }
 
-  const writeToDisk = async (id: string, data: unknown): Promise<void> => {
-    if (!encode) return
+  const writeToDisk = async (data: HashMap.HashMap<number, $Record>): Promise<void> => {
+    await mkdir(dirname(cachePath), { recursive: true })
+    const json = encode(data)
+    await writeFile(cachePath, json)
+  }
 
-    await ensureDiskDir()
-    const path = getDiskPath(id)
-    const json = encode(data as any) as string
-    await writeFile(path, json)
+  const getDiskMtime = async (): Promise<number> => {
+    try {
+      const s = await stat(cachePath)
+      return s.mtimeMs
+    } catch {
+      return 0
+    }
   }
 
   return {
-    async get(id) {
-      // Check memory first
-      if (memory.has(id)) {
-        return memory.get(id) as any
-      }
-
-      // Check disk
-      const diskData = await readFromDisk(id)
-      if (diskData !== null) {
-        // Populate memory cache for next access
-        memory.set(id, diskData)
-        return diskData as any
-      }
-
-      return null
+    get(hash) {
+      const entry = HashMap.get(cache, hash)
+      return entry._tag === 'Some' ? entry.value : undefined
     },
 
-    async set(id, data) {
-      // Write to memory
-      memory.set(id, data)
-
-      // Write to disk (if schema provided)
-      await writeToDisk(id, data)
+    set(hash, record) {
+      cache = HashMap.set(cache, hash, record)
     },
 
-    async has(id) {
-      if (memory.has(id)) return true
+    getByKey(keyName, keyValue) {
+      const keyIndex = indices.get(keyName)
+      if (!keyIndex) return undefined
 
-      if (jsonSchema) {
-        const path = getDiskPath(id)
-        return existsSync(path)
-      }
+      const hash = keyIndex.get(keyValue)
+      if (hash === undefined) return undefined
 
-      return false
+      const entry = HashMap.get(cache, hash)
+      return entry._tag === 'Some' ? entry.value : undefined
     },
 
-    invalidate() {
-      // Clear memory
-      memory.clear()
-
-      // Clear disk directory (sync for simplicity in invalidation)
-      const dir = join(process.cwd(), options.path)
-      if (existsSync(dir)) {
-        rmSync(dir, { recursive: true })
+    setIndex(keyName, keyValue, hash) {
+      let keyIndex = indices.get(keyName)
+      if (!keyIndex) {
+        keyIndex = new Map()
+        indices.set(keyName, keyIndex)
       }
+      keyIndex.set(keyValue, hash)
+    },
+
+    async flush() {
+      const diskMtime = await getDiskMtime()
+
+      // If disk changed since boot, merge (disk entries we don't have)
+      if (diskMtime > bootMtime) {
+        const diskCache = await readFromDisk()
+        if (diskCache) {
+          // Memory wins on conflict
+          for (const [hash, record] of HashMap.entries(diskCache)) {
+            if (HashMap.get(cache, hash)._tag === 'None') {
+              cache = HashMap.set(cache, hash, record)
+            }
+          }
+        }
+      }
+
+      await writeToDisk(cache)
+      bootMtime = Date.now()
+    },
+
+    async load() {
+      const diskCache = await readFromDisk()
+      if (diskCache) {
+        cache = diskCache
+      }
+      bootMtime = existsSync(cachePath) ? await getDiskMtime() : 0
     },
   }
 }

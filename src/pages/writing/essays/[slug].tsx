@@ -5,7 +5,7 @@ import { formatDateLong } from '#~/lib/date.js'
 import type { PageProps } from 'waku/router'
 
 const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
-  const essay = await Essay.get(slug)
+  const essay = await Essay.get({ slug })
   if (!essay) throw new Error(`Essay not found: ${slug}`)
 
   return (
@@ -31,6 +31,6 @@ export const getConfig = async () => {
   const essays = await Essay.list()
   return {
     render: 'static',
-    staticPaths: essays.map(e => e.id),
+    staticPaths: essays.map(e => e.slug),
   } as const
 }

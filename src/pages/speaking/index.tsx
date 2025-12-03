@@ -1,12 +1,16 @@
-import experiences from '../../../content/experience.js'
 import { Meta } from '#~/components/meta.js'
-import { DateString, ExperienceSpeaking } from '../../content/experience.js'
+import { DateString, Experience, ExperienceSpeaking } from '../../content/experience.js'
 
-const speakingItems = experiences.filter(
-  (e): e is ExperienceSpeaking => e._tag === 'ExperienceSpeaking',
-)
+export const loader = async () => {
+  const allExperiences = await Experience.list()
+  // Experience now returns union directly (no wrapper)
+  const speakingItems = allExperiences.filter((e): e is ExperienceSpeaking => e._tag === 'speaking')
+  return { speakingItems }
+}
 
-const SpeakingPage: React.FC = () => {
+const SpeakingPage: React.FC<{ loaderData: Awaited<ReturnType<typeof loader>> }> = ({ loaderData }) => {
+  const { speakingItems } = loaderData
+
   return (
     <>
       <Meta title="Speaking" />
@@ -27,7 +31,7 @@ const SpeakingPage: React.FC = () => {
           </thead>
           <tbody>
             {speakingItems.map((item) => (
-              <tr key={item.id}>
+              <tr key={`speaking-${item.date.getTime()}`}>
                 <td>{DateString.format(item.date)}</td>
                 <td>{item.title}</td>
                 <td>{item.venue}</td>

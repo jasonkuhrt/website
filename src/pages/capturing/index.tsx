@@ -1,15 +1,15 @@
-import { Frame, type FrameMeta } from '#~/content/frame.js'
 import { Meta } from '#~/components/meta.js'
+import { Frame } from '#~/content/frame.js'
 
 const CapturingPage = async () => {
-  const photos = await Frame.list()
+  const frames = await Frame.list()
 
   // Sort by date descending (newest first)
-  const sorted = [...photos].sort((a, b) => b.date.localeCompare(a.date))
+  const sorted = [...frames].sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 
   return (
     <>
-      <Meta title="Capturing" />
+      <Meta title='Capturing' />
 
       <main>
         <h1>Capturing</h1>
@@ -18,40 +18,42 @@ const CapturingPage = async () => {
         </p>
 
         <div>
-          {sorted.map((photo) => (
-            <PhotoCard key={photo.id} photo={photo} />
-          ))}
+          {sorted.map((photo) => <PhotoCard key={photo.slug} photo={photo} />)}
         </div>
       </main>
     </>
   )
 }
 
-const PhotoCard: React.FC<{ photo: FrameMeta }> = ({ photo }) => {
-  const firstMedia = photo.media[0]
+const PhotoCard: React.FC<{ photo: Frame }> = ({ photo }) => {
+  const { data } = photo
+  const firstMedia = data._tag === 'series' ? data.media[0] : data.media
   if (!firstMedia) return null
+
+  const dateStr = data.date.toLocaleDateString()
+  const mediaCount = data._tag === 'series' ? data.media.length : 1
 
   return (
     <div>
-      {firstMedia.type === 'image' ? (
-        <img
-          src={firstMedia.path}
-          alt={photo.caption || `Photo from ${photo.date}`}
-        />
-      ) : (
-        <video
-          src={firstMedia.path}
-          controls
-        />
-      )}
+      {firstMedia.type === 'image' ?
+        (
+          <img
+            src={firstMedia.path}
+            alt={data.caption || `Photo from ${dateStr}`}
+          />
+        ) :
+        (
+          <video
+            src={firstMedia.path}
+            controls
+          />
+        )}
       <div>
         <p>
-          {photo.date}
-          {photo.media.length > 1 && ` • ${photo.media.length} items`}
+          {dateStr}
+          {mediaCount > 1 && ` • ${mediaCount} items`}
         </p>
-        {photo.caption && (
-          <p>{photo.caption}</p>
-        )}
+        {data.caption && <p>{data.caption}</p>}
       </div>
     </div>
   )

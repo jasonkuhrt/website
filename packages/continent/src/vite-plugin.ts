@@ -1,19 +1,41 @@
-import { copyFileSync, mkdirSync, readFileSync } from 'node:fs'
-import { dirname, extname, join, resolve } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { extname, resolve } from 'node:path'
 import type { Plugin, ViteDevServer } from 'vite'
-import type { Definition } from './definition.js'
+
+/**
+ * Content definition interface for the plugin.
+ * Matches Content.CollectionClass and Content.SingletonClass.
+ */
+export interface ContentDefinition {
+  readonly _tag: string
+  readonly store: {
+    watchPaths: string[]
+  }
+}
 
 export interface ContinentPluginOptions {
   /**
-   * Content definitions to manage.
+   * Content definitions to watch and serve assets for.
+   * Import your content definitions and pass them here.
+   *
+   * @example
+   * ```typescript
+   * import { Essay } from './src/content/essay.js'
+   * import { Drivel } from './src/content/drivel.js'
+   *
+   * continentPlugin({
+   *   definitions: [Essay, Drivel],
+   * })
+   * ```
    */
-  definitions: Definition[]
-  /**
-   * Path to content definitions directory (for HMR invalidation).
-   * Defaults to 'src/content'.
-   */
-  contentDefsPath?: string
+  definitions: ContentDefinition[]
 }
+
+// TODO: Add async auto-discovery option that loads definitions from a directory
+// This would require either:
+// - A factory function that returns a Promise<Plugin>
+// - Using a later hook like configureServer (but then configResolved can't use definitions)
+// - Accepting a glob pattern and doing file-system only watching without importing
 
 /**
  * MIME types for common asset extensions.
@@ -39,51 +61,13 @@ const MIME_TYPES: Record<string, string> = {
 }
 
 /**
- * Build a reverse mapping from dest paths to src paths for asset serving.
- */
-const buildAssetMap = async (definitions: Definition[]): Promise<Map<string, string>> => {
-  const assetMap = new Map<string, string>()
-  for (const def of definitions) {
-    const mappings = await def.getAssetMappings()
-    for (const { src, dest } of mappings) {
-      // Normalize dest to URL path format (leading slash, no 'public' prefix)
-      const urlPath = '/' + dest
-      assetMap.set(urlPath, src)
-    }
-  }
-  return assetMap
-}
-
-/**
- * Find which definition owns a changed file and return its module path for HMR.
- */
-const findDefinitionForFile = (
-  filePath: string,
-  definitions: Definition[],
-  contentDefsPath: string,
-): string | null => {
-  for (const def of definitions) {
-    const watchPaths = def.getWatchPaths()
-    if (watchPaths.some(root => filePath.startsWith(root))) {
-      // Return the definition module path for HMR invalidation
-      return resolve(contentDefsPath, `${def.name}.ts`)
-    }
-  }
-  return null
-}
-
-/**
  * Invalidate a module in Vite's module graph and trigger HMR.
  */
 const invalidateModule = (server: ViteDevServer, modulePath: string): void => {
   const module = server.moduleGraph.getModuleById(modulePath)
   if (module) {
     server.moduleGraph.invalidateModule(module)
-    // Send HMR update
-    server.ws.send({
-      type: 'full-reload',
-      path: '*',
-    })
+    server.ws.send({ type: 'full-reload', path: '*' })
   }
 }
 
@@ -91,116 +75,78 @@ const invalidateModule = (server: ViteDevServer, modulePath: string): void => {
  * Vite plugin for Continent content framework.
  *
  * Features:
- * - HMR via definition module invalidation (content change → invalidate definition → HMR propagates)
- * - Asset serving from source in dev (no copy to /public until build)
- * - Asset copying during build
+ * - HMR for content changes (watches store.watchPaths)
+ * - Asset serving from content directories in dev mode
+ *
+ * @example
+ * ```typescript
+ * // waku.config.ts or vite.config.ts
+ * import { continentPlugin } from 'continent'
+ * import { Essay } from './src/content/essay.js'
+ * import { Drivel } from './src/content/drivel.js'
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     continentPlugin({
+ *       definitions: [Essay, Drivel],
+ *     }),
+ *   ],
+ * })
+ * ```
  */
-export const continentPlugin = ({
-  definitions,
-  contentDefsPath = 'src/content',
-}: ContinentPluginOptions): Plugin => {
-  let assetMap: Map<string, string> = new Map()
-  let isProduction = false
-
-  const copyAssets = async () => {
-    for (const def of definitions) {
-      const assets = await def.getAssetMappings()
-      for (const { src, dest } of assets) {
-        const destPath = join('public', dest)
-        mkdirSync(dirname(destPath), { recursive: true })
-        copyFileSync(src, destPath)
-      }
-    }
-  }
-
+export const continentPlugin = ({ definitions }: ContinentPluginOptions): Plugin => {
   return {
     name: 'continent',
 
-    configResolved(config) {
-      isProduction = config.command === 'build'
-    },
-
-    async buildStart() {
-      if (isProduction) {
-        // Only copy assets during production build
-        await copyAssets()
-      } else {
-        // In dev, build asset map for middleware serving
-        assetMap = await buildAssetMap(definitions)
-      }
+    configResolved() {
+      console.log(`[continent] Watching ${definitions.length} content definitions`)
     },
 
     configureServer(server) {
-      // Resolve contentDefsPath to absolute
-      const absoluteContentDefsPath = resolve(process.cwd(), contentDefsPath)
+      // Collect all watch paths from definitions
+      const watchPaths = new Set<string>()
+      for (const def of definitions) {
+        for (const path of def.store.watchPaths) {
+          watchPaths.add(resolve(process.cwd(), path))
+        }
+      }
 
-      // Watch all definition roots (content directories)
-      const watchPaths = definitions.flatMap(def => def.getWatchPaths())
-      for (const path of watchPaths) server.watcher.add(path)
+      // Add watch paths to Vite's watcher
+      for (const path of watchPaths) {
+        server.watcher.add(path)
+      }
 
-      // Also watch the content definitions directory (for loader changes)
-      server.watcher.add(absoluteContentDefsPath)
-
-      // Handle file changes: invalidate definition cache and trigger HMR
-      server.watcher.on('all', async (event, filePath) => {
+      // Handle file changes - trigger full reload for content changes
+      server.watcher.on('all', (event, filePath) => {
         if (event !== 'add' && event !== 'change' && event !== 'unlink') return
 
-        // Check if this is a definition module change (loader logic changed)
-        if (filePath.startsWith(absoluteContentDefsPath) && filePath.endsWith('.ts')) {
-          // Find the definition by matching filename to definition name
-          const fileName = filePath.replace(absoluteContentDefsPath + '/', '').replace('.ts', '')
-          const def = definitions.find(d => d.name === fileName)
-          if (def) {
-            // Invalidate this definition's cache (loader logic changed)
-            def.invalidateCache()
-            // Rebuild asset map
-            assetMap = await buildAssetMap(definitions)
-            // Trigger full reload
-            invalidateModule(server, filePath)
-          }
-          return
+        // Check if file is in any watched content path
+        const isContentFile = [...watchPaths].some((watchPath) => filePath.startsWith(watchPath))
+        if (isContentFile) {
+          invalidateModule(server, filePath)
         }
-
-        // Find which definition owns this content file
-        const defModulePath = findDefinitionForFile(filePath, definitions, contentDefsPath)
-        if (!defModulePath) return
-
-        // Find the definition and invalidate its cache
-        for (const def of definitions) {
-          const defWatchPaths = def.getWatchPaths()
-          if (defWatchPaths.some(root => filePath.startsWith(root))) {
-            def.invalidateCache()
-            break
-          }
-        }
-
-        // Rebuild asset map (in case assets changed)
-        assetMap = await buildAssetMap(definitions)
-
-        // Invalidate the definition module in Vite's graph and trigger HMR
-        invalidateModule(server, defModulePath)
       })
 
-      // Middleware to serve assets from source locations
+      // Middleware to serve content assets
       return () => {
         server.middlewares.use((req, res, next) => {
           const url = req.url
           if (!url) return next()
 
-          // Check if this URL maps to a content asset
-          const srcPath = assetMap.get(url)
-          if (!srcPath) return next()
+          // Assets are served from content directories with /content/ prefix
+          if (!url.startsWith('/content/')) return next()
 
+          // Try to serve from content directory
+          const assetPath = resolve(process.cwd(), url.slice(1)) // Remove leading /
           try {
-            const content = readFileSync(srcPath)
-            const ext = extname(srcPath).toLowerCase()
+            const content = readFileSync(assetPath)
+            const ext = extname(assetPath).toLowerCase()
             const mimeType = MIME_TYPES[ext] || 'application/octet-stream'
 
             res.setHeader('Content-Type', mimeType)
             res.setHeader('Cache-Control', 'no-cache')
             res.end(content)
           } catch {
-            // File not found, continue to next middleware
             next()
           }
         })
