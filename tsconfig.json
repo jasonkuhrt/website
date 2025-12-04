@@ -16,8 +16,7 @@
     "noEmit": true,
     "types": ["vite/client"],
     "paths": {
-      "#~/*": ["./src/*"],
-      "#styled-system/*": ["./styled-system/*"]
+      "#~/*": ["./src/*"]
     }
   }
 }

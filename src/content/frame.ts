@@ -1,11 +1,5 @@
 import * as S from 'effect/Schema'
-import { basename } from 'node:path'
 import { Content, Store } from 'continent'
-
-const inferMediaType = (path: string): 'image' | 'video' => {
-  const ext = path.split('.').pop()?.toLowerCase()
-  return ext === 'mp4' || ext === 'mov' ? 'video' : 'image'
-}
 
 const MediaItem = S.Struct({
   type: S.Union(S.Literal('image'), S.Literal('video')),
@@ -27,18 +21,15 @@ export class FrameSeries extends S.TaggedClass<FrameSeries>()('series', {
 /**
  * Frame content definition.
  *
- * Discovers photo/video directories in content/capturing/.
+ * Discovers photo/video directories in content/frame/.
  * Each directory contains:
  * - One or more media files (jpg, jpeg, png, mp4, mov)
- * - Optional meta.ts with caption and other metadata
  *
  * Directory format: {date}_{time} e.g. "2024-09-16_01-00-48-000"
  */
-// TODO: Frame needs a different store type - Store.dir provides { stem, path, content }
-// but Frame expects directory scanning with media files. Need Store.mediaDir or similar.
 export const Frame = Content('frame', {
-  store: Store.dir({
-    glob: 'content/capturing/*',
+  store: Store.mediaDir({
+    glob: 'content/frame/*',
   }),
   schema: {
     slug: S.String,
@@ -46,16 +37,22 @@ export const Frame = Content('frame', {
   },
   uniqueKeys: ['slug'],
   async map(source) {
-    // STUB: Frame store type not yet implemented
-    // Frame needs directory scanning that returns { slug, mediaFiles, meta }
-    // For now, use stem as slug and create empty frame
     const slug = source.stem
+    // Parse date from directory name (format: YYYY-MM-DD_HH-MM)
     const date = new Date(slug.split('_')[0]!)
 
-    const data = new FrameSingle({
-      date,
-      media: { type: 'image', path: `/frame/${slug}/placeholder.jpg` },
-    })
+    // Build media items from source
+    const mediaItems = source.mediaFiles.map((file) => ({
+      type: file.type,
+      // Use public URL path (content/frame/slug/filename -> /frame/slug/filename)
+      path: `/${file.path.replace(/^content\//, '')}`,
+    }))
+
+    // Create FrameSingle or FrameSeries based on media count
+    const data =
+      mediaItems.length === 1
+        ? new FrameSingle({ date, media: mediaItems[0]! })
+        : new FrameSeries({ date, media: mediaItems })
 
     return { slug, data }
   },

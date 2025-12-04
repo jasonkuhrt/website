@@ -1,12 +1,13 @@
+import { Option } from 'effect'
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
 import { Drivel } from '#~/content/drivel.js'
 import { formatDateLong } from '#~/lib/date.js'
-import type { PageProps } from 'waku/router'
+import { page, config } from '#~/runtime.js'
 
-const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
-  const post = await Drivel.get({ slug })
-  if (!post) throw new Error(`Drivel not found: ${slug}`)
+export default page<{ slug: string }>(function* ({ slug }) {
+  const postOption = yield* Drivel.get({ slug })
+  const post = Option.getOrThrowWith(postOption, () => new Error(`Drivel not found: ${slug}`))
 
   return (
     <>
@@ -23,14 +24,12 @@ const DrivelPage = async ({ slug }: PageProps<'/writing/drivel/[slug]'>) => {
       </main>
     </>
   )
-}
+})
 
-export default DrivelPage
-
-export const getConfig = async () => {
-  const posts = await Drivel.list()
+export const getConfig = config(function* () {
+  const posts = yield* Drivel.list()
   return {
     render: 'static',
     staticPaths: posts.map(p => p.slug),
   } as const
-}
+})

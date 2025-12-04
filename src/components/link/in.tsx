@@ -26,7 +26,6 @@ export const In: React.FC<NavProps> = ({ to, children }) => {
         to={to}
         aria-disabled='true'
         aria-current='page'
-        style={{ pointerEvents: 'none' }}
       >
         {children}
       </Link>

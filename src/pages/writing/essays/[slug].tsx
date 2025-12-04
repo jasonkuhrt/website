@@ -1,12 +1,13 @@
+import { Option } from 'effect'
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
 import { Essay } from '#~/content/essay.js'
 import { formatDateLong } from '#~/lib/date.js'
-import type { PageProps } from 'waku/router'
+import { page, config } from '#~/runtime.js'
 
-const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
-  const essay = await Essay.get({ slug })
-  if (!essay) throw new Error(`Essay not found: ${slug}`)
+export default page<{ slug: string }>(function* ({ slug }) {
+  const essayOption = yield* Essay.get({ slug })
+  const essay = Option.getOrThrowWith(essayOption, () => new Error(`Essay not found: ${slug}`))
 
   return (
     <>
@@ -23,14 +24,12 @@ const EssayPage = async ({ slug }: PageProps<'/writing/essays/[slug]'>) => {
       </main>
     </>
   )
-}
+})
 
-export default EssayPage
-
-export const getConfig = async () => {
-  const essays = await Essay.list()
+export const getConfig = config(function* () {
+  const essays = yield* Essay.list()
   return {
     render: 'static',
     staticPaths: essays.map(e => e.slug),
   } as const
-}
+})

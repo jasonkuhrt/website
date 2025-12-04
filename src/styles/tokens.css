@@ -1,0 +1,189 @@
+/**
+ * Design Tokens
+ *
+ * Grid-locked design system with 6px baseline.
+ * All rem values = baseline units (1rem = 6px)
+ */
+
+:root {
+  /* ============================================
+   * BASELINE GRID
+   * 1rem = 6px = 1 baseline unit
+   * ============================================ */
+  font-size: 6px;
+
+  /* ============================================
+   * FONT STACKS
+   * ============================================ */
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-serif: "Newsreader Variable", Georgia, serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  /* ============================================
+   * FONT WEIGHTS
+   * ============================================ */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ============================================
+   * LETTER SPACING
+   * ============================================ */
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.05em;
+
+  /* ============================================
+   * TYPOGRAPHY SCALE
+   * Perfect Fourth ratio (1.333), grid-locked
+   * ============================================ */
+
+  /* Font sizes */
+  --text-xs: 2rem;      /* 12px */
+  --text-sm: 2.5rem;    /* 15px */
+  --text-base: 3rem;    /* 18px */
+  --text-lg: 4rem;      /* 24px */
+  --text-xl: 5rem;      /* 30px */
+  --text-2xl: 6rem;     /* 36px */
+  --text-3xl: 8rem;     /* 48px */
+  --text-4xl: 10rem;    /* 60px */
+  --text-5xl: 14rem;    /* 84px */
+
+  /* Line heights (grid-locked) */
+  --leading-xs: 3rem;   /* 18px */
+  --leading-sm: 4rem;   /* 24px */
+  --leading-base: 4rem; /* 24px */
+  --leading-lg: 5rem;   /* 30px */
+  --leading-xl: 6rem;   /* 36px */
+  --leading-2xl: 7rem;  /* 42px */
+  --leading-3xl: 9rem;  /* 54px */
+  --leading-4xl: 11rem; /* 66px */
+  --leading-5xl: 14rem; /* 84px */
+
+  /* ============================================
+   * SPACING SCALE
+   * Baseline multiples
+   * ============================================ */
+  --space-0: 0;
+  --space-1: 1rem;      /* 6px */
+  --space-2: 2rem;      /* 12px */
+  --space-3: 3rem;      /* 18px */
+  --space-4: 4rem;      /* 24px */
+  --space-5: 5rem;      /* 30px */
+  --space-6: 6rem;      /* 36px */
+  --space-8: 8rem;      /* 48px */
+  --space-10: 10rem;    /* 60px */
+  --space-12: 12rem;    /* 72px */
+  --space-16: 16rem;    /* 96px */
+  --space-20: 20rem;    /* 120px */
+  --space-24: 24rem;    /* 144px */
+
+  /* ============================================
+   * CONTAINER WIDTHS
+   * ============================================ */
+  --container-prose: 65ch;
+  --container-content: 128rem;  /* 768px */
+  --container-standard: 213rem; /* 1280px (rounded from 213.33) */
+  --container-wide: 267rem;     /* 1600px (rounded from 266.67) */
+
+  /* ============================================
+   * BORDER RADIUS
+   * ============================================ */
+  --radius-sm: 0.5rem;  /* 3px */
+  --radius-base: 1rem;  /* 6px */
+  --radius-md: 2rem;    /* 12px */
+  --radius-lg: 4rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ============================================
+   * TRANSITIONS
+   * ============================================ */
+  --duration-fast: 100ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ============================================
+   * COLORS - LIGHT MODE
+   * Using OKLCH for perceptual uniformity
+   * ============================================ */
+
+  /* Gray scale */
+  --gray-50: oklch(98% 0 0);
+  --gray-100: oklch(96% 0 0);
+  --gray-200: oklch(91% 0 0);
+  --gray-300: oklch(83% 0 0);
+  --gray-400: oklch(70% 0 0);
+  --gray-500: oklch(55% 0 0);
+  --gray-600: oklch(45% 0 0);
+  --gray-700: oklch(35% 0 0);
+  --gray-800: oklch(25% 0 0);
+  --gray-900: oklch(18% 0 0);
+  --gray-950: oklch(12% 0 0);
+
+  /* Accent (blue) */
+  --accent-50: oklch(97% 0.02 250);
+  --accent-100: oklch(94% 0.04 250);
+  --accent-200: oklch(88% 0.08 250);
+  --accent-300: oklch(78% 0.12 250);
+  --accent-400: oklch(68% 0.16 250);
+  --accent-500: oklch(55% 0.2 250);
+  --accent-600: oklch(48% 0.2 250);
+  --accent-700: oklch(40% 0.18 250);
+  --accent-800: oklch(33% 0.15 250);
+  --accent-900: oklch(28% 0.12 250);
+
+  /* Semantic colors - Light mode */
+  --color-text: var(--gray-950);
+  --color-text-secondary: var(--gray-600);
+  --color-text-tertiary: var(--gray-500);
+
+  --color-bg: oklch(100% 0 0);
+  --color-bg-subtle: var(--gray-50);
+  --color-bg-muted: var(--gray-100);
+
+  --color-border: var(--gray-200);
+  --color-border-hover: var(--gray-400);
+
+  --color-accent: var(--accent-500);
+  --color-accent-hover: var(--accent-600);
+  --color-accent-text: var(--accent-700);
+
+  /* Experience timeline colors */
+  --color-work: oklch(55% 0.15 250);
+  --color-education: oklch(55% 0.15 145);
+  --color-achievement: oklch(65% 0.15 85);
+  --color-speaking: oklch(55% 0.15 300);
+  --color-personal: oklch(60% 0.18 25);
+}
+
+/* ============================================
+ * DARK MODE
+ * ============================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: var(--gray-100);
+    --color-text-secondary: var(--gray-400);
+    --color-text-tertiary: var(--gray-500);
+
+    --color-bg: var(--gray-950);
+    --color-bg-subtle: var(--gray-900);
+    --color-bg-muted: var(--gray-800);
+
+    --color-border: var(--gray-800);
+    --color-border-hover: var(--gray-600);
+
+    --color-accent: var(--accent-400);
+    --color-accent-hover: var(--accent-300);
+    --color-accent-text: var(--accent-300);
+
+    /* Experience timeline - brighter for dark mode */
+    --color-work: oklch(65% 0.15 250);
+    --color-education: oklch(65% 0.15 145);
+    --color-achievement: oklch(75% 0.15 85);
+    --color-speaking: oklch(65% 0.15 300);
+    --color-personal: oklch(70% 0.18 25);
+  }
+}

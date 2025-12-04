@@ -3,11 +3,12 @@ import { Drivel } from '#~/content/drivel.js'
 import { Essay } from '#~/content/essay.js'
 import { Scribble } from '#~/content/scribble.js'
 import { formatDateShort } from '#~/lib/date.js'
+import { page, config } from '#~/runtime.js'
 
-const WritingPage = async () => {
-  const essays = await Essay.list()
-  const drivel = await Drivel.list()
-  const scribbles = await Scribble.list()
+export default page(function* () {
+  const essays = yield* Essay.list()
+  const drivel = yield* Drivel.list()
+  const scribbles = yield* Scribble.list()
 
   return (
     <>
@@ -56,10 +57,8 @@ const WritingPage = async () => {
       </main>
     </>
   )
-}
+})
 
-export default WritingPage
-
-export const getConfig = async () => {
+export const getConfig = config(function* () {
   return { render: 'static' } as const
-}
+})

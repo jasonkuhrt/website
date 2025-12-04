@@ -1,4 +1,5 @@
-import { Schema as S } from 'effect'
+import { Error as PlatformErrorModule, FileSystem } from '@effect/platform'
+import { Effect, Schema as S } from 'effect'
 
 // ============================================================================
 // Types
@@ -11,6 +12,9 @@ export type Cardinality = '1' | 'n'
 
 export const defaultCardinality = 'n' as const
 
+/** Common error type for store operations. */
+export type StoreError = PlatformErrorModule.PlatformError
+
 // ============================================================================
 // Store
 // ============================================================================
@@ -19,7 +23,7 @@ export interface Store<$Schema extends SchemaNoContext = SchemaNoContext, $Cardi
   cardinality: $Cardinality
   watchPaths: string[]
   schema: $Schema
-  readMany: () => Promise<SourceRecord<S.Schema.Type<$Schema>>[]>
+  readMany: () => Effect.Effect<SourceRecord<S.Schema.Type<$Schema>>[], StoreError, FileSystem.FileSystem>
 }
 
 export namespace Store {

@@ -1,7 +1,0 @@
-export * as A from './app/__'
-export * as D from './dev/__'
-export * as F from './features/__'
-export * as I from './icons/__'
-export * as L from './layout/__'
-export * as Text from './typo/__'
-export * as UI from './ui/__'

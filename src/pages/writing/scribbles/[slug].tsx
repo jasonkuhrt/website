@@ -1,12 +1,13 @@
+import { Option } from 'effect'
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
 import { Scribble } from '#~/content/scribble.js'
 import { formatDateLong } from '#~/lib/date.js'
-import type { PageProps } from 'waku/router'
+import { page, config } from '#~/runtime.js'
 
-const ScribblePage = async ({ slug }: PageProps<'/writing/scribbles/[slug]'>) => {
-  const post = await Scribble.get({ slug })
-  if (!post) throw new Error(`Scribble not found: ${slug}`)
+export default page<{ slug: string }>(function* ({ slug }) {
+  const postOption = yield* Scribble.get({ slug })
+  const post = Option.getOrThrowWith(postOption, () => new Error(`Scribble not found: ${slug}`))
 
   return (
     <>
@@ -23,14 +24,12 @@ const ScribblePage = async ({ slug }: PageProps<'/writing/scribbles/[slug]'>) =>
       </main>
     </>
   )
-}
+})
 
-export default ScribblePage
-
-export const getConfig = async () => {
-  const posts = await Scribble.list()
+export const getConfig = config(function* () {
+  const posts = yield* Scribble.list()
   return {
     render: 'static',
     staticPaths: posts.map(p => p.slug),
   } as const
-}
+})

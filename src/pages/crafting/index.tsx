@@ -1,8 +1,9 @@
 import { Module } from '#~/content/module.js'
 import { Meta } from '#~/components/meta.js'
+import { page, config } from '#~/runtime.js'
 
-const CraftingPage = async () => {
-  const repos = await Module.list()
+export default page(function* () {
+  const repos = yield* Module.list()
   const featured = repos.filter((r) => r.featured)
   const others = repos.filter((r) => !r.featured)
 
@@ -38,9 +39,9 @@ const CraftingPage = async () => {
       </main>
     </>
   )
-}
+})
 
-type Repo = Awaited<ReturnType<typeof Module.list>>[number]
+type Repo = typeof Module.Type
 
 const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
   return (
@@ -68,8 +69,6 @@ const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
   )
 }
 
-export default CraftingPage
-
-export const getConfig = async () => {
+export const getConfig = config(function* () {
   return { render: 'static' } as const
-}
+})

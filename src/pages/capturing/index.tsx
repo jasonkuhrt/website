@@ -1,8 +1,9 @@
 import { Meta } from '#~/components/meta.js'
 import { Frame } from '#~/content/frame.js'
+import { page, config } from '#~/runtime.js'
 
-const CapturingPage = async () => {
-  const frames = await Frame.list()
+export default page(function* () {
+  const frames = yield* Frame.list()
 
   // Sort by date descending (newest first)
   const sorted = [...frames].sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -23,7 +24,7 @@ const CapturingPage = async () => {
       </main>
     </>
   )
-}
+})
 
 const PhotoCard: React.FC<{ photo: Frame }> = ({ photo }) => {
   const { data } = photo
@@ -59,8 +60,6 @@ const PhotoCard: React.FC<{ photo: Frame }> = ({ photo }) => {
   )
 }
 
-export default CapturingPage
-
-export const getConfig = async () => {
+export const getConfig = config(function* () {
   return { render: 'static' } as const
-}
+})

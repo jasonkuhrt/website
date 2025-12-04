@@ -1,7 +1,7 @@
-import { readFile } from 'node:fs/promises'
 import { basename, extname } from 'node:path'
+import { FileSystem } from '@effect/platform'
+import { Effect, Hash, Schema as S } from 'effect'
 import { glob as globFn } from 'tinyglobby'
-import { Hash, Schema as S } from 'effect'
 import type { Store } from '../store.js'
 
 // ============================================================================
@@ -32,14 +32,29 @@ export const dir = (config: DirConfig): Dir => ({
   cardinality: 'n',
   watchPaths: [config.glob.split('*')[0]!],
   schema: DirData,
-  async readMany() {
-    const files = await globFn(config.glob, { cwd: process.cwd() })
-    return Promise.all(
-      files.map(async (file) => {
-        const content = await readFile(file, 'utf-8')
-        const data = { stem: basename(file, extname(file)), path: file, content }
-        return { hash: Hash.hash(content), data }
-      }),
-    )
-  },
+  readMany: () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem
+
+      // Use tinyglobby for globbing - treat failures as defects (unexpected)
+      const files = yield* Effect.promise(() => globFn(config.glob, { cwd: process.cwd() }))
+
+      // Read all files in parallel
+      const results = yield* Effect.all(
+        files.map((file) =>
+          Effect.gen(function* () {
+            const content = yield* fs.readFileString(file)
+            const data: DirData = {
+              stem: basename(file, extname(file)),
+              path: file,
+              content,
+            }
+            return { hash: Hash.hash(content), data }
+          })
+        ),
+        { concurrency: 'unbounded' },
+      )
+
+      return results
+    }),
 })

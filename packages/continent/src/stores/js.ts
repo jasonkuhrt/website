@@ -1,6 +1,9 @@
-import { stat } from 'node:fs/promises'
 import { join } from 'node:path'
-import { Hash, Schema as S } from 'effect'
+import { pathToFileURL } from 'node:url'
+import { FileSystem } from '@effect/platform'
+import { Effect, Hash, Option, Schema as S } from 'effect'
+import { ensureHashable } from '../lib/hashable.js'
+import { dynamicImport } from '../lib/import.js'
 import { type Cardinality, defaultCardinality, type SchemaNoContext, type Store } from '../store.js'
 
 // ============================================================================
@@ -32,23 +35,34 @@ export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardina
     cardinality: cardinality as $Cardinality,
     watchPaths: [config.path],
     schema: config.schema,
-    async readMany() {
-      const fullPath = join(process.cwd(), config.path)
-      const mtime = (await stat(fullPath)).mtimeMs
-      const mod = await import(/* @vite-ignore */ `${fullPath}?t=${mtime}`)
-      const raw = mod.default
+    readMany: () =>
+      Effect.gen(function* () {
+        const fs = yield* FileSystem.FileSystem
+        const fullPath = join(process.cwd(), config.path)
 
-      if (cardinality === '1') {
-        const data = S.decodeUnknownSync(config.schema)(raw)
-        return [{ hash: Hash.hash(data), data }]
-      }
+        // Get mtime for cache busting
+        const info = yield* fs.stat(fullPath)
+        const mtime = Option.getOrElse(info.mtime, () => new Date(0)).getTime()
 
-      // 'n'
-      const items = Array.isArray(raw) ? raw : []
-      return items.map((item) => {
-        const data = S.decodeUnknownSync(config.schema)(item)
-        return { hash: Hash.hash(data), data }
-      })
-    },
+        // Dynamic import with cache busting via timestamp query param
+        // Requires tsx loader (--import tsx/esm) for TypeScript resolution in production
+        const fileUrl = pathToFileURL(fullPath).href + `?t=${mtime}`
+        const mod = yield* dynamicImport(fileUrl)
+        const raw = mod.default
+
+        if (cardinality === '1') {
+          const data = S.decodeUnknownSync(config.schema)(raw)
+          const hashable = ensureHashable(data)
+          return [{ hash: Hash.hash(hashable), data }]
+        }
+
+        // 'n'
+        const items = Array.isArray(raw) ? raw : []
+        return items.map((item) => {
+          const data = S.decodeUnknownSync(config.schema)(item)
+          const hashable = ensureHashable(data)
+          return { hash: Hash.hash(hashable), data }
+        })
+      }),
   }
 }

@@ -1,5 +1,8 @@
 // Core exports
-export { type Asset, AssetsField, Content, Store, UniqueKey } from './content.js'
+export { type Asset, AssetsField, type CacheEvent, Content, type ContentOpError, Store, UniqueKey } from './content.js'
+
+// Error types
+export { CacheError, ContentError, MdxCompilationError, StoreError } from './errors.js'
 export {
   type ExtractUniqueKeys,
   extractUniqueKeys,

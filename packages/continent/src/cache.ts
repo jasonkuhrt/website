@@ -1,7 +1,6 @@
-import { existsSync } from 'node:fs'
-import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { HashMap, Schema as S } from 'effect'
+import { Error as PlatformErrorModule, FileSystem } from '@effect/platform'
+import { Effect, HashMap, Option, Schema as S } from 'effect'
 
 // ============================================================================
 // Cache Manager
@@ -17,23 +16,23 @@ export interface CacheManagerConfig<$Record> {
 }
 
 export interface CacheManager<$Record> {
-  /** Get record by content hash. */
+  /** Get record by content hash (sync, in-memory). */
   get: (hash: number) => $Record | undefined
 
-  /** Set record at content hash. */
+  /** Set record at content hash (sync, in-memory). */
   set: (hash: number, record: $Record) => void
 
-  /** Get record by unique key (O(1) lookup). */
+  /** Get record by unique key (O(1) lookup, sync). */
   getByKey: (keyName: string, keyValue: string) => $Record | undefined
 
-  /** Set index entry for a unique key. */
+  /** Set index entry for a unique key (sync). */
   setIndex: (keyName: string, keyValue: string, hash: number) => void
 
   /** Flush cache to disk. */
-  flush: () => Promise<void>
+  flush: () => Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem>
 
   /** Load cache from disk. */
-  load: () => Promise<void>
+  load: () => Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem>
 }
 
 /**
@@ -58,36 +57,48 @@ export const createCacheManager = <$Record>(
   // Indices are ephemeral and rebuilt from cache when list() is called
   const indices = new Map<string, Map<string, number>>()
 
-  // Encode/decode functions
-  const encode = S.encodeSync(S.parseJson(cacheSchema))
+  // Encode/decode functions (space: 2 for pretty-printed output)
+  const encode = S.encodeSync(S.parseJson(cacheSchema, { space: 2 }))
   const decode = S.decodeSync(S.parseJson(cacheSchema))
 
-  const readFromDisk = async (): Promise<HashMap.HashMap<number, $Record> | null> => {
-    try {
-      const content = await readFile(cachePath, 'utf-8')
-      return decode(content)
-    } catch (err: any) {
-      if (err?.code !== 'ENOENT') {
-        console.error(`[cache] Read failed: ${err?.message || err}`)
-      }
-      return null
-    }
-  }
+  // ---------------------------------------------------------------------------
+  // Internal Effect-based helpers
+  // ---------------------------------------------------------------------------
 
-  const writeToDisk = async (data: HashMap.HashMap<number, $Record>): Promise<void> => {
-    await mkdir(dirname(cachePath), { recursive: true })
-    const json = encode(data)
-    await writeFile(cachePath, json)
-  }
+  const readFromDisk: Effect.Effect<
+    HashMap.HashMap<number, $Record> | null,
+    PlatformErrorModule.PlatformError,
+    FileSystem.FileSystem
+  > = Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const exists = yield* fs.exists(cachePath)
+    if (!exists) return null
 
-  const getDiskMtime = async (): Promise<number> => {
-    try {
-      const s = await stat(cachePath)
-      return s.mtimeMs
-    } catch {
-      return 0
-    }
-  }
+    const content = yield* fs.readFileString(cachePath)
+    // decode is sync and may throw - treat invalid cache as defect
+    return decode(content)
+  })
+
+  const writeToDisk = (
+    data: HashMap.HashMap<number, $Record>,
+  ): Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem> =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem
+      yield* fs.makeDirectory(dirname(cachePath), { recursive: true })
+      yield* fs.writeFileString(cachePath, encode(data))
+    })
+
+  const getDiskMtime: Effect.Effect<number, never, FileSystem.FileSystem> = Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const exists = yield* fs.exists(cachePath).pipe(Effect.orElseSucceed(() => false))
+    if (!exists) return 0
+    const info = yield* fs.stat(cachePath).pipe(Effect.orElseSucceed(() => null))
+    return Option.getOrElse(info?.mtime ?? Option.none(), () => new Date(0)).getTime()
+  })
+
+  // ---------------------------------------------------------------------------
+  // Public interface
+  // ---------------------------------------------------------------------------
 
   return {
     get(hash) {
@@ -119,32 +130,36 @@ export const createCacheManager = <$Record>(
       keyIndex.set(keyValue, hash)
     },
 
-    async flush() {
-      const diskMtime = await getDiskMtime()
+    flush: () =>
+      Effect.gen(function* () {
+        const diskMtime = yield* getDiskMtime
 
-      // If disk changed since boot, merge (disk entries we don't have)
-      if (diskMtime > bootMtime) {
-        const diskCache = await readFromDisk()
-        if (diskCache) {
-          // Memory wins on conflict
-          for (const [hash, record] of HashMap.entries(diskCache)) {
-            if (HashMap.get(cache, hash)._tag === 'None') {
-              cache = HashMap.set(cache, hash, record)
+        // If disk changed since boot, merge (disk entries we don't have)
+        if (diskMtime > bootMtime) {
+          const diskCache = yield* readFromDisk
+          if (diskCache) {
+            // Memory wins on conflict
+            for (const [hash, record] of HashMap.entries(diskCache)) {
+              if (HashMap.get(cache, hash)._tag === 'None') {
+                cache = HashMap.set(cache, hash, record)
+              }
             }
           }
         }
-      }
 
-      await writeToDisk(cache)
-      bootMtime = Date.now()
-    },
+        yield* writeToDisk(cache)
+        bootMtime = Date.now()
+      }),
 
-    async load() {
-      const diskCache = await readFromDisk()
-      if (diskCache) {
-        cache = diskCache
-      }
-      bootMtime = existsSync(cachePath) ? await getDiskMtime() : 0
-    },
+    load: () =>
+      Effect.gen(function* () {
+        const diskCache = yield* readFromDisk
+        if (diskCache) {
+          cache = diskCache
+        }
+        const fs = yield* FileSystem.FileSystem
+        const exists = yield* fs.exists(cachePath).pipe(Effect.orElseSucceed(() => false))
+        bootMtime = exists ? (yield* getDiskMtime) : 0
+      }),
   }
 }

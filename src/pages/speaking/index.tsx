@@ -1,15 +1,10 @@
 import { Meta } from '#~/components/meta.js'
 import { DateString, Experience, ExperienceSpeaking } from '../../content/experience.js'
+import { page, config } from '#~/runtime.js'
 
-export const loader = async () => {
-  const allExperiences = await Experience.list()
-  // Experience now returns union directly (no wrapper)
+export default page(function* () {
+  const allExperiences = yield* Experience.list()
   const speakingItems = allExperiences.filter((e): e is ExperienceSpeaking => e._tag === 'speaking')
-  return { speakingItems }
-}
-
-const SpeakingPage: React.FC<{ loaderData: Awaited<ReturnType<typeof loader>> }> = ({ loaderData }) => {
-  const { speakingItems } = loaderData
 
   return (
     <>
@@ -46,10 +41,8 @@ const SpeakingPage: React.FC<{ loaderData: Awaited<ReturnType<typeof loader>> }>
       </main>
     </>
   )
-}
+})
 
-export default SpeakingPage
-
-export const getConfig = async () => {
+export const getConfig = config(function* () {
   return { render: 'static' } as const
-}
+})

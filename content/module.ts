@@ -1,6 +1,6 @@
 import { Module } from '../src/content/module.js'
 
-export default Module.makeMany([
+export default Module.Store.makeMany(
   { repo: 'graffle-js/graffle', featured: true },
   { repo: 'jasonkuhrt/polen' },
   { repo: 'jasonkuhrt/oak' },
@@ -22,4 +22,4 @@ export default Module.makeMany([
   { repo: 'jasonkuhrt/purry' },
   { repo: 'jasonkuhrt/research-node-package-exports' },
   { repo: 'pakadev/paka' },
-])
+)

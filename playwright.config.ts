@@ -13,7 +13,7 @@ export default defineConfig({
   outputDir: 'tests/results',
   timeout: 10_000, // 10s per test
   use: {
-    baseURL: 'http://localhost:5175',
+    baseURL: 'http://localhost:8080',
     trace: 'on-first-retry',
     navigationTimeout: 5_000, // 5s max for navigation
     actionTimeout: 3_000, // 3s max for actions
@@ -27,8 +27,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm build && npx serve build/client -l 5175',
-    url: 'http://localhost:5175',
+    command: 'pnpm build && pnpm start',
+    url: 'http://localhost:8080',
     reuseExistingServer: !process.env.GITHUB_ACTIONS,
     timeout: 120_000, // 2 minutes
   },

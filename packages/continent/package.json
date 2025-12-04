@@ -6,10 +6,14 @@
     ".": "./src/_.ts"
   },
   "dependencies": {
+    "@effect/platform": "^0.92.1",
     "@mdx-js/mdx": "^3.1.1",
     "effect": "^3.18.4",
     "gray-matter": "^4.0.3",
     "tinyglobby": "^0.2.14"
+  },
+  "devDependencies": {
+    "@effect/platform-node": "^0.89.1"
   },
   "peerDependencies": {
     "vite": ">=5.0.0"

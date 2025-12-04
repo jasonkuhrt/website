@@ -1,6 +1,6 @@
 import { compile } from '@mdx-js/mdx'
 import type { CompileOptions } from '@mdx-js/mdx'
-import * as S from 'effect/Schema'
+import { Effect, Schema as S } from 'effect'
 import type { Struct } from 'effect/Schema'
 import matter from 'gray-matter'
 import { Asset, AssetsField, Content, Store, UniqueKey } from '../content.js'
@@ -73,35 +73,38 @@ const rewriteAssetUrls = (content: string, basePath: string): string => {
     .replace(/\]\(\.\/([^)]+)\)/g, `](/${basePath}/$1)`)
 }
 
-const processMdx = async <$a, $i>(
+const processMdx = <$a, $i>(
   source: string,
   schema: S.Schema<$a, $i>,
   config: ProcessMdxConfig = {},
-): Promise<{ frontmatter: $a; compiledJs: string; assets: Asset[] }> => {
-  const { data, content } = matter(source)
-  const frontmatter = S.decodeUnknownSync(schema)(data)
+): Effect.Effect<{ frontmatter: $a; compiledJs: string; assets: Asset[] }> =>
+  Effect.gen(function* () {
+    const { data, content } = matter(source)
+    const frontmatter = S.decodeUnknownSync(schema)(data)
 
-  const assets: Asset[] = []
-  let processedContent = content
+    const assets: Asset[] = []
+    let processedContent = content
 
-  if (config.assetBasePath) {
-    const paths = extractAssetPaths(content, config.assetBasePath)
-    assets.push(...paths.map((sourcePath) => ({ sourcePath })))
-    processedContent = rewriteAssetUrls(content, config.assetBasePath)
-  }
+    if (config.assetBasePath) {
+      const paths = extractAssetPaths(content, config.assetBasePath)
+      assets.push(...paths.map((sourcePath) => ({ sourcePath })))
+      processedContent = rewriteAssetUrls(content, config.assetBasePath)
+    }
 
-  const compiled = await compile(processedContent, {
-    outputFormat: 'function-body',
-    remarkPlugins: config.remarkPlugins,
-    rehypePlugins: config.rehypePlugins,
+    const compiled = yield* Effect.promise(() =>
+      compile(processedContent, {
+        outputFormat: 'function-body',
+        remarkPlugins: config.remarkPlugins,
+        rehypePlugins: config.rehypePlugins,
+      })
+    )
+
+    return {
+      frontmatter,
+      compiledJs: String(compiled),
+      assets,
+    }
   })
-
-  return {
-    frontmatter,
-    compiledJs: String(compiled),
-    assets,
-  }
-}
 
 // ============================================================================
 // FlexibleDate Schema
@@ -254,22 +257,22 @@ export const Mdx = <
   return Content(name, {
     store: Store.dir({ glob }),
     schema: outputSchema,
-    async map(source: DirData) {
+    map(source: DirData) {
       const slug = slugFn(source)
       const assetBasePath = assetBasePathFn(slug, source)
 
-      const { frontmatter, compiledJs, assets } = await processMdx(
+      return processMdx(
         source.content,
         frontmatterSchema as any,
         { assetBasePath },
+      ).pipe(
+        Effect.map(({ frontmatter, compiledJs, assets }) => ({
+          slug,
+          ...(frontmatter as object),
+          compiledJs,
+          assets,
+        })),
       )
-
-      return {
-        slug,
-        ...(frontmatter as object),
-        compiledJs,
-        assets,
-      }
     },
   } as any) as any
 }

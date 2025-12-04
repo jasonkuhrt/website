@@ -1,7 +1,7 @@
 import { Str } from '@wollybeard/kit'
+import { Content, Store } from 'continent'
 import { Order } from 'effect'
 import * as S from 'effect/Schema'
-import { Content, Store } from 'continent'
 
 // ============================================================================
 // DateString
@@ -112,4 +112,5 @@ export const Experience = Content('experience', {
     schema: ExperienceData,
   }),
 })
+
 export type Experience = typeof Experience.Type
