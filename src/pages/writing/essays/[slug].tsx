@@ -1,11 +1,11 @@
-import { Option } from 'effect'
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
 import { Essay } from '#~/content/essay.js'
 import { formatDateLong } from '#~/lib/date.js'
-import { page, config } from '#~/runtime.js'
+import { config, page } from '#~/runtime.js'
+import { Option } from 'effect'
 
-export default page<{ slug: string }>(function* ({ slug }) {
+export default page<{ slug: string }>(function*({ slug }) {
   const essayOption = yield* Essay.get({ slug })
   const essay = Option.getOrThrowWith(essayOption, () => new Error(`Essay not found: ${slug}`))
 
@@ -14,8 +14,8 @@ export default page<{ slug: string }>(function* ({ slug }) {
       <Meta title={essay.title} type='article' publishedAt={essay.date.toISOString()} />
 
       <main>
-        <article>
-          <header>
+        <article className='prose-container'>
+          <header className='prose-header'>
             <h1>{essay.title}</h1>
             <time dateTime={essay.date.toISOString()}>{formatDateLong(essay.date)}</time>
           </header>
@@ -26,7 +26,7 @@ export default page<{ slug: string }>(function* ({ slug }) {
   )
 })
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   const essays = yield* Essay.list()
   return {
     render: 'static',

@@ -1,5 +1,5 @@
-import * as S from 'effect/Schema'
 import { Content, Store } from 'continent'
+import * as S from 'effect/Schema'
 
 export const Site = Content('site', {
   store: Store.js({

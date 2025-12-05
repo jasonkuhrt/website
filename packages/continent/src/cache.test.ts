@@ -1,11 +1,12 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { FileSystem } from '@effect/platform'
 import { NodeContext } from '@effect/platform-node'
-import { Effect, Option } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import * as S from 'effect/Schema'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { type CacheEvent, Content, Store, UniqueKey } from './_.js'
+import { Cache, type CacheEvent, CacheCustom, Content, Store, UniqueKey } from './_.js'
+import { flushIfDirty } from './cache.js'
 
 // ============================================================================
 // Test Fixtures
@@ -13,7 +14,10 @@ import { type CacheEvent, Content, Store, UniqueKey } from './_.js'
 
 const TEST_DIR = '.test-cache'
 const CONTENT_DIR = `${TEST_DIR}/content`
-const CACHE_FILE = '.continent/cache/test-cache.json'
+const CACHE_DIR = `${TEST_DIR}/cache`
+
+// Create a test cache layer that uses a real directory
+const TestCacheLayer = CacheCustom(CACHE_DIR)
 
 // Simple content schema with unique key
 const TestContent = (options?: { onCacheEvent?: (event: CacheEvent) => void }) =>
@@ -34,9 +38,9 @@ const TestContent = (options?: { onCacheEvent?: (event: CacheEvent) => void }) =
     onCacheEvent: options?.onCacheEvent,
   })
 
-// Helper to run Effects with NodeContext
-const run = <A, E>(effect: Effect.Effect<A, E, FileSystem.FileSystem>): Promise<A> =>
-  Effect.runPromise(effect.pipe(Effect.provide(NodeContext.layer)))
+// Helper to run Effects with NodeContext and TestCacheLayer
+const run = <A, E>(effect: Effect.Effect<A, E, FileSystem.FileSystem | Cache>): Promise<A> =>
+  Effect.runPromise(effect.pipe(Effect.provide(TestCacheLayer), Effect.provide(NodeContext.layer)))
 
 // ============================================================================
 // Setup / Teardown
@@ -48,10 +52,8 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-  // Clean up test content directory
+  // Clean up test directory (includes content and cache subdirs)
   await rm(TEST_DIR, { recursive: true, force: true })
-  // Clean up cache file (created at cwd/.continent/cache/test-cache.json)
-  await rm(CACHE_FILE, { force: true })
 })
 
 // ============================================================================
@@ -123,11 +125,12 @@ describe('cache system', () => {
 
     const content = TestContent()
     await run(content.list())
-    await run(content.flushCache())
+    // Flush cache to disk
+    await run(flushIfDirty)
 
     // Create new instance (simulating process restart)
     const content2 = TestContent()
-    await run(content2.loadCache())
+    // Cache loads automatically via ensureLoaded when list()/get() is called
 
     // Should still be able to get cached record without re-running map
     const record = await run(content2.get({ slug: 'persist' }))
@@ -135,19 +138,18 @@ describe('cache system', () => {
     expect(Option.getOrThrow(record).content).toBe('PERSIST ME')
   })
 
-  test('loadCache: restores from disk', async () => {
+  test('lazy cache load: restores from disk automatically', async () => {
     await createFile('restore.txt', 'restore me')
 
     // First instance: populate and flush
     const content1 = TestContent()
     await run(content1.list())
-    await run(content1.flushCache())
+    await run(flushIfDirty)
 
-    // Second instance: load from disk
+    // Second instance: cache loads automatically via ensureLoaded
     const content2 = TestContent()
-    await run(content2.loadCache())
 
-    // Get should find cached record
+    // Get triggers lazy cache load from disk
     const record = await run(content2.get({ slug: 'restore' }))
     expect(Option.getOrThrow(record).content).toBe('RESTORE ME')
   })
@@ -206,39 +208,94 @@ describe('cache system', () => {
       onCacheEvent: (e) => events.push(e),
     })
 
-    // First call - should be a miss
-    await run(content.list())
-    expect(events).toHaveLength(1)
-    expect(events[0]!.type).toBe('miss')
+    // Run both operations in the same Effect scope to share cache
+    await run(
+      Effect.gen(function* () {
+        // First call - should be a miss
+        yield* content.list()
+        expect(events).toHaveLength(1)
+        expect(events[0]!.type).toBe('miss')
 
-    // Clear events
-    events.length = 0
+        // Clear events
+        events.length = 0
 
-    // Second call - should be a hit (same instance)
-    await run(content.list())
-    expect(events).toHaveLength(1)
-    expect(events[0]!.type).toBe('hit')
+        // Second call - should be a hit (same cache instance)
+        yield* content.list()
+        expect(events).toHaveLength(1)
+        expect(events[0]!.type).toBe('hit')
+      }),
+    )
   })
 
   test('hash stability: cache hits after process restart', async () => {
     await createFile('stable.txt', 'stable content')
 
-    // First instance - populate and flush
+    // First instance - populate and flush within same Effect scope
     const content1 = TestContent()
-    await run(content1.list())
-    await run(content1.flushCache())
+    await run(
+      Effect.gen(function* () {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
 
-    // Second instance with tracking (simulates process restart)
+    // Second instance with tracking (simulates process restart with fresh cache layer)
+    // Use a FRESH cache layer that will load from the directory we just flushed to
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
     const events: CacheEvent[] = []
     const content2 = TestContent({
       onCacheEvent: (e) => events.push(e),
     })
-    await run(content2.loadCache())
 
-    // This should hit the cache since hash should be stable
-    await run(content2.list())
+    // This should hit the cache since hash should be stable and cache loads from disk
+    await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
 
     expect(events).toHaveLength(1)
     expect(events[0]!.type).toBe('hit')
+  })
+
+  test('schema registration: Date fields survive flush/load cycle', async () => {
+    await createFile('dated.txt', 'dated content')
+
+    // Content with Date field in schema
+    const TestContentWithDate = () =>
+      Content('test-dated', {
+        store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+        schema: {
+          slug: UniqueKey(S.String),
+          createdAt: S.Date,
+        },
+        async map(source) {
+          return {
+            slug: source.stem,
+            createdAt: new Date('2024-01-15T10:30:00.000Z'),
+          }
+        },
+      })
+
+    // First instance - populate and flush
+    const content1 = TestContentWithDate()
+    await run(
+      Effect.gen(function* () {
+        const results = yield* content1.list()
+        expect(results[0]!.createdAt).toBeInstanceOf(Date)
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer (simulates process restart)
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const content2 = TestContentWithDate()
+
+    // Load from disk - Date should be restored as Date object, not string
+    const results = await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    expect(results).toHaveLength(1)
+    expect(results[0]!.createdAt).toBeInstanceOf(Date)
+    expect(results[0]!.createdAt.toISOString()).toBe('2024-01-15T10:30:00.000Z')
   })
 })

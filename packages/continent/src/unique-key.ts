@@ -1,6 +1,6 @@
 import { Option, Schema as S } from 'effect'
-import * as AST from 'effect/SchemaAST'
 import type { Struct } from 'effect/Schema'
+import * as AST from 'effect/SchemaAST'
 
 // ============================================================================
 // Type-Level Brand
@@ -12,8 +12,9 @@ declare const UniqueKeyBrand: unique symbol
  * A schema marked as a unique key field.
  * The brand is used for type-level detection via `ExtractUniqueKeys`.
  */
-export type UniqueKeySchema<$Schema extends S.Schema<string, string, never>> =
-  $Schema & { readonly [UniqueKeyBrand]: true }
+export type UniqueKeySchema<$Schema extends S.Schema<string, string, never>> = $Schema & {
+  readonly [UniqueKeyBrand]: true
+}
 
 // ============================================================================
 // Runtime Annotation
@@ -65,7 +66,7 @@ export const UniqueKey = <$Schema extends S.Schema<string, string, never>>(
  * // ^? "id"
  * ```
  */
-//dprint-ignore
+// dprint-ignore
 export type ExtractUniqueKeysFromFields<$Fields extends Struct.Fields> =
   {
     [K in keyof $Fields]: $Fields[K] extends { readonly [UniqueKeyBrand]: true } ? K : never
@@ -86,7 +87,7 @@ export type ExtractUniqueKeysFromFields<$Fields extends Struct.Fields> =
  * // ^? "id" | "email"
  * ```
  */
-//dprint-ignore
+// dprint-ignore
 export type ExtractUniqueKeys<$Schema> =
   $Schema extends S.Struct<infer __fields__>
     ? ExtractUniqueKeysFromFields<__fields__>
@@ -109,9 +110,7 @@ export const extractUniqueKeysFromFields = <$Fields extends Struct.Fields>(
     const annotation = AST.getAnnotation<boolean>(UniqueKeyAnnotation)(
       (fieldSchema as S.Schema.Any).ast,
     )
-    if (Option.isSome(annotation) && annotation.value === true) {
-      keys.push(name)
-    }
+    if (Option.isSome(annotation) && annotation.value === true) keys.push(name)
   }
 
   return keys as ExtractUniqueKeysFromFields<$Fields>[]

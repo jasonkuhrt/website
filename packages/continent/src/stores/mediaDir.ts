@@ -1,6 +1,6 @@
-import { basename, join } from 'node:path'
 import { FileSystem } from '@effect/platform'
 import { Effect, Hash, Schema as S } from 'effect'
+import { basename, join } from 'node:path'
 import { glob as globFn } from 'tinyglobby'
 import type { Store } from '../store.js'
 
@@ -58,7 +58,7 @@ export const mediaDir = (config: MediaDirConfig): MediaDir => {
     schema: MediaDirData,
 
     readMany: () =>
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
 
         // Use tinyglobby for globbing - treat failures as defects (unexpected)

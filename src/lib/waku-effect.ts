@@ -19,14 +19,10 @@ export const makeWakuEffect = <R, E>(runtime: ManagedRuntime.ManagedRuntime<R, E
    */
   page:
     <Props>(gen: (props: Props) => Generator<any, React.JSX.Element, any>) =>
-    async (props: Props): Promise<React.JSX.Element> =>
-      runtime.runPromise(Effect.gen(() => gen(props)) as any),
+    async (props: Props): Promise<React.JSX.Element> => runtime.runPromise(Effect.gen(() => gen(props)) as any),
 
   /**
    * Wrap an Effect generator as a Waku getConfig function.
    */
-  config:
-    <A>(gen: () => Generator<any, A, any>) =>
-    async (): Promise<A> =>
-      runtime.runPromise(Effect.gen(gen) as any),
+  config: <A>(gen: () => Generator<any, A, any>) => async (): Promise<A> => runtime.runPromise(Effect.gen(gen) as any),
 })

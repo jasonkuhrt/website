@@ -5,7 +5,7 @@ import { Profile, SocialLink } from '../src/content/profile.js'
  *
  * Jason Kuhrt's profile information.
  */
-export default Profile.make({
+export default Profile.Store.make({
   name: {
     first: 'Jason',
     last: 'Kuhrt',

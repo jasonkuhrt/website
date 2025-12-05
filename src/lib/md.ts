@@ -1,7 +1,7 @@
-import { readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import type { ReactElement } from 'react'
 
 export interface CollectionConfig {

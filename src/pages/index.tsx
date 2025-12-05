@@ -1,7 +1,7 @@
 import { Meta } from '#~/components/meta.js'
-import { page, config } from '#~/runtime.js'
+import { config, page } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   return (
     <>
       <Meta title='Jason Kuhrt' description='Personal website of Jason Kuhrt' />
@@ -14,6 +14,6 @@ export default page(function* () {
   )
 })
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

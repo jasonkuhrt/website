@@ -186,7 +186,7 @@ export default Experience.Store.makeMany(
       {
         name: 'Social IoT Product Vision',
         description:
-          "Identified a strategic product opportunity to motivate multiple cloudBit purchases through powerful composition visualization and social collaboration tools. Championed a visual orchestration system enabling users to manage multi-cloudBit circuits through intuitive UI—configuring device relationships (fan out, in etc.), naming schemes (doorbell, trigger, dispenser), and privacy modes including public access (e.g. interactive artist installations). The centerpiece innovation was \"multiplayer mode\": allowing users to discover and subscribe to other users' circuits, creating a social IoT ecosystem and alternative/complement to software social media, a platform where creative projects could be discovered, remixed, and built upon. Designed semantics, terminologies, concepts, and diagrams of various networking possibilities and layouts, and shared the vision across multiple leadership meetings, navigating the strategic tension between the company's hardware-first identity and the platform leverage opportunity.",
+          'Identified a strategic product opportunity to motivate multiple cloudBit purchases through powerful composition visualization and social collaboration tools. Championed a visual orchestration system enabling users to manage multi-cloudBit circuits through intuitive UI—configuring device relationships (fan out, in etc.), naming schemes (doorbell, trigger, dispenser), and privacy modes including public access (e.g. interactive artist installations). The centerpiece innovation was "multiplayer mode": allowing users to discover and subscribe to other users\' circuits, creating a social IoT ecosystem and alternative/complement to software social media, a platform where creative projects could be discovered, remixed, and built upon. Designed semantics, terminologies, concepts, and diagrams of various networking possibilities and layouts, and shared the vision across multiple leadership meetings, navigating the strategic tension between the company\'s hardware-first identity and the platform leverage opportunity.',
       },
     ],
   },
@@ -361,7 +361,8 @@ export default Experience.Store.makeMany(
     venue: 'GraphQLConf 2025',
     date: 'September 2025',
     links: {
-      info: 'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
+      info:
+        'https://graphqlconf2025.sched.com/event/264O0/imagining-the-future-of-graphql-documentation-tooling-jason-kuhrt-the-guild',
       repo: 'https://github.com/jasonkuhrt/tech-talk-2025-polen',
     },
   },

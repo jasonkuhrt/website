@@ -1,17 +1,15 @@
-import { Layer, ManagedRuntime } from 'effect'
 import { NodeContext } from '@effect/platform-node'
+import { CacheLive } from 'continent'
+import { Layer, ManagedRuntime } from 'effect'
 import { makeWakuEffect } from './lib/waku-effect.js'
 
 /**
  * Application layer stack.
- * Provides all runtime requirements (FileSystem, etc.) for content operations.
+ * Provides all runtime requirements (FileSystem, Cache, etc.) for content operations.
  */
 const AppLayer = Layer.mergeAll(
   NodeContext.layer,
-  // Add additional layers here as needed:
-  // - Logging
-  // - Config
-  // - Custom services
+  CacheLive,
 )
 
 /**

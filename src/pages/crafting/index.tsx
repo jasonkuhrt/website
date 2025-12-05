@@ -1,15 +1,15 @@
-import { Module } from '#~/content/module.js'
 import { Meta } from '#~/components/meta.js'
-import { page, config } from '#~/runtime.js'
+import { Module } from '#~/content/module.js'
+import { config, page } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   const repos = yield* Module.list()
   const featured = repos.filter((r) => r.featured)
   const others = repos.filter((r) => !r.featured)
 
   return (
     <>
-      <Meta title="Crafting" />
+      <Meta title='Crafting' />
 
       <main>
         <h1>Crafting</h1>
@@ -21,9 +21,7 @@ export default page(function* () {
           <section>
             <h2>Featured</h2>
             <div>
-              {featured.map((repo) => (
-                <RepoCard key={repo.repo} repo={repo} />
-              ))}
+              {featured.map((repo) => <RepoCard key={repo.repo} repo={repo} />)}
             </div>
           </section>
         )}
@@ -31,9 +29,7 @@ export default page(function* () {
         <section>
           <h2>Projects</h2>
           <div>
-            {others.map((repo) => (
-              <RepoCard key={repo.repo} repo={repo} />
-            ))}
+            {others.map((repo) => <RepoCard key={repo.repo} repo={repo} />)}
           </div>
         </section>
       </main>
@@ -47,8 +43,8 @@ const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
   return (
     <a
       href={repo.url}
-      target="_blank"
-      rel="noopener noreferrer"
+      target='_blank'
+      rel='noopener noreferrer'
     >
       <div>
         <strong>{repo.name}</strong>
@@ -58,9 +54,7 @@ const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
           </span>
         )}
       </div>
-      {repo.description && (
-        <p>{repo.description}</p>
-      )}
+      {repo.description && <p>{repo.description}</p>}
       <div>
         ⭐ {repo.stargazerCount} • 🍴 {repo.forkCount}
         {repo.latestRelease && ` • ${repo.latestRelease.tagName}`}
@@ -69,6 +63,6 @@ const RepoCard: React.FC<{ repo: Repo }> = ({ repo }) => {
   )
 }
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

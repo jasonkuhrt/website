@@ -23,8 +23,7 @@ type MdxBaseRecord = {
 }
 
 /** Full Mdx record type: base fields + custom frontmatter */
-type MdxRecord<$FrontmatterFields extends Struct.Fields> =
-  MdxBaseRecord & Struct.Type<$FrontmatterFields>
+type MdxRecord<$FrontmatterFields extends Struct.Fields> = MdxBaseRecord & Struct.Type<$FrontmatterFields>
 
 /** Configuration for Mdx content factory */
 export interface MdxConfig<$FrontmatterFields extends Struct.Fields = {}> {
@@ -57,12 +56,8 @@ const extractAssetPaths = (content: string, basePath: string): string[] => {
   const mdPattern = /\]\(\.\/([^)]+)\)/g
 
   let match
-  while ((match = srcPattern.exec(content)) !== null) {
-    paths.push(`${basePath}/${match[1]}`)
-  }
-  while ((match = mdPattern.exec(content)) !== null) {
-    paths.push(`${basePath}/${match[1]}`)
-  }
+  while ((match = srcPattern.exec(content)) !== null) paths.push(`${basePath}/${match[1]}`)
+  while ((match = mdPattern.exec(content)) !== null) paths.push(`${basePath}/${match[1]}`)
 
   return [...new Set(paths)]
 }
@@ -78,7 +73,7 @@ const processMdx = <$a, $i>(
   schema: S.Schema<$a, $i>,
   config: ProcessMdxConfig = {},
 ): Effect.Effect<{ frontmatter: $a; compiledJs: string; assets: Asset[] }> =>
-  Effect.gen(function* () {
+  Effect.gen(function*() {
     const { data, content } = matter(source)
     const frontmatter = S.decodeUnknownSync(schema)(data)
 
@@ -155,10 +150,8 @@ const stripDatePrefix = (str: string): string => str.replace(/^\d{4}-\d{2}-\d{2}
  * - Directory-based globs (`＊/content.mdx`): extract parent dir name, strip date prefix
  * - File-based globs (`＊.mdx`): use stem, strip date prefix
  */
-const createDefaultSlugFn = (glob: string): ((source: DirData) => string) => {
-  if (isDirectoryBasedGlob(glob)) {
-    return (source) => stripDatePrefix(getDirName(source.path))
-  }
+const createDefaultSlugFn = (glob: string): (source: DirData) => string => {
+  if (isDirectoryBasedGlob(glob)) return (source) => stripDatePrefix(getDirName(source.path))
   return (source) => stripDatePrefix(source.stem)
 }
 
@@ -168,10 +161,8 @@ const createDefaultSlugFn = (glob: string): ((source: DirData) => string) => {
  * - Directory-based globs: use parent directory path (for co-located assets)
  * - File-based globs: use `content/{name}/{slug}`
  */
-const createDefaultAssetBasePathFn = (glob: string, name: string): ((slug: string, source: DirData) => string) => {
-  if (isDirectoryBasedGlob(glob)) {
-    return (_slug, source) => source.path.split('/').slice(0, -1).join('/')
-  }
+const createDefaultAssetBasePathFn = (glob: string, name: string): (slug: string, source: DirData) => string => {
+  if (isDirectoryBasedGlob(glob)) return (_slug, source) => source.path.split('/').slice(0, -1).join('/')
   return (slug) => `content/${name}/${slug}`
 }
 

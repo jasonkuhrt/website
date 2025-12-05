@@ -1,14 +1,14 @@
 import { Meta } from '#~/components/meta.js'
+import { config, page } from '#~/runtime.js'
 import { DateString, Experience, ExperienceSpeaking } from '../../content/experience.js'
-import { page, config } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   const allExperiences = yield* Experience.list()
   const speakingItems = allExperiences.filter((e): e is ExperienceSpeaking => e._tag === 'speaking')
 
   return (
     <>
-      <Meta title="Speaking" />
+      <Meta title='Speaking' />
 
       <main>
         <h1>Speaking</h1>
@@ -43,6 +43,6 @@ export default page(function* () {
   )
 })
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

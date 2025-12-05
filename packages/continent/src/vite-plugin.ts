@@ -1,6 +1,10 @@
+import { NodeContext } from '@effect/platform-node'
+import { Effect, Fiber, HashMap, HashSet } from 'effect'
+import fg from 'fast-glob'
 import { readFileSync } from 'node:fs'
 import { extname, resolve } from 'node:path'
 import type { Plugin, ViteDevServer } from 'vite'
+import { backgroundFlush, CacheLive, flushIfDirty } from './cache.js'
 
 /**
  * Content definition interface for the plugin.
@@ -12,30 +16,6 @@ export interface ContentDefinition {
     watchPaths: string[]
   }
 }
-
-export interface ContinentPluginOptions {
-  /**
-   * Content definitions to watch and serve assets for.
-   * Import your content definitions and pass them here.
-   *
-   * @example
-   * ```typescript
-   * import { Essay } from './src/content/essay.js'
-   * import { Drivel } from './src/content/drivel.js'
-   *
-   * continentPlugin({
-   *   definitions: [Essay, Drivel],
-   * })
-   * ```
-   */
-  definitions: ContentDefinition[]
-}
-
-// TODO: Add async auto-discovery option that loads definitions from a directory
-// This would require either:
-// - A factory function that returns a Promise<Plugin>
-// - Using a later hook like configureServer (but then configResolved can't use definitions)
-// - Accepting a glob pattern and doing file-system only watching without importing
 
 /**
  * MIME types for common asset extensions.
@@ -75,59 +55,135 @@ const invalidateModule = (server: ViteDevServer, modulePath: string): void => {
  * Vite plugin for Continent content framework.
  *
  * Features:
+ * - Auto-discovers content definitions from `content/` directory
+ * - Dynamic loading: new content files are picked up without restart
  * - HMR for content changes (watches store.watchPaths)
  * - Asset serving from content directories in dev mode
+ * - Background cache flushing with globalThis singleton
  *
  * @example
  * ```typescript
  * // waku.config.ts or vite.config.ts
  * import { continentPlugin } from 'continent'
- * import { Essay } from './src/content/essay.js'
- * import { Drivel } from './src/content/drivel.js'
  *
  * export default defineConfig({
  *   plugins: [
- *     continentPlugin({
- *       definitions: [Essay, Drivel],
- *     }),
+ *     continentPlugin(),
  *   ],
  * })
  * ```
  */
-export const continentPlugin = ({ definitions }: ContinentPluginOptions): Plugin => {
+export const continentPlugin = (): Plugin => {
+  let shutdownFiber: Fiber.RuntimeFiber<void, never> | null = null
+
   return {
     name: 'continent',
 
-    configResolved() {
-      console.log(`[continent] Watching ${definitions.length} content definitions`)
-    },
+    async configureServer(server) {
+      // Track watch paths per content file (Effect HashMap)
+      let contentDefinitionFilesToWatchPaths = HashMap.empty<string, HashSet.HashSet<string>>()
 
-    configureServer(server) {
-      // Collect all watch paths from definitions
-      const watchPaths = new Set<string>()
-      for (const def of definitions) {
-        for (const path of def.store.watchPaths) {
-          watchPaths.add(resolve(process.cwd(), path))
+      // Derived: union of all watch paths
+      const getAllWatchPaths = () =>
+        HashMap.reduce(
+          contentDefinitionFilesToWatchPaths,
+          HashSet.empty<string>(),
+          (acc, paths) => HashSet.union(acc, paths),
+        )
+
+      // Helper: import content file via ssrLoadModule and extract watch paths
+      const importContentFile = async (file: string) => {
+        try {
+          const mod = await server.ssrLoadModule(file)
+          let paths = HashSet.empty<string>()
+
+          for (const exp of Object.values(mod)) {
+            if (exp && typeof exp === 'object' && 'store' in exp) {
+              const store = (exp as ContentDefinition).store
+              if (store?.watchPaths) {
+                for (const p of store.watchPaths) {
+                  const resolved = resolve(process.cwd(), p)
+                  paths = HashSet.add(paths, resolved)
+                  server.watcher.add(resolved)
+                }
+              }
+            }
+          }
+
+          contentDefinitionFilesToWatchPaths = HashMap.set(contentDefinitionFilesToWatchPaths, file, paths)
+          console.log(`[continent] Loaded ${file}`)
+        } catch (err) {
+          console.error(`[continent] Failed to import ${file}:`, err)
         }
       }
 
-      // Add watch paths to Vite's watcher
-      for (const path of watchPaths) {
-        server.watcher.add(path)
+      // Helper: remove content file's watch paths
+      const removeContentFile = (file: string) => {
+        if (!HashMap.has(contentDefinitionFilesToWatchPaths, file)) return
+        contentDefinitionFilesToWatchPaths = HashMap.remove(contentDefinitionFilesToWatchPaths, file)
+        console.log(`[continent] Unloaded ${file}`)
       }
 
-      // Handle file changes - trigger full reload for content changes
-      server.watcher.on('all', (event, filePath) => {
-        if (event !== 'add' && event !== 'change' && event !== 'unlink') return
+      // 1. Initial discovery
+      const contentFiles = await fg('content/**/*.ts', {
+        cwd: process.cwd(),
+        absolute: true,
+      })
 
-        // Check if file is in any watched content path
-        const isContentFile = [...watchPaths].some((watchPath) => filePath.startsWith(watchPath))
-        if (isContentFile) {
-          invalidateModule(server, filePath)
+      console.log(`[continent] Found ${contentFiles.length} content definitions`)
+
+      for (const file of contentFiles)
+        await importContentFile(file)
+
+      // 2. Watch for new/removed content files
+      const contentDir = resolve(process.cwd(), 'content')
+      server.watcher.add(`${contentDir}/**/*.ts`)
+
+      server.watcher.on('add', async (filePath) => {
+        if (filePath.startsWith(contentDir) && filePath.endsWith('.ts')) {
+          // Skip if already tracked (initial load)
+          if (HashMap.has(contentDefinitionFilesToWatchPaths, filePath)) return
+          await importContentFile(filePath)
         }
       })
 
-      // Middleware to serve content assets
+      server.watcher.on('unlink', (filePath) => {
+        if (HashMap.has(contentDefinitionFilesToWatchPaths, filePath))
+          removeContentFile(filePath)
+      })
+
+      // 3. Start background flush with Cache service (uses globalThis singleton)
+      shutdownFiber = Effect.runFork(
+        backgroundFlush.pipe(
+          Effect.provide(CacheLive),
+          Effect.provide(NodeContext.layer),
+        ),
+      )
+
+      // 4. HMR for content assets
+      server.watcher.on('all', (event, filePath) => {
+        if (event !== 'add' && event !== 'change' && event !== 'unlink') return
+        const allPaths = getAllWatchPaths()
+        if (HashSet.has(allPaths, filePath) || HashSet.some(allPaths, (wp) => filePath.startsWith(wp)))
+          invalidateModule(server, filePath)
+      })
+
+      // 5. Shutdown handler
+      server.httpServer?.on('close', () => {
+        if (shutdownFiber) {
+          Effect.runPromise(
+            Effect.gen(function* () {
+              yield* Fiber.interrupt(shutdownFiber!)
+              yield* flushIfDirty
+            }).pipe(
+              Effect.provide(CacheLive),
+              Effect.provide(NodeContext.layer),
+            ),
+          )
+        }
+      })
+
+      // 6. Asset middleware
       return () => {
         server.middlewares.use((req, res, next) => {
           const url = req.url

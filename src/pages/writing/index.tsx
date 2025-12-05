@@ -3,9 +3,9 @@ import { Drivel } from '#~/content/drivel.js'
 import { Essay } from '#~/content/essay.js'
 import { Scribble } from '#~/content/scribble.js'
 import { formatDateShort } from '#~/lib/date.js'
-import { page, config } from '#~/runtime.js'
+import { config, page } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   const essays = yield* Essay.list()
   const drivel = yield* Drivel.list()
   const scribbles = yield* Scribble.list()
@@ -59,6 +59,6 @@ export default page(function* () {
   )
 })
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

@@ -1,4 +1,5 @@
 import { Meta } from '#~/components/meta.js'
+import { config, page } from '#~/runtime.js'
 import {
   DateString,
   Experience,
@@ -6,9 +7,8 @@ import {
   ExperienceEducation,
   ExperienceWork,
 } from '../../content/experience.js'
-import { page, config } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   const allExperiences = yield* Experience.list()
 
   const workItems = allExperiences.filter((e): e is ExperienceWork => e._tag === 'work')
@@ -17,7 +17,7 @@ export default page(function* () {
 
   return (
     <>
-      <Meta title="Bio" />
+      <Meta title='Bio' />
 
       <main>
         <h1>Bio</h1>
@@ -30,9 +30,7 @@ export default page(function* () {
               <p>{item.company} · {item.location}</p>
               <p>{item.formatDateRange()}</p>
               {item.overview && <p>{item.overview}</p>}
-              {item.technologies && item.technologies.length > 0 && (
-                <p>{item.technologies.join(' · ')}</p>
-              )}
+              {item.technologies && item.technologies.length > 0 && <p>{item.technologies.join(' · ')}</p>}
             </article>
           ))}
         </section>
@@ -65,6 +63,6 @@ export default page(function* () {
   )
 })
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

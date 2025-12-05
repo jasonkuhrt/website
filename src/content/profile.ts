@@ -1,5 +1,5 @@
-import * as S from 'effect/Schema'
 import { Content, Store } from 'continent'
+import * as S from 'effect/Schema'
 
 // ============================================================================
 // SocialLink Schema
@@ -17,7 +17,7 @@ export class SocialLink extends S.Class<SocialLink>('SocialLink')({
 
 export const Profile = Content('profile', {
   store: Store.js({
-    path: 'content/profile/manifest.ts',
+    path: 'content/profile.ts',
     schema: S.Struct({
       name: S.Struct({
         first: S.String,

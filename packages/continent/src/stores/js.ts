@@ -1,8 +1,8 @@
+import { FileSystem } from '@effect/platform'
+import { Effect, Option, Schema as S } from 'effect'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { FileSystem } from '@effect/platform'
-import { Effect, Hash, Option, Schema as S } from 'effect'
-import { ensureHashable } from '../lib/hashable.js'
+import { ensureHashableSchema } from '../lib/hashable.js'
 import { dynamicImport } from '../lib/import.js'
 import { type Cardinality, defaultCardinality, type SchemaNoContext, type Store } from '../store.js'
 
@@ -14,7 +14,10 @@ import { type Cardinality, defaultCardinality, type SchemaNoContext, type Store 
 export type Js<$Schema extends SchemaNoContext = SchemaNoContext, $Cardinality extends Cardinality = Cardinality> =
   Store<$Schema, $Cardinality>
 
-export interface JsConfig<$Schema extends SchemaNoContext, $Cardinality extends Cardinality = typeof defaultCardinality> {
+export interface JsConfig<
+  $Schema extends SchemaNoContext,
+  $Cardinality extends Cardinality = typeof defaultCardinality,
+> {
   path: string
   schema: $Schema
   /**
@@ -31,12 +34,14 @@ export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardina
   config: JsConfig<$Schema, $Cardinality>,
 ): Js<$Schema, $Cardinality> => {
   const cardinality = config.cardinality ?? defaultCardinality
+  // Wrap schema at creation time to ensure decoded values are hashable
+  const hashableSchema = ensureHashableSchema(config.schema)
   return {
     cardinality: cardinality as $Cardinality,
     watchPaths: [config.path],
     schema: config.schema,
     readMany: () =>
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
         const fullPath = join(process.cwd(), config.path)
 
@@ -51,17 +56,17 @@ export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardina
         const raw = mod.default
 
         if (cardinality === '1') {
-          const data = S.decodeUnknownSync(config.schema)(raw)
-          const hashable = ensureHashable(data)
-          return [{ hash: Hash.hash(hashable), data }]
+          // Decoded data is already hashable via schema wrapping
+          const data = S.decodeUnknownSync(hashableSchema)(raw)
+          return [{ data }]
         }
 
         // 'n'
         const items = Array.isArray(raw) ? raw : []
         return items.map((item) => {
-          const data = S.decodeUnknownSync(config.schema)(item)
-          const hashable = ensureHashable(data)
-          return { hash: Hash.hash(hashable), data }
+          // Decoded data is already hashable via schema wrapping
+          const data = S.decodeUnknownSync(hashableSchema)(item)
+          return { data }
         })
       }),
   }

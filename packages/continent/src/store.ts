@@ -19,7 +19,10 @@ export type StoreError = PlatformErrorModule.PlatformError
 // Store
 // ============================================================================
 
-export interface Store<$Schema extends SchemaNoContext = SchemaNoContext, $Cardinality extends Cardinality = Cardinality> {
+export interface Store<
+  $Schema extends SchemaNoContext = SchemaNoContext,
+  $Cardinality extends Cardinality = Cardinality,
+> {
   cardinality: $Cardinality
   watchPaths: string[]
   schema: $Schema
@@ -34,7 +37,9 @@ export namespace Store {
   export type Data<$Store extends Store> = S.Schema.Type<Schema<$Store>>
 
   /** Infer the cardinality from a Store. */
-  export type GetCardinality<$Store extends Store> = $Store extends Store<any, infer __cardinality__> ? __cardinality__ : never
+  export type GetCardinality<$Store extends Store> = $Store extends Store<any, infer __cardinality__> ?
+    __cardinality__ :
+    never
 }
 
 // ============================================================================
@@ -43,11 +48,14 @@ export namespace Store {
 
 /**
  * Record returned by store.readMany().
- * Hash is computed from data for content-addressable caching.
+ * Hash is used for content-addressable caching.
  */
 export interface SourceRecord<$Data = unknown> {
-  /** Content hash (Effect Hash trait). */
-  hash: number
+  /**
+   * Content hash for cache key.
+   * If omitted, computed as Hash.hash(data).
+   */
+  hash?: number
   /** Raw data passed to map(). */
   data: $Data
 }

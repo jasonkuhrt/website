@@ -1,8 +1,8 @@
 import { Meta } from '#~/components/meta.js'
 import { Frame } from '#~/content/frame.js'
-import { page, config } from '#~/runtime.js'
+import { config, page } from '#~/runtime.js'
 
-export default page(function* () {
+export default page(function*() {
   const frames = yield* Frame.list()
 
   // Sort by date descending (newest first)
@@ -10,12 +10,12 @@ export default page(function* () {
 
   return (
     <>
-      <Meta title='Capturing' />
+      <Meta title='Framing' />
 
       <main>
-        <h1>Capturing</h1>
+        <h1>Framing</h1>
         <p>
-          Moments captured through the lens.
+          Moments framed through the lens.
         </p>
 
         <div>
@@ -60,6 +60,6 @@ const PhotoCard: React.FC<{ photo: Frame }> = ({ photo }) => {
   )
 }
 
-export const getConfig = config(function* () {
+export const getConfig = config(function*() {
   return { render: 'static' } as const
 })

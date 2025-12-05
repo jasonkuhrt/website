@@ -1,13 +1,13 @@
 import { Error as PlatformErrorModule, FileSystem } from '@effect/platform'
-import { Effect, Option, Schema as S } from 'effect'
+import { Effect, Hash, Option, Schema as S } from 'effect'
 import type { Struct } from 'effect/Schema'
-import { createCacheManager } from './cache.js'
+import { Cache, type CacheSchema } from './cache.js'
 import { ContentError } from './errors.js'
 import { type Cardinality, Store as StoreInterface } from './store.js'
-import { extractUniqueKeysFromFields, ExtractUniqueKeysFromFields } from './unique-key.js'
+import { ExtractUniqueKeysFromFields, extractUniqueKeysFromFields } from './unique-key.js'
 
-export { UniqueKey } from './unique-key.js'
 export * as Store from './stores/_.js'
+export { UniqueKey } from './unique-key.js'
 
 // ============================================================================
 // Type Utilities
@@ -17,7 +17,7 @@ export * as Store from './stores/_.js'
  * Extract field keys that can be used as unique keys from Struct.Fields.
  * Only non-optional string fields are allowed.
  */
-//dprint-ignore
+// dprint-ignore
 type UniqueKeyableFieldsFromFields<$Fields extends Struct.Fields> =
   {
     [K in keyof $Fields]:
@@ -28,7 +28,7 @@ type UniqueKeyableFieldsFromFields<$Fields extends Struct.Fields> =
 /**
  * Extract field keys that can be used as unique keys from a Struct schema.
  */
-//dprint-ignore
+// dprint-ignore
 type UniqueKeyableFieldsFromSchema<$Schema> =
   $Schema extends S.Struct<infer __fields__>
     ? UniqueKeyableFieldsFromFields<__fields__>
@@ -110,17 +110,13 @@ export namespace Content {
     readonly Type: $Output
     readonly uniqueKeys: readonly $UniqueKeys[]
     /** List all records (uses cache). */
-    list(): Effect.Effect<$Output[], ContentOpError, FileSystem.FileSystem>
+    list(): Effect.Effect<$Output[], ContentOpError, Cache | FileSystem.FileSystem>
     /** Get single record by unique key. Returns Option.none() if not found. */
-    get(key: UniqueKeyLookup<$UniqueKeys>): Effect.Effect<Option.Option<$Output>, ContentOpError, FileSystem.FileSystem>
-    /** Flush cache to disk. */
-    flushCache(): Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem>
-    /** Load cache from disk. */
-    loadCache(): Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem>
+    get(key: UniqueKeyLookup<$UniqueKeys>): Effect.Effect<Option.Option<$Output>, ContentOpError, Cache | FileSystem.FileSystem>
   }
 
   // Conditional type to select the right interface based on store cardinality
-  //dprint-ignore
+  // dprint-ignore
   export type Class<
     $Tag extends string,
     $Store extends StoreInterface,
@@ -150,7 +146,9 @@ export namespace Content {
     $UniqueKeys extends string = never,
   > extends ConfigBase<$Store> {
     schema: $Fields
-    map: (data: StoreInterface.Data<$Store>) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
+    map: (
+      data: StoreInterface.Data<$Store>,
+    ) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
     uniqueKeys?: $UniqueKeys[]
   }
 
@@ -167,7 +165,9 @@ export namespace Content {
     $Fields extends Struct.Fields,
   > extends ConfigBase<$Store> {
     schema: $Fields
-    map: (data: StoreInterface.Data<$Store>) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
+    map: (
+      data: StoreInterface.Data<$Store>,
+    ) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
   }
 }
 
@@ -200,7 +200,12 @@ export function Content<
 >(
   tag: $Tag,
   config: Content.ConfigPassthrough<$Tag, $Store>,
-): Content.CollectionClass<$Tag, $Store, StoreInterface.Data<$Store>, UniqueKeyableFieldsFromSchema<StoreInterface.Schema<$Store>>>
+): Content.CollectionClass<
+  $Tag,
+  $Store,
+  StoreInterface.Data<$Store>,
+  UniqueKeyableFieldsFromSchema<StoreInterface.Schema<$Store>>
+>
 
 // Overload 3: Singleton with schema and map
 export function Content<
@@ -236,19 +241,11 @@ export function Content(
   },
 ): unknown {
   const cardinality = config.store.cardinality
-  const hasSchema = config.schema !== undefined
   const hasMap = config.map !== undefined
-
-  // Build the output schema for caching
-  const outputSchema = hasSchema
-    ? S.Struct(config.schema as any)
-    : config.store.schema
 
   // Helper to run map function (handles both Promise and Effect)
   const runMap = (data: unknown): Effect.Effect<unknown, ContentError> => {
-    if (!hasMap) {
-      return Effect.succeed(data)
-    }
+    if (!hasMap) return Effect.succeed(data)
 
     const result = config.map!(data)
 
@@ -277,7 +274,7 @@ export function Content(
   }
 
   if (cardinality === '1') {
-    // Singleton implementation
+    // Singleton implementation - no caching needed for singletons
     const get = (): Effect.Effect<unknown, ContentOpError, FileSystem.FileSystem> =>
       Effect.gen(function* () {
         const records = yield* config.store.readMany()
@@ -316,74 +313,77 @@ export function Content(
 
   // Collection implementation
   // Auto-extract unique keys from schema + merge with config
-  const autoKeys = hasSchema ? extractUniqueKeysFromFields(config.schema as any) : []
+  const autoKeys = config.schema ? extractUniqueKeysFromFields(config.schema as any) : []
   const configKeys: string[] = config.uniqueKeys ?? []
   const uniqueKeys = [...new Set([...autoKeys, ...configKeys])]
 
-  // Create content-addressable cache (hash → record)
-  const cache = createCacheManager({
-    path: `.continent/cache/${tag}.json`,
-    recordSchema: outputSchema as any,
-    uniqueKeys,
-  })
+  // Create schema for cache encode/decode if provided
+  const outputSchema = config.schema ? S.Struct(config.schema as Struct.Fields) : null
 
-  // Track if cache has been loaded
-  let cacheLoaded = false
-
-  const ensureCacheLoaded: Effect.Effect<void, PlatformErrorModule.PlatformError, FileSystem.FileSystem> = Effect.gen(
-    function* () {
-      if (!cacheLoaded) {
-        yield* cache.load()
-        cacheLoaded = true
-      }
-    },
-  )
-
-  // Define list as a closure-captured function (not using `this`)
-  const list = (): Effect.Effect<unknown[], ContentOpError, FileSystem.FileSystem> =>
+  // Define list as a closure-captured function
+  const list = (): Effect.Effect<unknown[], ContentOpError, Cache | FileSystem.FileSystem> =>
     Effect.gen(function* () {
-      yield* ensureCacheLoaded
+      const cache = yield* Cache
+
+      // Register schema for cache encode/decode (before load)
+      if (outputSchema) {
+        cache.registerSchema(tag, outputSchema as CacheSchema)
+      }
+
+      // Load this namespace's cache (schema already registered)
+      yield* cache.load(tag)
+
       const sourceRecords = yield* config.store.readMany()
       const results: unknown[] = []
 
       for (const source of sourceRecords) {
-        // Content-addressable lookup by hash
-        const cached = cache.get(source.hash)
+        // Compute hash if not provided by store
+        const hash = source.hash ?? Hash.hash(source.data)
+
+        // Content-addressable lookup by hash (namespaced by tag)
+        const cached = cache.get(tag, hash)
         let record: unknown
 
-        if (cached) {
-          config.onCacheEvent?.({ type: 'hit', hash: source.hash })
-          record = cached
+        if (Option.isSome(cached)) {
+          config.onCacheEvent?.({ type: 'hit', hash })
+          // Cache stores decoded values (schema handles encode/decode at disk boundary)
+          record = cached.value
         } else {
-          config.onCacheEvent?.({ type: 'miss', hash: source.hash })
+          config.onCacheEvent?.({ type: 'miss', hash })
           // Cache miss - run map
           record = yield* runMap(source.data)
-          cache.set(source.hash, record)
+          // Store raw value (cache encodes at flush time)
+          yield* cache.set(tag, hash, record)
         }
 
-        // Build/rebuild indices for unique keys (needed after loading from disk)
+        // Build/rebuild indices for unique keys
         for (const key of uniqueKeys) {
           const value = (record as Record<string, unknown>)[key]
           if (typeof value === 'string') {
-            cache.setIndex(key, value, source.hash)
+            yield* cache.setIndex(tag, key, value, hash)
           }
         }
 
         results.push(record)
       }
 
-      // Auto-flush cache to disk after populating
-      yield* cache.flush()
-
       return results
     })
 
-  // Define get as a closure-captured function (uses `list`, not `this.list()`)
+  // Define get as a closure-captured function
   const get = (
     keyLookup: Record<string, string>,
-  ): Effect.Effect<Option.Option<unknown>, ContentOpError, FileSystem.FileSystem> =>
+  ): Effect.Effect<Option.Option<unknown>, ContentOpError, Cache | FileSystem.FileSystem> =>
     Effect.gen(function* () {
-      yield* ensureCacheLoaded
+      const cache = yield* Cache
+
+      // Register schema for cache encode/decode (before load)
+      if (outputSchema) {
+        cache.registerSchema(tag, outputSchema as CacheSchema)
+      }
+
+      // Load this namespace's cache (schema already registered)
+      yield* cache.load(tag)
 
       // Extract the single key from the lookup object
       const entries = Object.entries(keyLookup)
@@ -398,13 +398,14 @@ export function Content(
       }
       const [keyName, keyValue] = entries[0]!
 
-      // Try O(1) index lookup first
-      const cached = cache.getByKey(keyName, keyValue)
-      if (cached) return Option.some(cached)
+      // Try O(1) index lookup first (namespaced by tag)
+      // Cache stores decoded values (schema handles encode/decode at disk boundary)
+      const cached = cache.getByKey(tag, keyName, keyValue)
+      if (Option.isSome(cached)) return cached
 
       // If not in cache, populate cache via list() and try again
       yield* list()
-      return Option.fromNullable(cache.getByKey(keyName, keyValue))
+      return cache.getByKey(tag, keyName, keyValue)
     })
 
   const collection = {
@@ -425,8 +426,6 @@ export function Content(
     },
     list,
     get,
-    flushCache: () => cache.flush(),
-    loadCache: () => cache.load(),
   }
 
   return collection

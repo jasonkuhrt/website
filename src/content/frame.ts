@@ -1,5 +1,5 @@
-import * as S from 'effect/Schema'
 import { Content, Store } from 'continent'
+import * as S from 'effect/Schema'
 
 const MediaItem = S.Struct({
   type: S.Union(S.Literal('image'), S.Literal('video')),
@@ -49,10 +49,9 @@ export const Frame = Content('frame', {
     }))
 
     // Create FrameSingle or FrameSeries based on media count
-    const data =
-      mediaItems.length === 1
-        ? new FrameSingle({ date, media: mediaItems[0]! })
-        : new FrameSeries({ date, media: mediaItems })
+    const data = mediaItems.length === 1 ?
+      new FrameSingle({ date, media: mediaItems[0]! }) :
+      new FrameSeries({ date, media: mediaItems })
 
     return { slug, data }
   },

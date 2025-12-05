@@ -8,9 +8,9 @@ import type { getConfig as File_Root_getConfig } from './pages/_root';
 // prettier-ignore
 import type { getConfig as File_BioIndex_getConfig } from './pages/bio/index';
 // prettier-ignore
-import type { getConfig as File_CapturingIndex_getConfig } from './pages/capturing/index';
-// prettier-ignore
 import type { getConfig as File_CraftingIndex_getConfig } from './pages/crafting/index';
+// prettier-ignore
+import type { getConfig as File_FramingIndex_getConfig } from './pages/framing/index';
 // prettier-ignore
 import type { getConfig as File_Index_getConfig } from './pages/index';
 // prettier-ignore
@@ -28,8 +28,8 @@ import type { getConfig as File_WritingScribblesSlug_getConfig } from './pages/w
 type Page =
 | ({ path: '/_root' } & GetConfigResponse<typeof File_Root_getConfig>)
 | ({ path: '/bio' } & GetConfigResponse<typeof File_BioIndex_getConfig>)
-| ({ path: '/capturing' } & GetConfigResponse<typeof File_CapturingIndex_getConfig>)
 | ({ path: '/crafting' } & GetConfigResponse<typeof File_CraftingIndex_getConfig>)
+| ({ path: '/framing' } & GetConfigResponse<typeof File_FramingIndex_getConfig>)
 | ({ path: '/' } & GetConfigResponse<typeof File_Index_getConfig>)
 | ({ path: '/speaking' } & GetConfigResponse<typeof File_SpeakingIndex_getConfig>)
 | ({ path: '/writing/drivel/[slug]' } & GetConfigResponse<typeof File_WritingDrivelSlug_getConfig>)

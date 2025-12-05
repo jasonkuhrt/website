@@ -1,0 +1,22 @@
+/**
+ * CSS Mixins
+ *
+ * Reusable style blocks via postcss-mixins.
+ * Syntax: @define-mixin name { ... } / @mixin name;
+ *
+ * Note: Non-spec syntax. Native CSS will use @mixin --name / @apply --name
+ */
+
+/* Breakout: escape container by ~20% (10% each side), grid-snapped */
+@define-mixin breakout1 {
+    --escape: round(nearest, 10cqw, 1rem);
+    width: calc(100cqw + 2 * var(--escape));
+    margin-inline: calc(-1 * var(--escape));
+}
+
+/* Breakout: escape container by ~50% (25% each side), grid-snapped */
+@define-mixin breakout2 {
+    --escape: round(nearest, 25cqw, 1rem);
+    width: calc(100cqw + 2 * var(--escape));
+    margin-inline: calc(-1 * var(--escape));
+}

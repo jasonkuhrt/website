@@ -1,0 +1,353 @@
+/**
+ * Design Tokens
+ *
+ * Grid-locked design system with 6px baseline.
+ * All rem values = baseline units (1rem = 6px)
+ */
+
+/* ============================================
+ * BASELINE GRID MECHANICS
+ *
+ * These rules make the 6px grid work:
+ * - font-size: 6px on :root = 1rem = 1 baseline unit
+ * - text-box on * = trim half-leading from all text
+ * - font-size-adjust on :root = normalize cap-heights across fonts
+ * ============================================ */
+
+* {
+    text-box: trim-both cap alphabetic;
+}
+
+:root {
+    /* ============================================
+   * BASELINE GRID
+   * 1rem = 6px = 1 baseline unit
+   * ============================================ */
+    font-size: 6px;
+    font-size-adjust: cap-height var(--cap-ratio);
+    font-optical-sizing: auto;
+
+    /* ============================================
+   * BORDER WIDTH TRACKING
+   * Used by padding utilities for grid compensation
+   * ============================================ */
+    --bw-t: 0px;
+    --bw-r: 0px;
+    --bw-b: 0px;
+    --bw-l: 0px;
+
+    /* ============================================
+   * FONT STACKS
+   *
+   * Inter (Sans):
+   * - Designed by Rasmus Andersson specifically for screen UI readability
+   * - Tall x-height, open apertures, optimized for small text
+   * - Variable font with optical sizing axis (adapts 14-32pt)
+   * - Official: https://rsms.me/inter/
+   * - Design story: https://www.figma.com/blog/the-birth-of-inter/
+   * - GitHub: https://github.com/rsms/inter
+   *
+   * Newsreader (Serif):
+   * - Designed by Production Type for extended on-screen reading
+   * - Variable font with optical sizing (6-72pt) and weight axes
+   * - Generous x-height, clear character differentiation
+   * - Google Fonts: https://fonts.google.com/specimen/Newsreader
+   * - Production Type: https://productiontype.com/font/newsreader
+   *
+   * JetBrains Mono (Mono):
+   * - Designed for code with 142 ligatures
+   * - Increased letter height for better readability
+   * - Official: https://www.jetbrains.com/lp/mono/
+   * ============================================ */
+    --font-sans: "Inter Variable", system-ui, sans-serif;
+    --font-serif: "Newsreader Variable", Georgia, serif;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+    /* ============================================
+   * TYPOGRAPHY
+   *
+   * 6-size scale with grid-friendly golden ratio progression.
+   * Font sizes use rem directly (Nrem = N grid units cap-height)
+   *
+   * Scale: 1 → 2 → 3 → 5 → 8 → 12
+   *        (×2) (×1.5) (×1.67≈φ) (×1.6≈φ) (×1.5)
+   *
+   * Line-heights: grid-snapped. Small text gets more leading (2.0×),
+   * large text gets tighter leading (1.33×).
+   * ============================================ */
+    --cap-ratio: 0.7276;
+
+    /* ============================================
+   * CONTAINER WIDTHS
+   * Spacing uses rem directly (1rem = 6px baseline)
+   * ============================================ */
+    --container-prose: 110rem; /* 660px */
+    --container-content: 128rem; /* 768px */
+    --container-standard: 213rem; /* 1280px (rounded from 213.33) */
+    --container-wide: 267rem; /* 1600px (rounded from 266.67) */
+
+    /* ============================================
+   * BORDER RADIUS
+   * --radiusN where N = baseline units (0.5 = half)
+   * ============================================ */
+    --radius05: 0.5rem; /* 3px */
+    --radius1: 1rem; /* 6px */
+    --radius2: 2rem; /* 12px */
+    --radius4: 4rem; /* 24px */
+    --radius-full: 9999px;
+
+    /* ============================================
+   * TRANSITIONS
+   * Duration: --durationN where N × 100ms
+   * ============================================ */
+    --duration1: 100ms;
+    --duration2: 200ms;
+    --duration4: 400ms;
+    --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ============================================
+   * COLOR SYSTEM FOUNDATIONS
+   * Change these core values to recalculate entire palette
+   * ============================================ */
+
+    /* Neutral anchors */
+    --color-black: oklch(0% 0 0);
+    --color-white: oklch(100% 0 0);
+
+    /* Accent foundation - change hue to shift entire palette */
+    --accent-h: 250;
+    --accent-c: 0.2;
+    --accent-l: 55%;
+    --accent-base: oklch(var(--accent-l) var(--accent-c) var(--accent-h));
+
+    /* Experience hues - only define the hue, derive colors below */
+    --hue-work: 250;
+    --hue-education: 145;
+    --hue-achievement: 85;
+    --hue-speaking: 300;
+    --hue-personal: 25;
+
+    /* Experience color foundation */
+    --experience-l: 55%;
+    --experience-c: 0.15;
+
+    /* Badge foundation - light/dark mode will swap these */
+    --badge-l-light: 95%;
+    --badge-c-light: 0.03;
+    --badge-l-dark: 25%;
+    --badge-c-dark: 0.05;
+
+    /* ============================================
+   * GRAY SCALE (derived via color-mix)
+   * Perceptually uniform steps from black to white
+   * ============================================ */
+    --gray950: color-mix(in oklch, var(--color-black), var(--color-white) 12%);
+    --gray900: color-mix(in oklch, var(--color-black), var(--color-white) 18%);
+    --gray800: color-mix(in oklch, var(--color-black), var(--color-white) 25%);
+    --gray700: color-mix(in oklch, var(--color-black), var(--color-white) 35%);
+    --gray600: color-mix(in oklch, var(--color-black), var(--color-white) 45%);
+    --gray500: color-mix(in oklch, var(--color-black), var(--color-white) 55%);
+    --gray400: color-mix(in oklch, var(--color-black), var(--color-white) 70%);
+    --gray300: color-mix(in oklch, var(--color-black), var(--color-white) 83%);
+    --gray200: color-mix(in oklch, var(--color-black), var(--color-white) 91%);
+    --gray100: color-mix(in oklch, var(--color-black), var(--color-white) 96%);
+    --gray50: color-mix(in oklch, var(--color-black), var(--color-white) 98%);
+
+    /* ============================================
+   * ACCENT SCALE (derived from accent-base)
+   * Tints (lighter) and shades (darker) via color-mix
+   * ============================================ */
+    --accent50: color-mix(in oklch, var(--accent-base), var(--color-white) 90%);
+    --accent100: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-white) 80%
+    );
+    --accent200: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-white) 65%
+    );
+    --accent300: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-white) 45%
+    );
+    --accent400: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-white) 25%
+    );
+    --accent500: var(--accent-base);
+    --accent600: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-black) 15%
+    );
+    --accent700: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-black) 30%
+    );
+    --accent800: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-black) 45%
+    );
+    --accent900: color-mix(
+        in oklch,
+        var(--accent-base),
+        var(--color-black) 55%
+    );
+
+    /* ============================================
+   * EXPERIENCE COLORS (derived from hues + foundation)
+   * ============================================ */
+    --color-work-base: oklch(
+        var(--experience-l) var(--experience-c) var(--hue-work)
+    );
+    --color-education-base: oklch(
+        var(--experience-l) var(--experience-c) var(--hue-education)
+    );
+    --color-achievement-base: oklch(
+        65% var(--experience-c) var(--hue-achievement)
+    );
+    --color-speaking-base: oklch(
+        var(--experience-l) var(--experience-c) var(--hue-speaking)
+    );
+    --color-personal-base: oklch(60% 0.18 var(--hue-personal));
+
+    /* ============================================
+   * SEMANTIC COLORS - LIGHT MODE
+   * Map scale positions to semantic meanings
+   * ============================================ */
+    --color-text: var(--gray950);
+    --color-text-secondary: var(--gray600);
+    --color-text-tertiary: var(--gray500);
+
+    --color-bg: var(--color-white);
+    --color-bg-subtle: var(--gray50);
+    --color-bg-muted: var(--gray100);
+
+    --color-border: var(--gray200);
+    --color-border-hover: var(--gray400);
+
+    --color-accent: var(--accent500);
+    --color-accent-hover: var(--accent600);
+    --color-accent-text: var(--accent700);
+
+    /* Experience colors - light mode uses base */
+    --color-work: var(--color-work-base);
+    --color-education: var(--color-education-base);
+    --color-achievement: var(--color-achievement-base);
+    --color-speaking: var(--color-speaking-base);
+    --color-personal: var(--color-personal-base);
+
+    /* Badge backgrounds - derived from experience colors */
+    --color-badge-work-bg: color-mix(
+        in oklch,
+        var(--color-work-base),
+        var(--color-white) 85%
+    );
+    --color-badge-education-bg: color-mix(
+        in oklch,
+        var(--color-education-base),
+        var(--color-white) 85%
+    );
+    --color-badge-achievement-bg: color-mix(
+        in oklch,
+        var(--color-achievement-base),
+        var(--color-white) 85%
+    );
+    --color-badge-speaking-bg: color-mix(
+        in oklch,
+        var(--color-speaking-base),
+        var(--color-white) 85%
+    );
+    --color-badge-personal-bg: color-mix(
+        in oklch,
+        var(--color-personal-base),
+        var(--color-white) 85%
+    );
+}
+
+/* ============================================
+ * DARK MODE
+ * Inverts semantic mappings, palette stays derived
+ * ============================================ */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Semantic text - invert the gray scale positions */
+        --color-text: var(--gray100);
+        --color-text-secondary: var(--gray400);
+        --color-text-tertiary: var(--gray500);
+
+        /* Semantic backgrounds - invert */
+        --color-bg: var(--gray950);
+        --color-bg-subtle: var(--gray900);
+        --color-bg-muted: var(--gray800);
+
+        /* Semantic borders - invert */
+        --color-border: var(--gray800);
+        --color-border-hover: var(--gray600);
+
+        /* Accent - use lighter end for dark backgrounds */
+        --color-accent: var(--accent400);
+        --color-accent-hover: var(--accent300);
+        --color-accent-text: var(--accent300);
+
+        /* Experience colors - derive brighter variants from base */
+        --color-work: color-mix(
+            in oklch,
+            var(--color-work-base),
+            var(--color-white) 20%
+        );
+        --color-education: color-mix(
+            in oklch,
+            var(--color-education-base),
+            var(--color-white) 20%
+        );
+        --color-achievement: color-mix(
+            in oklch,
+            var(--color-achievement-base),
+            var(--color-white) 20%
+        );
+        --color-speaking: color-mix(
+            in oklch,
+            var(--color-speaking-base),
+            var(--color-white) 20%
+        );
+        --color-personal: color-mix(
+            in oklch,
+            var(--color-personal-base),
+            var(--color-white) 20%
+        );
+
+        /* Badge backgrounds - derive dark variants from experience colors */
+        --color-badge-work-bg: color-mix(
+            in oklch,
+            var(--color-work-base),
+            var(--color-black) 70%
+        );
+        --color-badge-education-bg: color-mix(
+            in oklch,
+            var(--color-education-base),
+            var(--color-black) 70%
+        );
+        --color-badge-achievement-bg: color-mix(
+            in oklch,
+            var(--color-achievement-base),
+            var(--color-black) 70%
+        );
+        --color-badge-speaking-bg: color-mix(
+            in oklch,
+            var(--color-speaking-base),
+            var(--color-black) 70%
+        );
+        --color-badge-personal-bg: color-mix(
+            in oklch,
+            var(--color-personal-base),
+            var(--color-black) 70%
+        );
+    }
+}

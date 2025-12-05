@@ -205,8 +205,8 @@ import { experiences } from '#~/data/experiences.js'
 import { useSettings } from '#~/lib/settings'
 
 // ✅ Within same tree: Relative OK
-import { Flex } from './Flex'
 import { UI } from '../__'
+import { Flex } from './Flex'
 
 // ✅ Styled-system: MUST use #styled-system alias
 import { css } from '#styled-system/css'
@@ -309,11 +309,13 @@ If a string looks like a token path (contains `.` and starts with token category
 **CRITICAL RULE**: Only hoist CSS definitions when they are reused. Single-use styles must be inlined.
 
 **When to Inline (use `className={css({...})}`):**
+
 - ✅ CSS used only once in the component
 - ✅ Simple, local styling with no reuse
 - ✅ Component-specific styles
 
 **When to Hoist (create `const name = css({...})`):**
+
 - ✅ Used multiple times in the same component
 - ✅ Shared across multiple components (in separate file like `transitions.ts`)
 - ✅ Complex variants using `cva()`
@@ -361,6 +363,7 @@ const button = cva({
 ```
 
 **Benefits:**
+
 - Less code to scan
 - Co-located styling (clearer intent)
 - No orphaned definitions during refactoring

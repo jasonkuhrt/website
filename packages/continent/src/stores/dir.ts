@@ -1,6 +1,6 @@
-import { basename, extname } from 'node:path'
 import { FileSystem } from '@effect/platform'
-import { Effect, Hash, Schema as S } from 'effect'
+import { Effect, Schema as S } from 'effect'
+import { basename, extname } from 'node:path'
 import { glob as globFn } from 'tinyglobby'
 import type { Store } from '../store.js'
 
@@ -8,11 +8,13 @@ import type { Store } from '../store.js'
 // DirData - Fixed schema for directory stores
 // ============================================================================
 
-export const DirData = S.Struct({
-  stem: S.String,
-  path: S.String,
-  content: S.String,
-})
+export const DirData = S.Data(
+  S.Struct({
+    stem: S.String,
+    path: S.String,
+    content: S.String,
+  }),
+)
 
 export type DirData = S.Schema.Type<typeof DirData>
 
@@ -33,7 +35,7 @@ export const dir = (config: DirConfig): Dir => ({
   watchPaths: [config.glob.split('*')[0]!],
   schema: DirData,
   readMany: () =>
-    Effect.gen(function* () {
+    Effect.gen(function*() {
       const fs = yield* FileSystem.FileSystem
 
       // Use tinyglobby for globbing - treat failures as defects (unexpected)
@@ -42,14 +44,15 @@ export const dir = (config: DirConfig): Dir => ({
       // Read all files in parallel
       const results = yield* Effect.all(
         files.map((file) =>
-          Effect.gen(function* () {
+          Effect.gen(function*() {
             const content = yield* fs.readFileString(file)
-            const data: DirData = {
+            // Decode through schema to get hashable data (DirData is wrapped with S.Data)
+            const data = S.decodeUnknownSync(DirData)({
               stem: basename(file, extname(file)),
               path: file,
               content,
-            }
-            return { hash: Hash.hash(content), data }
+            })
+            return { data }
           })
         ),
         { concurrency: 'unbounded' },

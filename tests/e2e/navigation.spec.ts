@@ -9,7 +9,7 @@ test.describe('Navigation', () => {
       { name: 'writing', url: '/writing' },
       { name: 'crafting', url: '/crafting' },
       // { name: 'designing', url: '/designing' },
-      // { name: 'capturing', url: '/capturing' },
+      // { name: 'framing', url: '/framing' },
       // Note: /bio navigation from homepage via click has a timing issue with view transitions
       // but direct navigation works fine (see bio.spec.ts tests which all pass)
       // { name: 'bio', url: '/bio' },

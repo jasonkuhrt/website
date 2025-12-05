@@ -1,0 +1,25 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@define-mixin",
+      "description": "Define a reusable mixin (postcss-mixins)",
+      "references": [
+        {
+          "name": "postcss-mixins",
+          "url": "https://github.com/postcss/postcss-mixins"
+        }
+      ]
+    },
+    {
+      "name": "@mixin",
+      "description": "Apply a defined mixin (postcss-mixins)",
+      "references": [
+        {
+          "name": "postcss-mixins",
+          "url": "https://github.com/postcss/postcss-mixins"
+        }
+      ]
+    }
+  ]
+}

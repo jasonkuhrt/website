@@ -41,6 +41,7 @@ export type Drivel = typeof Drivel.Type
 ```
 
 That's it! The `Mdx` factory handles:
+
 - File discovery via `content/drivel/*.mdx`
 - Frontmatter parsing (title, date)
 - MDX compilation
@@ -84,6 +85,7 @@ export type Essay = typeof Essay.Type
 ```
 
 The factory detects the directory-based pattern and:
+
 - Extracts slug from directory name (not filename)
 - Resolves assets from the same directory
 
@@ -135,8 +137,8 @@ export default [
 
 ```typescript
 // src/content/module.ts
-import * as S from 'effect/Schema'
 import { Content, Store } from 'continent'
+import * as S from 'effect/Schema'
 
 // Transform "owner/name" string to structured object
 const RepoId = S.transform(
@@ -227,13 +229,13 @@ export default {
 
 ```typescript
 // src/content/site.ts
-import * as S from 'effect/Schema'
 import { Content, Store } from 'continent'
+import * as S from 'effect/Schema'
 
 export const Site = Content('site', {
   store: Store.js({
     path: 'content/site.ts',
-    cardinality: '1',  // Singleton
+    cardinality: '1', // Singleton
     schema: S.Struct({
       title: S.String,
       description: S.String,
@@ -273,6 +275,7 @@ export default defineConfig({
 ```
 
 The plugin:
+
 - Watches content directories for changes
 - Triggers HMR on content updates
 - Serves assets from `/content/` prefix in dev mode
@@ -283,10 +286,10 @@ The plugin:
 
 ### Store Types
 
-| Store | Use Case | Source Data |
-|-------|----------|-------------|
-| `Store.dir({ glob })` | Files (MDX, markdown) | `{ stem, path, content }` |
-| `Store.js({ path, schema })` | JS/TS manifests | Decoded schema type |
+| Store                        | Use Case              | Source Data               |
+| ---------------------------- | --------------------- | ------------------------- |
+| `Store.dir({ glob })`        | Files (MDX, markdown) | `{ stem, path, content }` |
+| `Store.js({ path, schema })` | JS/TS manifests       | Decoded schema type       |
 
 ### Content Factory API
 
@@ -312,7 +315,7 @@ import * as S from 'effect/Schema'
 export const Post = Content('post', {
   store: Store.dir({ glob: 'content/posts/*.mdx' }),
   schema: {
-    slug: UniqueKey(S.String),  // Enables .get({ slug })
+    slug: UniqueKey(S.String), // Enables .get({ slug })
     email: UniqueKey(S.String), // Multiple unique keys allowed
     title: S.String,
   },
