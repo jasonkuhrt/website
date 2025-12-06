@@ -9,14 +9,27 @@
 
 /* Breakout: escape container by ~20% (10% each side), grid-snapped */
 @define-mixin breakout1 {
-    --escape: round(nearest, 10cqw, 1rem);
-    width: calc(100cqw + 2 * var(--escape));
-    margin-inline: calc(-1 * var(--escape));
+    --escape: 0;
+    width: 100%;
+    margin-inline: 0;
+
+    @media (min-width: 768px) { /* 128 × 6 */
+        --escape: round(nearest, 10cqw, 1rem);
+        width: calc(100cqw + 2 * var(--escape));
+        margin-inline: calc(-1 * var(--escape));
+    }
 }
 
 /* Breakout: escape container by ~50% (25% each side), grid-snapped */
 @define-mixin breakout2 {
-    --escape: round(nearest, 25cqw, 1rem);
-    width: calc(100cqw + 2 * var(--escape));
-    margin-inline: calc(-1 * var(--escape));
+    --escape: 0;
+    width: 100%;
+    margin-inline: 0;
+
+    @media (min-width: 768px) { /* 128 × 6 */
+        --escape: round(nearest, 25cqw, 1rem);
+        width: calc(100cqw + 2 * var(--escape));
+        margin-inline: calc(-1 * var(--escape));
+    }
 }
+

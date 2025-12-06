@@ -16,8 +16,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <>
       <link rel='icon' href='/favicon.ico' />
       <meta property='og:site_name' content='Jason Kuhrt' />
-
-      <div style={{ width: 'var(--container-standard)', margin: '0 auto' }}>
+      <div className='container-app'>
         <nav style={{ display: 'flex', gap: '1rem', marginTop: '3rem', justifyContent: 'center' }}>
           {navItems.map((item) => (
             <NavLink.In key={item.to} to={item.to}>

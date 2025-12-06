@@ -14,7 +14,7 @@ export default page<{ slug: string }>(function*({ slug }) {
       <Meta title={essay.title} type='article' publishedAt={essay.date.toISOString()} />
 
       <main>
-        <article className='prose-container'>
+        <article className='prose'>
           <header className='prose-header'>
             <h1>{essay.title}</h1>
             <time dateTime={essay.date.toISOString()}>{formatDateLong(essay.date)}</time>

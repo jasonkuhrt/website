@@ -7,15 +7,16 @@
  * Layer order: reset → tokens → base → ...
  * Reset provides blank slate, base applies design opinions.
  */
+@import "../components/prose.css";
 
 /* ============================================
  * DOCUMENT
  * ============================================ */
 
 body {
-    font-family: var(--font-sans);
-    font-size: 3rem;
-    line-height: 4rem;
+    font-family: var(--font-body-family);
+    font-size: calc(3 * var(--font-body-rem));
+    line-height: 7rem;
     color: var(--color-text);
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
@@ -42,45 +43,43 @@ h6 {
 }
 
 h1 {
-    font-family: var(--font-sans);
-    font-size: 12rem;
+    font-family: var(--font-body-family);
+    font-size: calc(8 * var(--font-body-rem));
     line-height: 16rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
 }
 
 h2 {
-    font-family: var(--font-sans);
-    font-size: 8rem;
+    font-family: var(--font-heading-family);
+    font-size: calc(6 * var(--font-heading-rem));
     line-height: 11rem;
     font-weight: 700;
-    letter-spacing: -0.02em;
 }
 
 h3 {
-    font-family: var(--font-sans);
-    font-size: 5rem;
+    font-family: var(--font-heading-family);
+    font-size: calc(4 * var(--font-heading-rem));
     line-height: 7rem;
     font-weight: 600;
 }
 
 h4 {
-    font-family: var(--font-sans);
-    font-size: 3rem;
+    font-family: var(--font-heading-family);
+    font-size: calc(3 * var(--font-heading-rem));
     line-height: 4rem;
     font-weight: 600;
 }
 
 h5 {
-    font-family: var(--font-sans);
-    font-size: 3rem;
+    font-family: var(--font-heading-family);
+    font-size: calc(3 * var(--font-heading-rem));
     line-height: 4rem;
     font-weight: 600;
 }
 
 h6 {
-    font-family: var(--font-sans);
-    font-size: 3rem;
+    font-family: var(--font-heading-family);
+    font-size: calc(3 * var(--font-heading-rem));
     line-height: 4rem;
     font-weight: 600;
 }
@@ -98,7 +97,7 @@ em {
 }
 
 small {
-    font-size: 2rem;
+    /*font-size: calc(2 * var(--font-ui-rem));*/
     line-height: 3rem;
 }
 
@@ -124,8 +123,8 @@ li {
  * ============================================ */
 
 nav {
-    font-family: var(--font-sans);
-
+    font-family: var(--font-ui-family);
+    font-size: calc(2 * var(--font-ui-rem));
     ul {
         list-style: none;
         padding: 0;
@@ -163,38 +162,27 @@ a {
  * CODE
  * ============================================ */
 
-code {
-    font-family: var(--font-mono);
-    font-size: 2rem;
-    line-height: 3rem;
+code:not(pre *) {
+    font-family: var(--font-code-family);
+    font-size: calc(2 * var(--font-code-rem));
     background-color: var(--color-bg-subtle);
-    padding: 1rem 2rem;
     border-radius: var(--radius05);
-    font-variant-ligatures: common-ligatures;
-    font-feature-settings:
-        "liga" 1,
-        "calt" 1;
+    padding: 1rem 1.5rem;
+    margin-inline: 0.5rem;
+    display: inline-block;
 }
 
 pre {
-    font-family: var(--font-mono);
-    font-size: 2rem;
-    line-height: 3rem;
-    background-color: var(--color-bg-subtle);
-    padding: 4rem;
-    border-radius: var(--radius1);
+    font-family: var(--font-code-family);
+    font-size: calc(2 * var(--font-code-rem));
+    line-height: 4rem;
     overflow-x: auto;
-    margin: 0;
-    font-variant-ligatures: common-ligatures;
-    font-feature-settings:
-        "liga" 1,
-        "calt" 1;
-
-    code {
-        background: none;
-        padding: 0;
-        border-radius: 0;
-        font-size: inherit;
+    background-color: var(--color-bg-subtle);
+    border-radius: var(--radius1);
+    padding: 5rem;
+    overflow-y: clip; /* This is needed b/c text-box trimming leads to the top/bottom leading removed fro text box triggering a vertical scroll on code block. */
+    > code {
+        font-family: inherit;
     }
 }
 
@@ -230,10 +218,10 @@ hr {
  * ============================================ */
 
 time {
-    font-size: 2rem;
-    line-height: 3rem;
-    color: var(--color-text-tertiary);
-    font-family: var(--font-sans);
+    display: block; /* Required for text-box trimming to work */
+    font-family: var(--font-ui-family);
+    font-size: calc(2 * var(--font-ui-rem));
+    /*line-height: 2rem;*/
 }
 
 /* ============================================
@@ -243,7 +231,7 @@ time {
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 2rem;
+    /*font-size: calc(2 * var(--font-ui-rem));*/
     line-height: 3rem;
 }
 
@@ -253,7 +241,7 @@ thead {
 }
 
 th {
-    font-family: var(--font-sans);
+    font-family: var(--font-ui-family);
     font-weight: 600;
     color: var(--color-text-secondary);
     padding: 2rem 3rem;
@@ -285,8 +273,8 @@ button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--font-sans);
-    font-size: 3rem;
+    font-family: var(--font-ui-family);
+    font-size: calc(3 * var(--font-ui-rem));
     font-weight: 500;
     line-height: 4rem;
     padding: 2rem 4rem;
@@ -318,5 +306,5 @@ button {
 }
 
 article {
-    max-width: var(--container-prose);
+    @mixin prose;
 }

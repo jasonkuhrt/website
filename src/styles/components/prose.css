@@ -1,18 +1,74 @@
 /**
  * Prose Module
  *
- * Styles for long-form prose content.
+ * Styles for long-form prose content with grid-locked vertical rhythm.
  */
 @import "../mixins.css";
 
+:root {
+    --prose-space-sm: 10rem; /* 24px - paragraphs, lists, heading bottoms */
+    --prose-space-md: 12rem; /* 36px - code blocks, blockquotes, minor headings */
+    --prose-space-lg: 20rem; /* 60px - major headings, horizontal rules */
+}
+
+/* Prose mixin — use via @mixin prose; */
+@define-mixin prose {
+    max-width: var(--container-prose);
+
+    /* Paragraphs & lists */
+    & > p,
+    & > ul,
+    & > ol {
+        margin-block: var(--prose-space-sm);
+    }
+
+    /* Major headings */
+    & > h1,
+    & > h2 {
+        margin-block: var(--prose-space-lg) var(--prose-space-sm);
+    }
+
+    /* Minor headings */
+    & > h3,
+    & > h4,
+    & > h5,
+    & > h6 {
+        margin-block: var(--prose-space-md) var(--prose-space-sm);
+    }
+
+    /* Code blocks */
+    & > pre {
+        @mixin breakout1;
+        margin-block: var(--prose-space-md);
+    }
+
+    /* Blockquotes */
+    & > blockquote {
+        margin-block: var(--prose-space-md);
+    }
+
+    /* Horizontal rules */
+    & > hr {
+        margin-block: var(--prose-space-lg);
+    }
+
+    /* First/last child — collapse margins */
+    & > :first-child {
+        margin-top: 0;
+    }
+
+    & > :last-child {
+        margin-bottom: 0;
+    }
+}
+
 .prose {
-    width: 100%;
-    max-width: var(--container-prose); /* 660px */
+    @mixin prose;
     margin-inline: auto;
     padding-inline: 4rem; /* 24px */
     container-type: inline-size;
-
-    @media (min-width: 768px) { /* 128 × 6 */
+    @media (min-width: 768px) {
+        /* 128 × 6 */
         padding-inline: 6rem; /* 36px */
     }
 }
@@ -21,4 +77,7 @@
     @mixin breakout1;
     text-align: center;
     margin-block: 10rem 15rem;
+    > time {
+        margin-top: 5rem;
+    }
 }

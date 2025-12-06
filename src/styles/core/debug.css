@@ -2,23 +2,22 @@
  * Debug Styles
  *
  * Grid overlay for visual debugging.
- * Toggle via console: grid(), gridRes()
- *
- * OFF by default. Use grid() to enable.
+ * Toggle: document.documentElement.classList.toggle('debug')
  */
 
-body[data-show-grid] {
-    --debug-grid-color: oklch(70% 0.15 20 / 0.15);
+:root.debug {
+    body {
+        --debug-grid-color: oklch(70% 0.15 20 / 0.15);
 
-    background-image: linear-gradient(
-        to bottom,
-        var(--debug-grid-color) 1px,
-        transparent 1px
-    );
-    background-size: 100% 1rem;
-    background-attachment: local;
-
-    &[data-show-grid="12"] {
-        background-size: 100% 2rem;
+        background-image: linear-gradient(
+            to bottom,
+            var(--debug-grid-color) 1px,
+            transparent 1px
+        );
+        background-size: 100% 1rem;
+        background-attachment: local;
+    }
+    pre {
+        opacity: 20%; /* Allow seeing grid through code blocks */
     }
 }

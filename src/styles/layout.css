@@ -5,6 +5,10 @@
  */
 @import "./mixins.css";
 
+body {
+    padding-bottom: 50vh;
+}
+
 /* ============================================
  * BREAKOUT
  * Escape container bounds, grid-aligned
@@ -19,10 +23,10 @@
 }
 
 /* ============================================
- * WIDTH UTILITIES
+ * CONTAINERS
  * ============================================ */
 
-.w-app {
+.container-app {
     width: 100%;
     max-width: var(--container-standard); /* 1280px */
     margin-inline: auto;

@@ -12,6 +12,19 @@
  * - font-size: 6px on :root = 1rem = 1 baseline unit
  * - text-box on * = trim half-leading from all text
  * - font-size-adjust on :root = normalize cap-heights across fonts
+ *
+ * BROWSER NOTE: Chrome and Safari render cap-height differently.
+ * With identical CSS, Chrome yields exact 18px cap-height while
+ * Safari yields ~17.6px. No decimal adjustment resolves this —
+ * it's a fundamental browser rendering difference. Chrome is used
+ * as source of truth since our math is provably correct there.
+ * The ~0.4px Safari variance is visually imperceptible.
+ *
+ * DISPLAY NOTE: text-box trimming requires block formatting context.
+ * Works on: block, inline-block, flex, inline-flex, grid, inline-grid.
+ * Pure `display: inline` elements have no measurable height — their
+ * contribution to line boxes is controlled by line-height, not text-box.
+ * For grid-locked heights, ensure elements are not pure inline.
  * ============================================ */
 
 * {
@@ -23,9 +36,7 @@
    * BASELINE GRID
    * 1rem = 6px = 1 baseline unit
    * ============================================ */
-    font-size: 6px;
-    font-size-adjust: cap-height var(--cap-ratio);
-    font-optical-sizing: auto;
+    font-size: 5px;
 
     /* ============================================
    * BORDER WIDTH TRACKING
@@ -37,50 +48,85 @@
     --bw-l: 0px;
 
     /* ============================================
-   * FONT STACKS
-   *
-   * Inter (Sans):
-   * - Designed by Rasmus Andersson specifically for screen UI readability
-   * - Tall x-height, open apertures, optimized for small text
-   * - Variable font with optical sizing axis (adapts 14-32pt)
-   * - Official: https://rsms.me/inter/
-   * - Design story: https://www.figma.com/blog/the-birth-of-inter/
-   * - GitHub: https://github.com/rsms/inter
-   *
-   * Newsreader (Serif):
-   * - Designed by Production Type for extended on-screen reading
-   * - Variable font with optical sizing (6-72pt) and weight axes
-   * - Generous x-height, clear character differentiation
-   * - Google Fonts: https://fonts.google.com/specimen/Newsreader
-   * - Production Type: https://productiontype.com/font/newsreader
-   *
-   * JetBrains Mono (Mono):
-   * - Designed for code with 142 ligatures
-   * - Increased letter height for better readability
-   * - Official: https://www.jetbrains.com/lp/mono/
-   * ============================================ */
-    --font-sans: "Inter Variable", system-ui, sans-serif;
-    --font-serif: "Newsreader Variable", Georgia, serif;
-    --font-mono: "JetBrains Mono", "Courier New", monospace;
+     * FONT DEFINITIONS
+     *
+     * Each font block contains:
+     * - family: Font stack with fallbacks
+     * - cap: Cap-height ratio (capHeight / unitsPerEm)
+     * - rem: Grid-locked rem (font-size for 1 grid unit cap-height)
+     *
+     * Usage: font-size: calc(N * var(--font-<name>-rem))
+     * where N = desired cap-height in grid units (6px each)
+     * ============================================ */
+
+    /* --- Inter ---
+     * Designed by Rasmus Andersson for screen UI readability
+     * - Tall x-height, open apertures, optimized for small text
+     * - Variable font with optical sizing (14-32pt)
+     * - https://rsms.me/inter/
+     * - https://github.com/rsms/inter
+     * Metrics: capHeight=1490, UPM=2048, ratio=0.72754
+     */
+    --font-inter: "Inter Variable", system-ui, sans-serif;
+    --font-inter-cap: 0.72754;
+    --font-inter-rem: calc(1rem / var(--font-inter-cap));
+
+    /* --- Newsreader ---
+     * Designed by Production Type for extended on-screen reading
+     * - Variable font with optical sizing (6-72pt) and weight axes
+     * - Generous x-height, clear character differentiation
+     * - https://fonts.google.com/specimen/Newsreader
+     * - https://github.com/productiontype/NewsReader
+     * Metrics: capHeight=1340, UPM=2000, ratio=0.67
+     */
+    --font-newsreader: "Newsreader Variable", Georgia, serif;
+    --font-newsreader-cap: 0.67;
+    --font-newsreader-rem: calc(1rem / var(--font-newsreader-cap));
+
+    /* --- JetBrains Mono ---
+     * Designed for code with 142 ligatures
+     * - Increased letter height for better readability
+     * - https://www.jetbrains.com/lp/mono/
+     * - https://github.com/JetBrains/JetBrainsMono
+     * Metrics: capHeight=730, UPM=1000, ratio=0.73
+     */
+    --font-jetbrains: "JetBrains Mono", "Courier New", monospace;
+    --font-jetbrains-cap: 0.73;
+    --font-jetbrains-rem: calc(1rem / var(--font-jetbrains-cap));
 
     /* ============================================
-   * TYPOGRAPHY
-   *
-   * 6-size scale with grid-friendly golden ratio progression.
-   * Font sizes use rem directly (Nrem = N grid units cap-height)
-   *
-   * Scale: 1 → 2 → 3 → 5 → 8 → 12
-   *        (×2) (×1.5) (×1.67≈φ) (×1.6≈φ) (×1.5)
-   *
-   * Line-heights: grid-snapped. Small text gets more leading (2.0×),
-   * large text gets tighter leading (1.33×).
-   * ============================================ */
-    --cap-ratio: 0.7276;
+     * SEMANTIC FONT MAPPINGS
+     *
+     * Map fonts to usage roles:
+     * - body: Long-form reading (paragraphs, articles)
+     * - heading: Titles, section headers
+     * - ui: Interface elements (buttons, nav, labels, forms)
+     * - code: Code blocks, inline code
+     * ============================================ */
+
+    /* Body — long-form reading */
+    --font-body-family: var(--font-newsreader);
+    --font-body-cap: var(--font-newsreader-cap);
+    --font-body-rem: var(--font-newsreader-rem);
+
+    /* Heading — titles, section headers */
+    --font-heading-family: var(--font-inter);
+    --font-heading-cap: var(--font-inter-cap);
+    --font-heading-rem: var(--font-inter-rem);
+
+    /* UI — buttons, nav, labels, forms */
+    --font-ui-family: var(--font-inter);
+    --font-ui-cap: var(--font-inter-cap);
+    --font-ui-rem: var(--font-inter-rem);
+
+    /* Code — code blocks, inline code */
+    --font-code-family: var(--font-jetbrains);
+    --font-code-cap: var(--font-jetbrains-cap);
+    --font-code-rem: var(--font-jetbrains-rem);
 
     /* ============================================
-   * CONTAINER WIDTHS
-   * Spacing uses rem directly (1rem = 6px baseline)
-   * ============================================ */
+     * CONTAINER WIDTHS
+     * ============================================ */
     --container-prose: 110rem; /* 660px */
     --container-content: 128rem; /* 768px */
     --container-standard: 213rem; /* 1280px (rounded from 213.33) */
