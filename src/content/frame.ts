@@ -27,7 +27,7 @@ export class FrameSeries extends S.TaggedClass<FrameSeries>()('series', {
  *
  * Directory format: {date}_{time} e.g. "2024-09-16_01-00-48-000"
  */
-export const Frame = Content('frame', {
+const Frame = Content('frame', {
   store: Store.mediaDir({
     glob: 'content/frame/*',
   }),
@@ -56,6 +56,7 @@ export const Frame = Content('frame', {
     return { slug, data }
   },
 })
+export default Frame
 export type Frame = typeof Frame.Type
 export type FrameData = Frame['data']
 export type MediaItem = S.Schema.Type<typeof MediaItem>

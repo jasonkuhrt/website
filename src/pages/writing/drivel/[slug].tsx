@@ -1,6 +1,6 @@
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
-import { Drivel } from '#~/content/drivel.js'
+import Drivel from '#~/content/drivel.js'
 import { formatDateLong } from '#~/lib/date.js'
 import { config, page } from '#~/runtime.js'
 import { Option } from 'effect'

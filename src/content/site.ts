@@ -1,7 +1,7 @@
 import { Content, Store } from 'continent'
 import * as S from 'effect/Schema'
 
-export const Site = Content('site', {
+const Site = Content('site', {
   store: Store.js({
     path: 'content/site.ts',
     cardinality: '1',
@@ -11,5 +11,5 @@ export const Site = Content('site', {
     }),
   }),
 })
-
+export default Site
 export type Site = typeof Site.Type

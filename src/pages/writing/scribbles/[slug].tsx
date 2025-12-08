@@ -1,6 +1,6 @@
 import { MdxContent } from '#~/components/mdx-content.js'
 import { Meta } from '#~/components/meta.js'
-import { Scribble } from '#~/content/scribble.js'
+import Scribble from '#~/content/scribble.js'
 import { formatDateLong } from '#~/lib/date.js'
 import { config, page } from '#~/runtime.js'
 import { Option } from 'effect'

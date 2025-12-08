@@ -16,7 +16,7 @@
 body {
     font-family: var(--font-body-family);
     font-size: calc(3 * var(--font-body-rem));
-    line-height: 7rem;
+    /*line-height: var(--cap2);*/
     color: var(--color-text);
     background-color: var(--color-bg);
     -webkit-font-smoothing: antialiased;
@@ -27,11 +27,6 @@ body {
  * HEADINGS
  * ============================================ */
 
-li {
-    padding-top: round(nearest, 0.67lh, 1rem);
-    padding-bottom: round(nearest, 0.33lh, 1rem);
-}
-
 h1,
 h2,
 h3,
@@ -40,47 +35,47 @@ h5,
 h6 {
     padding-top: round(nearest, 0.67lh, 1rem);
     padding-bottom: round(nearest, 0.33lh, 1rem);
+    /*line-height: var(--cap2);*/
 }
 
 h1 {
     font-family: var(--font-body-family);
     font-size: calc(8 * var(--font-body-rem));
-    line-height: 16rem;
     font-weight: 700;
 }
 
 h2 {
     font-family: var(--font-heading-family);
     font-size: calc(6 * var(--font-heading-rem));
-    line-height: 11rem;
+    /*line-height: 11rem;*/
     font-weight: 700;
 }
 
 h3 {
     font-family: var(--font-heading-family);
     font-size: calc(4 * var(--font-heading-rem));
-    line-height: 7rem;
+    /*line-height: 7rem;*/
     font-weight: 600;
 }
 
 h4 {
     font-family: var(--font-heading-family);
     font-size: calc(3 * var(--font-heading-rem));
-    line-height: 4rem;
+    /*line-height: 4rem;*/
     font-weight: 600;
 }
 
 h5 {
     font-family: var(--font-heading-family);
     font-size: calc(3 * var(--font-heading-rem));
-    line-height: 4rem;
+    /*line-height: 4rem;*/
     font-weight: 600;
 }
 
 h6 {
     font-family: var(--font-heading-family);
     font-size: calc(3 * var(--font-heading-rem));
-    line-height: 4rem;
+    /*line-height: 4rem;*/
     font-weight: 600;
 }
 
@@ -102,23 +97,6 @@ small {
 }
 
 /* ============================================
- * LISTS
- * ============================================ */
-
-ul,
-ol {
-    margin: 0;
-    padding-left: 6rem;
-}
-
-li {
-    /*margin-bottom: 1rem;*/
-    &::marker {
-        color: var(--color-text-tertiary);
-    }
-}
-
-/* ============================================
  * NAVIGATION
  * ============================================ */
 
@@ -128,13 +106,8 @@ nav {
     ul {
         list-style: none;
         padding: 0;
-        margin: 0;
         display: flex;
         gap: 4rem;
-    }
-
-    li {
-        margin: 0;
     }
 }
 
@@ -192,15 +165,10 @@ pre {
 
 blockquote {
     --bw-l: 3px;
-    margin: 0;
-    padding-left: calc(4rem - var(--bw-l));
+    /*padding-left: calc(4rem - var(--bw-l));*/
     border-left: 3px solid var(--color-border);
     color: var(--color-text-secondary);
     font-style: italic;
-
-    p {
-        margin: 0;
-    }
 }
 
 /* ============================================

@@ -1,15 +1,15 @@
 /**
  * Design Tokens
  *
- * Grid-locked design system with 6px baseline.
- * All rem values = baseline units (1rem = 6px)
+ * Grid-locked design system with 5px baseline.
+ * All rem values = baseline units (1rem = 5px)
  */
 
 /* ============================================
  * BASELINE GRID MECHANICS
  *
- * These rules make the 6px grid work:
- * - font-size: 6px on :root = 1rem = 1 baseline unit
+ * These rules make the 5px grid work:
+ * - font-size: 5px on :root = 1rem = 1 baseline unit
  * - text-box on * = trim half-leading from all text
  * - font-size-adjust on :root = normalize cap-heights across fonts
  *
@@ -29,14 +29,40 @@
 
 * {
     text-box: trim-both cap alphabetic;
+    line-height: var(--cap2);
 }
 
 :root {
     /* ============================================
    * BASELINE GRID
-   * 1rem = 6px = 1 baseline unit
+   * 1rem = 5px = 1 baseline unit
    * ============================================ */
     font-size: 5px;
+
+    /* ============================================
+   * TEXT-BOX TRIMMED SPACE
+   * Restores leading removed by text-box: trim-both
+   * Evaluated at use-site (adapts to local lh/cap)
+   * ============================================ */
+    --text-trimmed: calc(1lh - 1cap);
+    /*--text-trimmed: 1lh;*/
+
+    /* Grid-locked cap-height multiples.
+     * Font-relative units in custom properties evaluate at USE site, not definition site.
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties
+     * "The value is computed where it is needed, not stored and reused in other places of a stylesheet"
+     */
+    --cap1: round(nearest, 1cap, 1rem);
+    --cap2: round(nearest, 2cap, 1rem);
+    --cap3: round(nearest, 3cap, 1rem);
+    --cap4: round(nearest, 4cap, 1rem);
+    --cap5: round(nearest, 5cap, 1rem);
+    --cap6: round(nearest, 6cap, 1rem);
+    --cap7: round(nearest, 7cap, 1rem);
+    --cap8: round(nearest, 8cap, 1rem);
+    --cap9: round(nearest, 9cap, 1rem);
+    --cap10: round(nearest, 10cap, 1rem);
+    --cap15: round(nearest, 15cap, 1rem);
 
     /* ============================================
    * BORDER WIDTH TRACKING
@@ -56,7 +82,7 @@
      * - rem: Grid-locked rem (font-size for 1 grid unit cap-height)
      *
      * Usage: font-size: calc(N * var(--font-<name>-rem))
-     * where N = desired cap-height in grid units (6px each)
+     * where N = desired cap-height in grid units (5px each)
      * ============================================ */
 
     /* --- Inter ---
@@ -127,19 +153,18 @@
     /* ============================================
      * CONTAINER WIDTHS
      * ============================================ */
-    --container-prose: 110rem; /* 660px */
-    --container-content: 128rem; /* 768px */
-    --container-standard: 213rem; /* 1280px (rounded from 213.33) */
-    --container-wide: 267rem; /* 1600px (rounded from 266.67) */
+    --container-content: 128rem; /* 640px */
+    --container-standard: 256rem; /* 1280px */
+    --container-wide: 320rem; /* 1600px */
 
     /* ============================================
    * BORDER RADIUS
    * --radiusN where N = baseline units (0.5 = half)
    * ============================================ */
-    --radius05: 0.5rem; /* 3px */
-    --radius1: 1rem; /* 6px */
-    --radius2: 2rem; /* 12px */
-    --radius4: 4rem; /* 24px */
+    --radius05: 0.5rem; /* 2.5px */
+    --radius1: 1rem; /* 5px */
+    --radius2: 2rem; /* 10px */
+    --radius4: 4rem; /* 20px */
     --radius-full: 9999px;
 
     /* ============================================

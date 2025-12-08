@@ -3,7 +3,9 @@ import type { CompileOptions } from '@mdx-js/mdx'
 import { Effect, Schema as S } from 'effect'
 import type { Struct } from 'effect/Schema'
 import matter from 'gray-matter'
-import { Asset, AssetsField, Content, Store, UniqueKey } from '../content.js'
+import { Asset, AssetsField, Content } from '../content.js'
+import * as SecondaryKey from '../secondary-key.js'
+import * as Stores from '../stores/_.js'
 import type { DirData } from '../stores/dir.js'
 
 // ============================================================================
@@ -38,6 +40,9 @@ export interface MdxConfig<$FrontmatterFields extends Struct.Fields = {}> {
 
   /** Additional frontmatter fields beyond title/date. Default: `{}` */
   frontmatter?: $FrontmatterFields
+
+  /** Custom rehype plugins to apply during MDX compilation */
+  rehypePlugins?: CompileOptions['rehypePlugins']
 }
 
 // ============================================================================
@@ -221,7 +226,7 @@ export const Mdx = <
   config?: MdxConfig<$FrontmatterFields>,
 ): Content.CollectionClass<
   $Name,
-  Store.Dir,
+  Stores.Dir,
   MdxRecord<$FrontmatterFields>,
   'slug'
 > => {
@@ -236,7 +241,7 @@ export const Mdx = <
   })
 
   const outputSchema = {
-    slug: UniqueKey(S.String),
+    slug: SecondaryKey.SecondaryKey(S.String),
     title: S.String,
     date: S.Date,
     compiledJs: S.String,
@@ -246,8 +251,11 @@ export const Mdx = <
 
   // Cast config to bypass complex generic inference; return type is manually specified
   return Content(name, {
-    store: Store.dir({ glob }),
+    store: Stores.dir({ glob }),
     schema: outputSchema,
+    // BUMP THIS when factory processing changes (plugins, schema, etc.)
+    // v2: Added rehypeImageDimensions plugin
+    version: 2,
     map(source: DirData) {
       const slug = slugFn(source)
       const assetBasePath = assetBasePathFn(slug, source)
@@ -255,7 +263,7 @@ export const Mdx = <
       return processMdx(
         source.content,
         frontmatterSchema as any,
-        { assetBasePath },
+        { assetBasePath, rehypePlugins: config?.rehypePlugins },
       ).pipe(
         Effect.map(({ frontmatter, compiledJs, assets }) => ({
           slug,

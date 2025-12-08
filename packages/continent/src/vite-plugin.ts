@@ -1,21 +1,10 @@
 import { NodeContext } from '@effect/platform-node'
-import { Effect, Fiber, HashMap, HashSet } from 'effect'
-import fg from 'fast-glob'
+import { Console, Effect, Fiber, Match, Option, Stream } from 'effect'
 import { readFileSync } from 'node:fs'
-import { extname, resolve } from 'node:path'
-import type { Plugin, ViteDevServer } from 'vite'
-import { backgroundFlush, CacheLive, flushIfDirty } from './cache.js'
-
-/**
- * Content definition interface for the plugin.
- * Matches Content.CollectionClass and Content.SingletonClass.
- */
-export interface ContentDefinition {
-  readonly _tag: string
-  readonly store: {
-    watchPaths: string[]
-  }
-}
+import { extname, relative, resolve } from 'node:path'
+import type { Plugin } from 'vite'
+import * as Cache from './cache.js'
+import * as DefinitionRegistry from './definition-registry.js'
 
 /**
  * MIME types for common asset extensions.
@@ -41,159 +30,146 @@ const MIME_TYPES: Record<string, string> = {
 }
 
 /**
- * Invalidate a module in Vite's module graph and trigger HMR.
+ * Options for the Continent Vite plugin.
  */
-const invalidateModule = (server: ViteDevServer, modulePath: string): void => {
-  const module = server.moduleGraph.getModuleById(modulePath)
-  if (module) {
-    server.moduleGraph.invalidateModule(module)
-    server.ws.send({ type: 'full-reload', path: '*' })
-  }
+export interface ContinentPluginOptions {
+  /** Glob pattern for discovering content definition files. */
+  discoveryGlob?: string
+  /** Initial definitions to register (optional). */
+  definitions?: DefinitionRegistry.Definition[]
+  /** Root directory for resolving paths. Defaults to process.cwd(). */
+  root?: string
 }
+
+const DEFAULT_DISCOVERY_GLOB = 'src/content/**/[!_]*.ts'
 
 /**
  * Vite plugin for Continent content framework.
  *
  * Features:
- * - Auto-discovers content definitions from `content/` directory
+ * - Auto-discovers content definitions from `src/content/` directory
+ * - Manual definitions override via `definitions` option
  * - Dynamic loading: new content files are picked up without restart
  * - HMR for content changes (watches store.watchPaths)
  * - Asset serving from content directories in dev mode
  * - Background cache flushing with globalThis singleton
- *
- * @example
- * ```typescript
- * // waku.config.ts or vite.config.ts
- * import { continentPlugin } from 'continent'
- *
- * export default defineConfig({
- *   plugins: [
- *     continentPlugin(),
- *   ],
- * })
- * ```
  */
-export const continentPlugin = (): Plugin => {
+export const continentPlugin = (options: ContinentPluginOptions = {}): Plugin => {
   let shutdownFiber: Fiber.RuntimeFiber<void, never> | null = null
+  let pruningFiber: Fiber.RuntimeFiber<void, never> | null = null
+  let importFiber: Fiber.RuntimeFiber<void, never> | null = null
 
   return {
     name: 'continent',
 
     async configureServer(server) {
-      // Track watch paths per content file (Effect HashMap)
-      let contentDefinitionFilesToWatchPaths = HashMap.empty<string, HashSet.HashSet<string>>()
-
-      // Derived: union of all watch paths
-      const getAllWatchPaths = () =>
-        HashMap.reduce(
-          contentDefinitionFilesToWatchPaths,
-          HashSet.empty<string>(),
-          (acc, paths) => HashSet.union(acc, paths),
-        )
-
-      // Helper: import content file via ssrLoadModule and extract watch paths
-      const importContentFile = async (file: string) => {
-        try {
-          const mod = await server.ssrLoadModule(file)
-          let paths = HashSet.empty<string>()
-
-          for (const exp of Object.values(mod)) {
-            if (exp && typeof exp === 'object' && 'store' in exp) {
-              const store = (exp as ContentDefinition).store
-              if (store?.watchPaths) {
-                for (const p of store.watchPaths) {
-                  const resolved = resolve(process.cwd(), p)
-                  paths = HashSet.add(paths, resolved)
-                  server.watcher.add(resolved)
-                }
-              }
-            }
-          }
-
-          contentDefinitionFilesToWatchPaths = HashMap.set(contentDefinitionFilesToWatchPaths, file, paths)
-          console.log(`[continent] Loaded ${file}`)
-        } catch (err) {
-          console.error(`[continent] Failed to import ${file}:`, err)
-        }
-      }
-
-      // Helper: remove content file's watch paths
-      const removeContentFile = (file: string) => {
-        if (!HashMap.has(contentDefinitionFilesToWatchPaths, file)) return
-        contentDefinitionFilesToWatchPaths = HashMap.remove(contentDefinitionFilesToWatchPaths, file)
-        console.log(`[continent] Unloaded ${file}`)
-      }
-
-      // 1. Initial discovery
-      const contentFiles = await fg('content/**/*.ts', {
-        cwd: process.cwd(),
-        absolute: true,
+      const root = options.root ?? process.cwd()
+      const registry = DefinitionRegistry.create({
+        discoveryGlob: options.discoveryGlob ?? DEFAULT_DISCOVERY_GLOB,
+        definitions: options.definitions,
+        root,
       })
+      const loadModule = (path: string) => Effect.tryPromise(() => server.ssrLoadModule(path))
 
-      console.log(`[continent] Found ${contentFiles.length} content definitions`)
-
-      for (const file of contentFiles)
-        await importContentFile(file)
-
-      // 2. Watch for new/removed content files
-      const contentDir = resolve(process.cwd(), 'content')
-      server.watcher.add(`${contentDir}/**/*.ts`)
-
-      server.watcher.on('add', async (filePath) => {
-        if (filePath.startsWith(contentDir) && filePath.endsWith('.ts')) {
-          // Skip if already tracked (initial load)
-          if (HashMap.has(contentDefinitionFilesToWatchPaths, filePath)) return
-          await importContentFile(filePath)
-        }
-      })
-
-      server.watcher.on('unlink', (filePath) => {
-        if (HashMap.has(contentDefinitionFilesToWatchPaths, filePath))
-          removeContentFile(filePath)
-      })
-
-      // 3. Start background flush with Cache service (uses globalThis singleton)
-      shutdownFiber = Effect.runFork(
-        backgroundFlush.pipe(
-          Effect.provide(CacheLive),
+      // 1. Start pruning stream (consumes registry.pruningStream)
+      pruningFiber = Effect.runFork(
+        registry.pruningStream.pipe(
+          Effect.provide(Cache.CacheLive),
           Effect.provide(NodeContext.layer),
         ),
       )
 
-      // 4. HMR for content assets
+      // 2. Start activation stream (handles watch path setup for all imported definitions)
+      importFiber = Effect.runFork(
+        registry.importStream.pipe(
+          Stream.runForEach((def) =>
+            Effect.sync(() => {
+              for (const p of def.store.watchPaths) server.watcher.add(resolve(root, p))
+              console.log(`[continent] Loaded ${def._tag}`)
+            })
+          ),
+        ),
+      )
+
+      // 3. Run discovery (merges with any initial definitions from constructor)
+      await Effect.runPromise(registry.discover(loadModule))
+
+      // 4. Watch for definition files
+      const discoveryGlob = resolve(root, registry.config.discoveryGlob)
+      if (!options.definitions) server.watcher.add(discoveryGlob)
+
+      // 5. Start background flush
+      shutdownFiber = Effect.runFork(
+        Cache.backgroundFlush.pipe(
+          Effect.provide(Cache.CacheLive),
+          Effect.provide(NodeContext.layer),
+        ),
+      )
+
+      // 6. File change handler
       server.watcher.on('all', (event, filePath) => {
         if (event !== 'add' && event !== 'change' && event !== 'unlink') return
-        const allPaths = getAllWatchPaths()
-        if (HashSet.has(allPaths, filePath) || HashSet.some(allPaths, (wp) => filePath.startsWith(wp)))
-          invalidateModule(server, filePath)
+
+        Effect.runPromise(
+          Match.value(registry.getAffectedByFilePath(filePath)).pipe(
+            Match.tag('Nothing', () => Effect.void),
+            Match.tag('Definition', ({ definition }) =>
+              Match.value(event).pipe(
+                Match.when('add', () => registry.importFile(filePath, loadModule)),
+                Match.when('change', () => registry.importFile(filePath, loadModule)),
+                Match.when('unlink', () =>
+                  Option.match(definition, {
+                    onNone: () => Effect.void,
+                    onSome: (def) =>
+                      Effect.sync(() => {
+                        registry.remove(def._tag)
+                        console.log(`[continent] Unloaded ${def._tag}`)
+                      }),
+                  })),
+                Match.exhaustive,
+              )),
+            Match.tag('Content', ({ definitions }) =>
+              Effect.gen(function*() {
+                yield* Console.log(`[continent] Content asset changed: ${filePath}`)
+
+                const cache = yield* Cache.Cache
+
+                for (const def of definitions) {
+                  const relativePath = relative(root, filePath)
+                  const removed = cache.removeByPrimaryKey(def._tag, def.version, relativePath)
+                  if (removed) yield* Console.log(`[continent] Cleared cache for ${def._tag} key: ${relativePath}`)
+
+                  if (def.sourceFilePath) {
+                    const modules = server.moduleGraph.getModulesByFile(def.sourceFilePath)
+                    if (modules) {
+                      for (const mod of modules) server.moduleGraph.invalidateModule(mod)
+                      yield* Console.log(`[continent] Invalidated ${modules.size} module(s) for ${def._tag}`)
+                    }
+                  }
+                }
+
+                const hot = (server as any).environments?.client?.hot ?? server.ws
+                hot.send({
+                  type: 'custom',
+                  event: 'rsc:update',
+                  data: { type: 'continent:content', file: filePath },
+                })
+                yield* Console.log(`[continent] Sent rsc:update event`)
+              })),
+            Match.exhaustive,
+          ).pipe(Effect.provide(Cache.CacheLive)),
+        ).catch((err) => console.error(`[continent] Error handling ${event} for ${filePath}:`, err))
       })
 
-      // 5. Shutdown handler
-      server.httpServer?.on('close', () => {
-        if (shutdownFiber) {
-          Effect.runPromise(
-            Effect.gen(function* () {
-              yield* Fiber.interrupt(shutdownFiber!)
-              yield* flushIfDirty
-            }).pipe(
-              Effect.provide(CacheLive),
-              Effect.provide(NodeContext.layer),
-            ),
-          )
-        }
-      })
-
-      // 6. Asset middleware
+      // 8. Asset middleware
       return () => {
         server.middlewares.use((req, res, next) => {
           const url = req.url
           if (!url) return next()
 
-          // Assets are served from content directories with /content/ prefix
           if (!url.startsWith('/content/')) return next()
 
-          // Try to serve from content directory
-          const assetPath = resolve(process.cwd(), url.slice(1)) // Remove leading /
+          const assetPath = resolve(root, url.slice(1))
           try {
             const content = readFileSync(assetPath)
             const ext = extname(assetPath).toLowerCase()
@@ -207,6 +183,19 @@ export const continentPlugin = (): Plugin => {
           }
         })
       }
+    },
+
+    async buildEnd() {
+      if (shutdownFiber) Effect.runSync(Fiber.interrupt(shutdownFiber))
+      if (pruningFiber) Effect.runSync(Fiber.interrupt(pruningFiber))
+      if (importFiber) Effect.runSync(Fiber.interrupt(importFiber))
+
+      await Effect.runPromise(
+        Cache.flushIfDirty.pipe(
+          Effect.provide(Cache.CacheLive),
+          Effect.provide(NodeContext.layer),
+        ),
+      )
     },
   }
 }

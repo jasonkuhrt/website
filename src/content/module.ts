@@ -137,7 +137,7 @@ const fetchGitHubRepo = async (owner: string, name: string): Promise<GitHubRepo>
 // Module Content Definition
 // ============================================================================
 
-export const Module = Content('module', {
+const Module = Content('module', {
   store: Store.js({
     path: 'content/module.ts',
     schema: S.Struct({
@@ -181,4 +181,5 @@ export const Module = Content('module', {
     }
   },
 })
+export default Module
 export type Module = typeof Module.Type

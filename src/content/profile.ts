@@ -15,7 +15,7 @@ export class SocialLink extends S.Class<SocialLink>('SocialLink')({
 // Profile Singleton
 // ============================================================================
 
-export const Profile = Content('profile', {
+const Profile = Content('profile', {
   store: Store.js({
     path: 'content/profile.ts',
     schema: S.Struct({
@@ -33,4 +33,5 @@ export const Profile = Content('profile', {
     cardinality: '1',
   }),
 })
+export default Profile
 export type Profile = typeof Profile.Type

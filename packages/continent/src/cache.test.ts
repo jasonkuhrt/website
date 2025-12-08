@@ -1,11 +1,11 @@
 import { FileSystem } from '@effect/platform'
 import { NodeContext } from '@effect/platform-node'
-import { Effect, Layer, Option } from 'effect'
+import { Effect, Option } from 'effect'
 import * as S from 'effect/Schema'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { Cache, type CacheEvent, CacheCustom, Content, Store, UniqueKey } from './_.js'
+import { Cache, CacheCustom, type CacheEvent, Content, SecondaryKey, Store } from './_.js'
 import { flushIfDirty } from './cache.js'
 
 // ============================================================================
@@ -24,7 +24,7 @@ const TestContent = (options?: { onCacheEvent?: (event: CacheEvent) => void }) =
   Content('test-cache', {
     store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
     schema: {
-      slug: UniqueKey(S.String),
+      slug: SecondaryKey.SecondaryKey(S.String),
       content: S.String,
       processed: S.Boolean,
     },
@@ -210,7 +210,7 @@ describe('cache system', () => {
 
     // Run both operations in the same Effect scope to share cache
     await run(
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         // First call - should be a miss
         yield* content.list()
         expect(events).toHaveLength(1)
@@ -233,7 +233,7 @@ describe('cache system', () => {
     // First instance - populate and flush within same Effect scope
     const content1 = TestContent()
     await run(
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         yield* content1.list()
         yield* flushIfDirty
       }),
@@ -264,7 +264,7 @@ describe('cache system', () => {
       Content('test-dated', {
         store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
         schema: {
-          slug: UniqueKey(S.String),
+          slug: SecondaryKey.SecondaryKey(S.String),
           createdAt: S.Date,
         },
         async map(source) {
@@ -278,7 +278,7 @@ describe('cache system', () => {
     // First instance - populate and flush
     const content1 = TestContentWithDate()
     await run(
-      Effect.gen(function* () {
+      Effect.gen(function*() {
         const results = yield* content1.list()
         expect(results[0]!.createdAt).toBeInstanceOf(Date)
         yield* flushIfDirty
@@ -297,5 +297,513 @@ describe('cache system', () => {
     expect(results).toHaveLength(1)
     expect(results[0]!.createdAt).toBeInstanceOf(Date)
     expect(results[0]!.createdAt.toISOString()).toBe('2024-01-15T10:30:00.000Z')
+  })
+})
+
+// ============================================================================
+// Version-based Cache Invalidation Tests
+// ============================================================================
+
+describe('version-based cache invalidation', () => {
+  test('default: auto-hashes map.toString() - different map body causes cache miss', async () => {
+    await createFile('version-test.txt', 'content')
+
+    // First content definition with one map implementation
+    const content1 = Content('test-version-auto', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      async map(source) {
+        return { slug: source.stem, value: 'VERSION_A' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        const results = yield* content1.list()
+        expect(results[0]!.value).toBe('VERSION_A')
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer (simulates process restart)
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+
+    // Different map body should cause cache miss
+    const events: CacheEvent[] = []
+    const content2 = Content('test-version-auto', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      async map(source) {
+        return { slug: source.stem, value: 'VERSION_B' } // Different map body
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    const results = await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    // Should be a cache miss because map.toString() changed
+    expect(events[0]!.type).toBe('miss')
+    expect(results[0]!.value).toBe('VERSION_B')
+  })
+
+  test('default: same map body causes cache hit', async () => {
+    await createFile('same-map.txt', 'content')
+
+    // Use a named function to ensure consistent toString()
+    const mapFn = async (source: { stem: string }) => ({
+      slug: source.stem,
+      value: 'SAME_VALUE',
+    })
+
+    const content1 = Content('test-same-map', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      map: mapFn,
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    const content2 = Content('test-same-map', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      map: mapFn, // Same map function
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    // Should be a cache hit because map.toString() is identical
+    expect(events[0]!.type).toBe('hit')
+  })
+
+  test('static version: overrides auto-hash, map changes ignored', async () => {
+    await createFile('static-version.txt', 'content')
+
+    const content1 = Content('test-static-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1, // Explicit static version
+      async map(source) {
+        return { slug: source.stem, value: 'ORIGINAL' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        const results = yield* content1.list()
+        expect(results[0]!.value).toBe('ORIGINAL')
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    // Different map body BUT same version - should HIT cache
+    const content2 = Content('test-static-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1, // Same version
+      async map(source) {
+        return { slug: source.stem, value: 'CHANGED_BUT_IGNORED' } // Different map
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    const results = await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    // Should be a cache HIT because version is the same (map.toString() is ignored)
+    expect(events[0]!.type).toBe('hit')
+    // Returns cached value, NOT the new map result
+    expect(results[0]!.value).toBe('ORIGINAL')
+  })
+
+  test('static version: bumping version causes cache miss', async () => {
+    await createFile('bump-version.txt', 'content')
+
+    const content1 = Content('test-bump-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1,
+      async map(source) {
+        return { slug: source.stem, value: 'V1' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    // Bumped version - should MISS cache
+    const content2 = Content('test-bump-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 2, // Bumped!
+      async map(source) {
+        return { slug: source.stem, value: 'V2' }
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    const results = await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    // Should be a cache MISS because version changed
+    expect(events[0]!.type).toBe('miss')
+    expect(results[0]!.value).toBe('V2')
+  })
+
+  test('function version: computes hash dynamically', async () => {
+    await createFile('fn-version.txt', 'content')
+
+    let versionValue = 100
+
+    const content1 = Content('test-fn-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: () => versionValue,
+      async map(source) {
+        return { slug: source.stem, value: 'FN_VERSION' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    // Same function returning same value - should HIT
+    const content2 = Content('test-fn-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: () => versionValue, // Same value (100)
+      async map(source) {
+        return { slug: source.stem, value: 'FN_VERSION' }
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    expect(events[0]!.type).toBe('hit')
+  })
+
+  test('function version: changing return value causes cache miss', async () => {
+    await createFile('fn-change.txt', 'content')
+
+    const content1 = Content('test-fn-change', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: () => 'config-v1',
+      async map(source) {
+        return { slug: source.stem, value: 'CONFIG_V1' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    // Function returns different value - should MISS
+    const content2 = Content('test-fn-change', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: () => 'config-v2', // Different return value
+      async map(source) {
+        return { slug: source.stem, value: 'CONFIG_V2' }
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    const results = await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    expect(events[0]!.type).toBe('miss')
+    expect(results[0]!.value).toBe('CONFIG_V2')
+  })
+
+  test('string version: works like numeric version', async () => {
+    await createFile('str-version.txt', 'content')
+
+    const content1 = Content('test-str-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 'v1.0.0', // String version
+      async map(source) {
+        return { slug: source.stem, value: 'STRING_V1' }
+      },
+    })
+
+    // Populate and flush
+    await run(
+      Effect.gen(function*() {
+        yield* content1.list()
+        yield* flushIfDirty
+      }),
+    )
+
+    // Fresh cache layer
+    const FreshCacheLayer = CacheCustom(CACHE_DIR)
+    const events: CacheEvent[] = []
+
+    // Same string version - should HIT
+    const content2 = Content('test-str-version', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 'v1.0.0',
+      async map(source) {
+        return { slug: source.stem, value: 'STRING_V1' }
+      },
+      onCacheEvent: (e) => events.push(e),
+    })
+
+    await Effect.runPromise(
+      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+    )
+
+    expect(events[0]!.type).toBe('hit')
+  })
+
+  test('no map function: version has no effect (passthrough)', async () => {
+    await createFile('no-map.txt', 'raw content')
+
+    // Content without map (passthrough) - version should be ignored
+    const content1 = Content('test-no-map', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      version: 1, // Should be ignored since there's no map
+    })
+
+    const results = await run(content1.list())
+    expect(results[0]!.content).toBe('raw content')
+  })
+})
+
+// ============================================================================
+// Content.version Property Tests
+// ============================================================================
+
+describe('Content.version property', () => {
+  test('Content exposes computed version number', async () => {
+    const content = Content('test-version-prop', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 42,
+      async map(source) {
+        return { slug: source.stem, value: 'test' }
+      },
+    })
+
+    expect(typeof content.version).toBe('number')
+  })
+
+  test('version is hash of config.version', async () => {
+    const content1 = Content('test-version-hash', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1,
+      async map(source) {
+        return { slug: source.stem, value: 'test' }
+      },
+    })
+
+    const content2 = Content('test-version-hash-2', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 2,
+      async map(source) {
+        return { slug: source.stem, value: 'test' }
+      },
+    })
+
+    // Different version configs should produce different version hashes
+    expect(content1.version).not.toBe(content2.version)
+  })
+})
+
+// ============================================================================
+// pruneOrphans Tests
+// ============================================================================
+
+describe('pruneOrphans', () => {
+  test('removes entries with different version', async () => {
+    await createFile('prune-test.txt', 'content')
+
+    // Create content with version 1
+    const content1 = Content('test-prune', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1,
+      async map(source) {
+        return { slug: source.stem, value: 'V1' }
+      },
+    })
+
+    // Create content with version 2 (different version)
+    const content2 = Content('test-prune', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 2,
+      async map(source) {
+        return { slug: source.stem, value: 'V2' }
+      },
+    })
+
+    // Run entire sequence in single Effect to share cache instance
+    const pruned = await run(
+      Effect.gen(function*() {
+        // Populate cache with version 1
+        yield* content1.list()
+
+        // Prune orphans with version 2
+        const cache = yield* Cache
+        return cache.pruneOrphans('test-prune', content2.version)
+      }),
+    )
+
+    // Should have pruned 1 entry (the old version 1 entry)
+    expect(pruned).toBe(1)
+  })
+
+  test('returns 0 when no orphans exist', async () => {
+    await createFile('no-orphans.txt', 'content')
+
+    const content = Content('test-no-orphans', {
+      store: Store.dir({ glob: `${CONTENT_DIR}/*.txt` }),
+      schema: {
+        slug: SecondaryKey.SecondaryKey(S.String),
+        value: S.String,
+      },
+      version: 1,
+      async map(source) {
+        return { slug: source.stem, value: 'test' }
+      },
+    })
+
+    // Populate cache
+    await run(content.list())
+
+    // Prune with same version - should find no orphans
+    const pruned = await run(
+      Effect.gen(function*() {
+        const cache = yield* Cache
+        return cache.pruneOrphans('test-no-orphans', content.version)
+      }),
+    )
+
+    expect(pruned).toBe(0)
+  })
+
+  test('returns 0 for non-existent namespace', async () => {
+    const pruned = await run(
+      Effect.gen(function*() {
+        const cache = yield* Cache
+        return cache.pruneOrphans('non-existent-namespace', 12345)
+      }),
+    )
+
+    expect(pruned).toBe(0)
   })
 })

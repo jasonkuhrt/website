@@ -6,21 +6,21 @@ import * as AST from 'effect/SchemaAST'
 // Type-Level Brand
 // ============================================================================
 
-declare const UniqueKeyBrand: unique symbol
+declare const Brand: unique symbol
 
 /**
  * A schema marked as a unique key field.
  * The brand is used for type-level detection via `ExtractUniqueKeys`.
  */
-export type UniqueKeySchema<$Schema extends S.Schema<string, string, never>> = $Schema & {
-  readonly [UniqueKeyBrand]: true
+export type SecondaryKeySchema<$Schema extends S.Schema<string, string, never>> = $Schema & {
+  readonly [Brand]: true
 }
 
 // ============================================================================
 // Runtime Annotation
 // ============================================================================
 
-const UniqueKeyAnnotation = Symbol.for('content/unique-key')
+const Annotation = Symbol.for('content/unique-key')
 
 // ============================================================================
 // Combinator
@@ -42,10 +42,10 @@ const UniqueKeyAnnotation = Symbol.for('content/unique-key')
  * // Now supports: Essay.get({ slug: 'my-post' })
  * ```
  */
-export const UniqueKey = <$Schema extends S.Schema<string, string, never>>(
+export const SecondaryKey = <$Schema extends S.Schema<string, string, never>>(
   schema: $Schema,
-): UniqueKeySchema<$Schema> => {
-  return schema.annotations({ [UniqueKeyAnnotation]: true }) as UniqueKeySchema<$Schema>
+): SecondaryKeySchema<$Schema> => {
+  return schema.annotations({ [Annotation]: true }) as SecondaryKeySchema<$Schema>
 }
 
 // ============================================================================
@@ -67,9 +67,9 @@ export const UniqueKey = <$Schema extends S.Schema<string, string, never>>(
  * ```
  */
 // dprint-ignore
-export type ExtractUniqueKeysFromFields<$Fields extends Struct.Fields> =
+export type GetFromFields<$Fields extends Struct.Fields> =
   {
-    [K in keyof $Fields]: $Fields[K] extends { readonly [UniqueKeyBrand]: true } ? K : never
+    [K in keyof $Fields]: $Fields[K] extends { readonly [Brand]: true } ? K : never
   }[keyof $Fields] & string
 
 /**
@@ -88,10 +88,33 @@ export type ExtractUniqueKeysFromFields<$Fields extends Struct.Fields> =
  * ```
  */
 // dprint-ignore
-export type ExtractUniqueKeys<$Schema> =
+export type Get<$Schema> =
   $Schema extends S.Struct<infer __fields__>
-    ? ExtractUniqueKeysFromFields<__fields__>
+    ? GetFromFields<__fields__>
     : never
+
+// ============================================================================
+// Tagged Union for mapKeySecondaryToPrimary
+// ============================================================================
+
+/**
+ * Create a tagged union type from SecondaryKey fields.
+ * Used as input type for `mapKeySecondaryToPrimary`.
+ *
+ * @example
+ * ```typescript
+ * type Fields = { slug: SecondaryKeySchema<S.String>, id: SecondaryKeySchema<S.String>, title: S.String }
+ * type U = UnionFromFields<Fields>
+ * // => { _tag: 'slug', value: string } | { _tag: 'id', value: string }
+ * ```
+ */
+// dprint-ignore
+export type UnionFromFields<$Fields extends Struct.Fields> = {
+  [k in GetFromFields<$Fields>]: {
+    _tag: k
+    value: $Fields[k] extends S.Schema<infer __type__, any, any> ? __type__ : never
+  }
+}[GetFromFields<$Fields>]
 
 // ============================================================================
 // Runtime Extraction
@@ -101,19 +124,19 @@ export type ExtractUniqueKeys<$Schema> =
  * Extract unique key field names from Struct.Fields at runtime.
  * Traverses fields to find those annotated with UniqueKey.
  */
-export const extractUniqueKeysFromFields = <$Fields extends Struct.Fields>(
+export const getFromFields = <$Fields extends Struct.Fields>(
   fields: $Fields,
-): ExtractUniqueKeysFromFields<$Fields>[] => {
+): GetFromFields<$Fields>[] => {
   const keys: string[] = []
 
   for (const [name, fieldSchema] of Object.entries(fields)) {
-    const annotation = AST.getAnnotation<boolean>(UniqueKeyAnnotation)(
+    const annotation = AST.getAnnotation<boolean>(Annotation)(
       (fieldSchema as S.Schema.Any).ast,
     )
     if (Option.isSome(annotation) && annotation.value === true) keys.push(name)
   }
 
-  return keys as ExtractUniqueKeysFromFields<$Fields>[]
+  return keys as GetFromFields<$Fields>[]
 }
 
 /**
@@ -130,8 +153,17 @@ export const extractUniqueKeysFromFields = <$Fields extends Struct.Fields>(
  * extractUniqueKeys(schema) // ['id']
  * ```
  */
-export const extractUniqueKeys = <$Fields extends Struct.Fields>(
+export const get = <$Fields extends Struct.Fields>(
   schema: S.Struct<$Fields>,
-): ExtractUniqueKeys<S.Struct<$Fields>>[] => {
-  return extractUniqueKeysFromFields(schema.fields)
+): Get<S.Struct<$Fields>>[] => {
+  return getFromFields(schema.fields)
 }
+
+/**
+ * Extract field keys that can be used as unique keys from a Struct schema.
+ */
+// dprint-ignore
+export type GetFromSchema<$Schema> =
+  $Schema extends S.Struct<infer __fields__>
+    ? GetFromFields<__fields__>
+    : never

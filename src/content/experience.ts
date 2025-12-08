@@ -106,11 +106,11 @@ const ExperienceData = S.Union(
 )
 type ExperienceData = S.Schema.Type<typeof ExperienceData>
 
-export const Experience = Content('experience', {
+const Experience = Content('experience', {
   store: Store.js({
     path: 'content/experience.ts',
     schema: ExperienceData,
   }),
 })
-
+export default Experience
 export type Experience = typeof Experience.Type

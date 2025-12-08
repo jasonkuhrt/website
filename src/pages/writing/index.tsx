@@ -1,7 +1,7 @@
 import { Meta } from '#~/components/meta.js'
-import { Drivel } from '#~/content/drivel.js'
-import { Essay } from '#~/content/essay.js'
-import { Scribble } from '#~/content/scribble.js'
+import Drivel from '#~/content/drivel.js'
+import Essay from '#~/content/essay.js'
+import Scribble from '#~/content/scribble.js'
 import { formatDateShort } from '#~/lib/date.js'
 import { config, page } from '#~/runtime.js'
 

@@ -6,70 +6,140 @@
 @import "../mixins.css";
 
 :root {
-    --prose-space-sm: 10rem; /* 24px - paragraphs, lists, heading bottoms */
-    --prose-space-md: 12rem; /* 36px - code blocks, blockquotes, minor headings */
-    --prose-space-lg: 20rem; /* 60px - major headings, horizontal rules */
+    --container-prose: 130rem; /* 650px */
+    --prose-space-sm: var(--cap3); /*calc(4 * var(--text-trimmed));*/
+    --prose-space-md: var(--cap10);
+    --prose-space-lg: var(--cap15);
 }
 
 /* Prose mixin — use via @mixin prose; */
 @define-mixin prose {
     max-width: var(--container-prose);
 
+    /* First/last child — collapse margins */
+    & > :first-child {
+        margin-top: 0;
+    }
+    & > :last-child {
+        margin-bottom: 0;
+    }
+
     /* Paragraphs & lists */
-    & > p,
-    & > ul,
-    & > ol {
-        margin-block: var(--prose-space-sm);
+    & p,
+    & ul,
+    & ol {
+        margin-bottom: var(--prose-space-sm);
     }
 
-    /* Major headings */
+    /* Lists */
+
+    & li {
+        margin-bottom: var(--cap1); /*var(--text-trimmed);*/
+        &::marker {
+            /* BROWSER QUIRK: ::marker ignores text-box trimming.
+               Even with * { text-box: trim-both cap alphabetic },
+               markers retain their line-height contribution.
+               Setting to 0 eliminates marker's height impact,
+               letting li height be determined by content alone. */
+            line-height: 0;
+        }
+    }
+
+    & ul ul {
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 3rem;
+    }
+
+    /* TOC List pattern */
+
+    & li > a {
+        display: block;
+    }
+
+    & li > a:has(+ ul:last-child) {
+        display: block;
+        margin-bottom: var(--cap1);
+    }
+
+    & > p:has(+ :is(h1, h2, h3, h4, h5, h6)) {
+        margin-bottom: var(--prose-space-md);
+    }
+
     & > h1,
-    & > h2 {
-        margin-block: var(--prose-space-lg) var(--prose-space-sm);
-    }
-
-    /* Minor headings */
+    & > h2,
     & > h3,
     & > h4,
     & > h5,
     & > h6 {
-        margin-block: var(--prose-space-md) var(--prose-space-sm);
+        margin-bottom: var(--prose-space-sm);
+    }
+    /* Headings that are diretly adjacent should collapse */
+    & > :is(h1, h2, h3, h4, h5, h6):has(+ :is(h1, h2, h3, h4, h5, h6)) {
+        margin-bottom: 0;
+    }
+
+    & > h3 {
+        text-align: center;
+    }
+
+    /* H2 with hairlines extending to viewport edges */
+    & > h2 {
+        position: relative;
+        text-align: center;
+
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            top: 60%;
+            height: 1px;
+            width: 100vw;
+            opacity: 0.5;
+            background-color: var(--color-border);
+        }
+
+        &::before {
+            right: calc(100% + 5rem);
+        }
+
+        &::after {
+            left: calc(100% + 5rem);
+        }
     }
 
     /* Code blocks */
     & > pre {
         @mixin breakout1;
-        margin-block: var(--prose-space-md);
+        margin-bottom: var(--prose-space-md);
     }
 
     /* Blockquotes */
     & > blockquote {
-        margin-block: var(--prose-space-md);
+        margin-bottom: var(--prose-space-md);
     }
 
     /* Horizontal rules */
     & > hr {
-        margin-block: var(--prose-space-lg);
+        margin-bottom: var(--prose-space-lg);
     }
 
-    /* First/last child — collapse margins */
-    & > :first-child {
-        margin-top: 0;
-    }
-
-    & > :last-child {
-        margin-bottom: 0;
+    /* Images — grid-snapped heights via CSS round() */
+    & img {
+        --h: round(down, 100cqi / var(--aspect-ratio), 1rem);
+        display: block;
+        height: var(--h);
+        width: calc(var(--h) * var(--aspect-ratio));
     }
 }
 
 .prose {
     @mixin prose;
     margin-inline: auto;
-    padding-inline: 4rem; /* 24px */
+    padding-inline: 4rem; /* 20px */
     container-type: inline-size;
     @media (min-width: 768px) {
-        /* 128 × 6 */
-        padding-inline: 6rem; /* 36px */
+        padding-inline: 6rem; /* 30px */
     }
 }
 

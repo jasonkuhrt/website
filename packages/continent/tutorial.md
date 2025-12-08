@@ -258,27 +258,40 @@ Enable HMR and asset serving during development:
 // waku.config.ts or vite.config.ts
 import { continentPlugin } from 'continent'
 import { defineConfig } from 'waku/config'
+
+export default defineConfig({
+  vite: {
+    plugins: [continentPlugin()],
+  },
+})
+```
+
+The plugin auto-discovers content definitions from `src/content/`:
+
+- Watches content directories for changes
+- Triggers HMR on content updates
+- Serves assets from `/content/` prefix in dev mode
+
+### Manual Definitions (Optional)
+
+If you prefer explicit configuration over auto-discovery:
+
+```typescript
+import { continentPlugin } from 'continent'
+import { defineConfig } from 'waku/config'
 import { Drivel } from './src/content/drivel.js'
 import { Essay } from './src/content/essay.js'
-import { Module } from './src/content/module.js'
-import { Site } from './src/content/site.js'
 
 export default defineConfig({
   vite: {
     plugins: [
       continentPlugin({
-        definitions: [Drivel, Essay, Module, Site],
+        definitions: [Drivel, Essay],
       }),
     ],
   },
 })
 ```
-
-The plugin:
-
-- Watches content directories for changes
-- Triggers HMR on content updates
-- Serves assets from `/content/` prefix in dev mode
 
 ---
 

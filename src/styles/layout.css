@@ -1,12 +1,13 @@
 /**
  * Layout
  *
- * Grid-locked to 6px baseline.
+ * Grid-locked to 5px baseline.
  */
 @import "./mixins.css";
 
 body {
     padding-bottom: 50vh;
+    overflow-x: clip; /* Prevent horizontal scroll from full-bleed elements */
 }
 
 /* ============================================
@@ -30,13 +31,13 @@ body {
     width: 100%;
     max-width: var(--container-standard); /* 1280px */
     margin-inline: auto;
-    padding-inline: 4rem; /* 24px */
+    padding-inline: 4rem; /* 20px */
 
-    @media (min-width: 768px) { /* 128 × 6 */
-        padding-inline: 6rem; /* 36px */
+    @media (min-width: 768px) {
+        padding-inline: 6rem; /* 30px */
     }
 
-    @media (min-width: 1020px) { /* 170 × 6 */
-        padding-inline: 8rem; /* 48px */
+    @media (min-width: 1020px) {
+        padding-inline: 8rem; /* 40px */
     }
 }
