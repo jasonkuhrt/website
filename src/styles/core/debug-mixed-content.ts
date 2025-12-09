@@ -77,11 +77,7 @@ const isBlockLevel = S.is(DisplayBlock)
 const isInlineLevel = S.is(DisplayInline)
 
 const hasTextNodes = (element: Element): boolean => {
-  for (const node of element.childNodes) {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-      return true
-    }
-  }
+  for (const node of element.childNodes) if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) return true
   return false
 }
 
@@ -113,11 +109,8 @@ export const detectMixedContent = (): Element[] => {
         continue
       }
 
-      if (isBlockLevel(childDisplay)) {
-        hasBlockChild = true
-      } else if (isInlineLevel(childDisplay)) {
-        inlineChildren.push(child)
-      }
+      if (isBlockLevel(childDisplay)) hasBlockChild = true
+      else if (isInlineLevel(childDisplay)) inlineChildren.push(child)
     }
 
     // Violation: block container has both block children AND inline children

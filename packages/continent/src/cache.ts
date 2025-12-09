@@ -276,9 +276,7 @@ const createCacheImpl = (cacheDir: string): CacheService => {
 
       const ns = nsOpt.value
       let count = 0
-      for (const [, bucket] of ns.data) {
-        count += MutableHashMap.size(bucket.entries)
-      }
+      for (const [, bucket] of ns.data) count += MutableHashMap.size(bucket.entries)
 
       ns.data = MutableHashMap.empty()
       ns.dirty = true

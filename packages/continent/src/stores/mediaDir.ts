@@ -112,9 +112,7 @@ export const mediaDir = (config: MediaDirConfig): MediaDir => {
       Effect.gen(function*() {
         const fs = yield* FileSystem.FileSystem
         const record = yield* scanDir(fs, primaryKey, extensions)
-        if (!record) {
-          return yield* Effect.die(new Error(`MediaDirStore: No media found in directory ${primaryKey}`))
-        }
+        if (!record) return yield* Effect.die(new Error(`MediaDirStore: No media found in directory ${primaryKey}`))
         return record
       }),
   }

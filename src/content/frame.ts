@@ -27,7 +27,7 @@ export class FrameSeries extends S.TaggedClass<FrameSeries>()('series', {
  *
  * Directory format: {date}_{time} e.g. "2024-09-16_01-00-48-000"
  */
-const Frame = Content('frame', {
+export const Frame = Content('frame', {
   store: Store.mediaDir({
     glob: 'content/frame/*',
   }),
@@ -35,7 +35,7 @@ const Frame = Content('frame', {
     slug: S.String,
     data: S.Union(FrameSingle, FrameSeries),
   },
-  uniqueKeys: ['slug'],
+  secondaryKeys: ['slug'],
   async map(source) {
     const slug = source.stem
     // Parse date from directory name (format: YYYY-MM-DD_HH-MM)

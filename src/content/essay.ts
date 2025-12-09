@@ -1,7 +1,7 @@
 import { Mdx } from 'continent'
 import { rehypeImageDimensions } from '../lib/rehype-image-dimensions.js'
 
-const Essay = Mdx('essay', {
+export const Essay = Mdx('essay', {
   glob: 'content/essay/*/content.mdx',
   rehypePlugins: [rehypeImageDimensions],
 })

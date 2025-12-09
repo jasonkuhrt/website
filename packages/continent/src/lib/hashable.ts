@@ -38,9 +38,7 @@ export const isSchemaProducingHashableData = (schema: S.Schema.Any): boolean => 
   const ast = schema.ast
 
   // Handle Union schemas: all members must be hashable
-  if (ast._tag === 'Union') {
-    return (ast as AST.Union).types.every((memberAST) => isHashableAST(memberAST))
-  }
+  if (ast._tag === 'Union') return (ast as AST.Union).types.every((memberAST) => isHashableAST(memberAST))
 
   return isHashableAST(ast)
 }

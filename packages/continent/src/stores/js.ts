@@ -79,9 +79,7 @@ export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardina
       Effect.gen(function*() {
         const records = yield* loadRecords()
         const found = records.find((r) => r.primaryKey === primaryKey)
-        if (!found) {
-          return yield* Effect.die(new Error(`JsStore: No record found with hash ${primaryKey}`))
-        }
+        if (!found) return yield* Effect.die(new Error(`JsStore: No record found with hash ${primaryKey}`))
         return found
       }),
   }

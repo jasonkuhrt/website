@@ -118,9 +118,7 @@ export const create = (config: Config): DefinitionRegistry => {
 
   // Register initial definitions (stream will emit them on subscription - no publish needed)
   if (config.definitions) {
-    for (const def of config.definitions) {
-      definitions.set(def._tag, def)
-    }
+    for (const def of config.definitions) definitions.set(def._tag, def)
   }
 
   const importFile = (sourceFilePath: string, loadModule: LoadModule): Effect.Effect<Option.Option<Definition>> =>

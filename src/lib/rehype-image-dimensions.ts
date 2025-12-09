@@ -10,10 +10,10 @@
  * }
  * ```
  */
+import type { Root } from 'hast'
+import { imageSize } from 'image-size'
 import fs from 'node:fs'
 import path from 'node:path'
-import { imageSize } from 'image-size'
-import type { Root } from 'hast'
 import { visit } from 'unist-util-visit'
 
 export interface Options {

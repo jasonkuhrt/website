@@ -12,6 +12,9 @@ export type Cardinality = '1' | 'n'
 
 export const defaultCardinality = 'n' as const
 
+/** Valid primary key types for stores. */
+export type PrimaryKey = string | number
+
 /** Common error type for store operations. */
 export type StoreError = PlatformErrorModule.PlatformError
 
@@ -22,7 +25,7 @@ export type StoreError = PlatformErrorModule.PlatformError
 export interface Store<
   $Schema extends SchemaNoContext = SchemaNoContext,
   $Cardinality extends Cardinality = Cardinality,
-  $PrimaryKey = string,
+  $PrimaryKey extends PrimaryKey = PrimaryKey,
 > {
   cardinality: $Cardinality
   /** Base directories for file watcher registration. */
@@ -30,14 +33,16 @@ export interface Store<
   /** Original glob patterns for precise file matching. */
   watchGlobs: string[]
   schema: $Schema
-  readMany: () => Effect.Effect<
+  /** Read all records from the store. */
+  readMany(): Effect.Effect<
     SourceRecord<S.Schema.Type<$Schema>, $PrimaryKey>[],
     StoreError,
     FileSystem.FileSystem
   >
-  readOne: (
+  /** Read a single record by primary key. */
+  readOne(
     primaryKey: $PrimaryKey,
-  ) => Effect.Effect<
+  ): Effect.Effect<
     SourceRecord<S.Schema.Type<$Schema>, $PrimaryKey>,
     StoreError,
     FileSystem.FileSystem
@@ -70,7 +75,7 @@ export namespace Store {
  * Record returned by store.readMany() and store.readOne().
  * Contains the data, its stable identifier (primary key), and a freshness signature.
  */
-export interface SourceRecord<$Data = unknown, $PrimaryKey = string> {
+export interface SourceRecord<$Data = unknown, $PrimaryKey = PrimaryKey> {
   /** Stable identifier for this record (file path for DirStore, hash for JsStore). */
   primaryKey: $PrimaryKey
   /**

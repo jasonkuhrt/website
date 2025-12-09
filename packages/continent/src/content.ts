@@ -4,7 +4,7 @@ import type { Struct } from 'effect/Schema'
 import { Cache, type CacheSchema } from './cache.js'
 import { ContentError } from './errors.js'
 import * as SecondaryKey from './secondary-key.js'
-import { type Cardinality, Store as StoreInterface } from './store.js'
+import * as Store from './store.js'
 
 // ============================================================================
 // Type Utilities
@@ -55,17 +55,19 @@ export interface CacheEvent {
 
 export namespace Content {
   /** Helper to create validated encoded store data. */
-  export interface StoreMake<$Store extends StoreInterface> {
+  export interface StoreMake<$Store extends Store.Store> {
     /** Create a single validated record. */
-    make: (input: S.Schema.Encoded<StoreInterface.Schema<$Store>>) => S.Schema.Encoded<StoreInterface.Schema<$Store>>
+    make: (
+      input: S.Schema.Encoded<Store.Store.Schema<$Store>>,
+    ) => S.Schema.Encoded<Store.Store.Schema<$Store>>
     /** Create multiple validated records (for collection stores). */
     makeMany: (
-      ...inputs: S.Schema.Encoded<StoreInterface.Schema<$Store>>[]
-    ) => S.Schema.Encoded<StoreInterface.Schema<$Store>>[]
+      ...inputs: S.Schema.Encoded<Store.Store.Schema<$Store>>[]
+    ) => S.Schema.Encoded<Store.Store.Schema<$Store>>[]
   }
 
   /** Interface for cardinality '1' content (singleton). */
-  export interface SingletonClass<$Tag extends string, $Store extends StoreInterface, $Output> {
+  export interface SingletonClass<$Tag extends string, $Store extends Store.Store, $Output> {
     readonly _tag: $Tag
     readonly store: $Store
     readonly Store: StoreMake<$Store>
@@ -78,9 +80,9 @@ export namespace Content {
   /** Interface for cardinality 'n' content (collection). */
   export interface CollectionClass<
     $Tag extends string,
-    $Store extends StoreInterface,
+    $Store extends Store.Store,
     $Output,
-    $UniqueKeys extends string = never,
+    $SecondaryKeys extends string = never,
   > {
     readonly _tag: $Tag
     readonly store: $Store
@@ -88,12 +90,12 @@ export namespace Content {
     readonly Type: $Output
     /** Computed version hash for cache invalidation. */
     readonly version: number
-    readonly uniqueKeys: readonly $UniqueKeys[]
+    readonly secondaryKeys: readonly $SecondaryKeys[]
     /** List all records (uses cache). */
     list(): Effect.Effect<$Output[], ContentOpError, Cache | FileSystem.FileSystem>
     /** Get single record by unique key. Returns Option.none() if not found. */
     get(
-      key: SecondaryKeyLookup<$UniqueKeys>,
+      key: SecondaryKeyLookup<$SecondaryKeys>,
     ): Effect.Effect<Option.Option<$Output>, ContentOpError, Cache | FileSystem.FileSystem>
   }
 
@@ -101,10 +103,10 @@ export namespace Content {
   // dprint-ignore
   export type Class<
     $Tag extends string,
-    $Store extends StoreInterface,
+    $Store extends Store.Store,
     $Output,
     $SecondaryKeys extends string = never,
-    $Cardinality extends Cardinality = StoreInterface.GetCardinality<$Store>,
+    $Cardinality extends Store.Cardinality = Store.Store.GetCardinality<$Store>,
   > =
     $Cardinality extends '1' ? SingletonClass<$Tag, $Store, $Output> :
                                CollectionClass<$Tag, $Store, $Output, $SecondaryKeys>
@@ -114,7 +116,7 @@ export namespace Content {
   // ============================================================================
 
   /** Base config shared by all Content configurations. */
-  export interface ConfigBase<$Store extends StoreInterface> {
+  export interface ConfigBase<$Store extends Store.Store> {
     store: $Store
     /** Hook for cache introspection (testing). Called on each cache hit/miss. */
     onCacheEvent?: (event: CacheEvent) => void
@@ -140,126 +142,68 @@ export namespace Content {
      */
     version?: number | string | (() => number | string)
   }
-
-  /** Config when schema AND map are provided (transformed output). */
-  export interface ConfigWithSchemaAndMap<
-    $Tag extends string,
-    $Store extends StoreInterface,
-    $Fields extends Struct.Fields,
-    $SecondaryKeys extends string = never,
-  > extends ConfigBase<$Store> {
-    schema: $Fields
-    map: (
-      data: StoreInterface.Data<$Store>,
-    ) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
-    secondaryKeys?: $SecondaryKeys[]
-    /**
-     * Map a secondary key to the store's primary key.
-     * Required when schema has SecondaryKey-branded fields.
-     * Used for O(1) cache lookup on `get()` calls.
-     *
-     * @example
-     * ```typescript
-     * mapKeySecondaryToPrimary: (key) => {
-     *   switch (key._tag) {
-     *     case 'slug': return `content/essays/${key.value}/index.mdx`
-     *   }
-     * }
-     * ```
-     */
-    mapKeySecondaryToPrimary?: (
-      key: SecondaryKey.UnionFromFields<$Fields>,
-    ) => StoreInterface.GetPrimaryKey<$Store>
-  }
-
-  /** Config for passthrough (no schema, no map). */
-  export interface ConfigPassthrough<
-    $Tag extends string,
-    $Store extends StoreInterface,
-  > extends ConfigBase<$Store> {}
-
-  /** Config for singleton with schema and map. */
-  export interface ConfigSingletonWithSchemaAndMap<
-    $Tag extends string,
-    $Store extends StoreInterface,
-    $Fields extends Struct.Fields,
-  > extends ConfigBase<$Store> {
-    schema: $Fields
-    map: (
-      data: StoreInterface.Data<$Store>,
-    ) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
-  }
 }
 
 // ============================================================================
-// Function Overloads
+// Content Function (Interface Call Signature Approach)
 // ============================================================================
 
-/** Schema without context requirements. */
-type SchemaNoContext = S.Schema<any, any, never>
+/**
+ * Content function type with call signature overloads.
+ *
+ * Uses interface call signatures instead of function overloads to avoid
+ * variance issues with store primary key types. The constraint is just
+ * `$Store extends Store.Store` (no primary key specified), so any store
+ * type is accepted and TypeScript infers the exact type from `config.store`.
+ */
+// dprint-ignore
+interface ContentFn {
+  // Overload 1: With schema + map (both REQUIRED)
+  <
+    $Tag extends string,
+    $Store extends Store.Store,
+    $Fields extends Struct.Fields,
+    const $SecondaryKeys extends string[] = [],
+  >(
+    tag: $Tag,
+    config: Content.ConfigBase<$Store> & {
+      schema: $Fields
+      map: (
+        data: Store.Store.Data<$Store>,
+      ) => Promise<Struct.Type<$Fields>> | Effect.Effect<Struct.Type<$Fields>, unknown>
+      secondaryKeys?: $SecondaryKeys
+      mapKeySecondaryToPrimary?: (
+        key: SecondaryKey.UnionFromFields<$Fields>,
+      ) => Store.Store.GetPrimaryKey<$Store>
+    },
+  ): Store.Store.GetCardinality<$Store> extends '1'
+       ? Content.SingletonClass<$Tag, $Store, Struct.Type<$Fields>>
+       : Content.CollectionClass<
+           $Tag,
+           $Store,
+           Struct.Type<$Fields>,
+           $SecondaryKeys[number] | SecondaryKey.GetFromFields<$Fields>
+         >
 
-// Overload 1: Collection with schema and map (transformed output)
-// $UniqueKeys defaults to auto-extracted keys from UniqueKey-branded fields
-// Constraint uses union to allow both auto-extracted and manually specified keys
-export function Content<
-  $Tag extends string,
-  $Store extends StoreInterface<SchemaNoContext, 'n'>,
-  $Fields extends Struct.Fields,
-  const $SecondaryKeys extends SecondaryKey.GetFromFields<$Fields> = SecondaryKey.GetFromFields<$Fields>,
->(
-  tag: $Tag,
-  config: Content.ConfigWithSchemaAndMap<$Tag, $Store, $Fields, $SecondaryKeys>,
-): Content.CollectionClass<$Tag, $Store, Struct.Type<$Fields>, $SecondaryKeys>
+  // Overload 2: Passthrough (no schema, no map)
+  <
+    $Tag extends string,
+    $Store extends Store.Store,
+  >(
+    tag: $Tag,
+    config: Content.ConfigBase<$Store>,
+  ): Store.Store.GetCardinality<$Store> extends '1'
+       ? Content.SingletonClass<$Tag, $Store, Store.Store.Data<$Store>>
+       : Content.CollectionClass<
+           $Tag,
+           $Store,
+           Store.Store.Data<$Store>,
+           SecondaryKey.GetFromSchema<Store.Store.Schema<$Store>>
+         >
+}
 
-// Overload 2: Collection passthrough (no schema, no map)
-export function Content<
-  $Tag extends string,
-  $Store extends StoreInterface<SchemaNoContext, 'n'>,
->(
-  tag: $Tag,
-  config: Content.ConfigPassthrough<$Tag, $Store>,
-): Content.CollectionClass<
-  $Tag,
-  $Store,
-  StoreInterface.Data<$Store>,
-  SecondaryKey.GetFromSchema<StoreInterface.Schema<$Store>>
->
-
-// Overload 3: Singleton with schema and map
-export function Content<
-  $Tag extends string,
-  $Store extends StoreInterface<SchemaNoContext, '1'>,
-  $Fields extends Struct.Fields,
->(
-  tag: $Tag,
-  config: Content.ConfigSingletonWithSchemaAndMap<$Tag, $Store, $Fields>,
-): Content.SingletonClass<$Tag, $Store, Struct.Type<$Fields>>
-
-// Overload 4: Singleton passthrough
-export function Content<
-  $Tag extends string,
-  $Store extends StoreInterface<SchemaNoContext, '1'>,
->(
-  tag: $Tag,
-  config: Content.ConfigPassthrough<$Tag, $Store>,
-): Content.SingletonClass<$Tag, $Store, StoreInterface.Data<$Store>>
-
-// ============================================================================
-// Implementation
-// ============================================================================
-
-export function Content(
-  tag: string,
-  config: {
-    store: StoreInterface
-    schema?: Struct.Fields
-    map?: (data: unknown) => Promise<unknown> | Effect.Effect<unknown, unknown>
-    secondaryKeys?: string[]
-    onCacheEvent?: (event: CacheEvent) => void
-    version?: number | string | (() => number | string)
-    mapKeySecondaryToPrimary?: (key: { _tag: string; value: string }) => unknown
-  },
-): unknown {
+/** Create a content definition from a store. */
+export const Content: ContentFn = ((tag: string, config: any) => {
   const cardinality = config.store.cardinality
   const hasMap = config.map !== undefined
 
@@ -281,7 +225,7 @@ export function Content(
   const runMap = (data: unknown): Effect.Effect<unknown, ContentError> => {
     if (!hasMap) return Effect.succeed(data)
 
-    const result = config.map!(data)
+    const result = (config.map as any)(data)
 
     if (Effect.isEffect(result)) {
       return result.pipe(
@@ -292,7 +236,7 @@ export function Content(
             message: `Map function failed: ${String(cause)}`,
           })
         ),
-      )
+      ) as any
     }
 
     // Promise
@@ -309,7 +253,7 @@ export function Content(
 
   if (cardinality === '1') {
     // Singleton implementation - no caching needed for singletons
-    const get = (): Effect.Effect<unknown, ContentOpError, FileSystem.FileSystem> =>
+    const get = () =>
       Effect.gen(function*() {
         const records = yield* config.store.readMany()
         if (records.length === 0) {
@@ -356,7 +300,7 @@ export function Content(
   const outputSchema = config.schema ? S.Struct(config.schema as Struct.Fields) : null
 
   // Define list as a closure-captured function
-  const list = (): Effect.Effect<unknown[], ContentOpError, Cache | FileSystem.FileSystem> =>
+  const list = () =>
     Effect.gen(function*() {
       const cache = yield* Cache
 
@@ -407,9 +351,7 @@ export function Content(
     })
 
   // Define get as a closure-captured function
-  const get = (
-    keyLookup: Record<string, string>,
-  ): Effect.Effect<Option.Option<unknown>, ContentOpError, Cache | FileSystem.FileSystem> =>
+  const get = (keyLookup: Record<string, string>) =>
     Effect.gen(function*() {
       const cache = yield* Cache
 
@@ -463,5 +405,5 @@ export function Content(
     get,
   }
 
-  return collection
-}
+  return collection as any
+}) as ContentFn

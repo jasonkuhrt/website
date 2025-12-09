@@ -137,7 +137,7 @@ const fetchGitHubRepo = async (owner: string, name: string): Promise<GitHubRepo>
 // Module Content Definition
 // ============================================================================
 
-const Module = Content('module', {
+export const Module = Content('module', {
   store: Store.js({
     path: 'content/module.ts',
     schema: S.Struct({
@@ -160,7 +160,7 @@ const Module = Content('module', {
     latestRelease: S.NullOr(LatestRelease),
     defaultBranchRef: S.NullOr(DefaultBranchRef),
   },
-  uniqueKeys: ['repo'],
+  secondaryKeys: ['repo'],
   async map(source) {
     const repoString = `${source.repo.owner}/${source.repo.name}`
     const repoData = await fetchGitHubRepo(source.repo.owner, source.repo.name)

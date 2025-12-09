@@ -14,9 +14,7 @@ import { detectMixedContent } from '../styles/core/debug-mixed-content.js'
  */
 export const DebugMixedContent: React.FC = () => {
   useEffect(() => {
-    if (document.documentElement.classList.contains('debug')) {
-      detectMixedContent()
-    }
+    if (document.documentElement.classList.contains('debug')) detectMixedContent()
   }, [])
   return null
 }

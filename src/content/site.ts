@@ -1,7 +1,7 @@
 import { Content, Store } from 'continent'
 import * as S from 'effect/Schema'
 
-const Site = Content('site', {
+export const Site = Content('site', {
   store: Store.js({
     path: 'content/site.ts',
     cardinality: '1',

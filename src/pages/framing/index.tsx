@@ -1,5 +1,5 @@
 import { Meta } from '#~/components/meta.js'
-import Frame from '#~/content/frame.js'
+import { Frame } from '#~/content/frame.js'
 import { config, page } from '#~/runtime.js'
 
 export default page(function*() {
