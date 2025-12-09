@@ -28,10 +28,10 @@ export class MdxCompilationError extends Data.TaggedError('MdxCompilationError')
 }> {}
 
 /**
- * Error for content operations (get, list).
+ * Error for content operations (get, getBy, list).
  */
 export class ContentError extends Data.TaggedError('ContentError')<{
   readonly contentTag: string
-  readonly operation: 'get' | 'list'
+  readonly operation: 'get' | 'getBy' | 'list'
   readonly message: string
 }> {}

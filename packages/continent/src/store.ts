@@ -18,10 +18,19 @@ export type PrimaryKey = string | number
 /** Common error type for store operations. */
 export type StoreError = PlatformErrorModule.PlatformError
 
+/** Runtime info about a PrimaryKey field (used by JsStore). */
+export interface PrimaryKeyInfo {
+  /** Field name in the struct */
+  fieldName: string
+  /** The schema for encoding/decoding */
+  schema: S.Schema.Any
+}
+
 // ============================================================================
 // Store
 // ============================================================================
 
+// dprint-ignore
 export interface Store<
   $Schema extends SchemaNoContext = SchemaNoContext,
   $Cardinality extends Cardinality = Cardinality,
@@ -33,15 +42,17 @@ export interface Store<
   /** Original glob patterns for precise file matching. */
   watchGlobs: string[]
   schema: $Schema
+  /** PrimaryKey field info (optional, only for JsStore with PrimaryKey combinator). */
+  primaryKeyInfo?: PrimaryKeyInfo
   /** Read all records from the store. */
   readMany(): Effect.Effect<
     SourceRecord<S.Schema.Type<$Schema>, $PrimaryKey>[],
     StoreError,
     FileSystem.FileSystem
   >
-  /** Read a single record by primary key. */
+  /** Read a single record by primary key. For singletons (cardinality '1'), key is ignored. */
   readOne(
-    primaryKey: $PrimaryKey,
+    ...args: $Cardinality extends '1' ? [] : [$PrimaryKey]
   ): Effect.Effect<
     SourceRecord<S.Schema.Type<$Schema>, $PrimaryKey>,
     StoreError,

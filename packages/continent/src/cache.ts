@@ -29,8 +29,8 @@ export interface CacheService {
     namespace: string,
     /** Version number */
     version: number,
-    /** Primary key (file path for dir store, hash string for js store) */
-    primaryKey: string,
+    /** Primary key (file path for dir store, hash for js store) */
+    primaryKey: string | number,
     /** Expected hash for validation (returns None if mismatch) */
     hash: number,
   ): Option.Option<unknown>
@@ -41,8 +41,8 @@ export interface CacheService {
     namespace: string,
     /** Version number */
     version: number,
-    /** Primary key (file path for dir store, hash string for js store) */
-    primaryKey: string,
+    /** Primary key (file path for dir store, hash for js store) */
+    primaryKey: string | number,
     /** Hash for content validation */
     hash: number,
     /** Processed value to cache */
@@ -72,7 +72,7 @@ export interface CacheService {
     /** Secondary key value (e.g. 'my-post') */
     keyValue: string,
     /** Primary key this secondary key resolves to */
-    primaryKey: string,
+    primaryKey: string | number,
   ): void
 
   /** Clear a specific entry by primary key and remove any secondary keys pointing to it. Returns true if entry existed. */
@@ -82,7 +82,7 @@ export interface CacheService {
     /** Version number */
     version: number,
     /** Primary key to remove */
-    primaryKey: string,
+    primaryKey: string | number,
   ): boolean
 
   /** Clear all entries in a namespace (for invalidation). Returns count of entries removed. */
@@ -130,9 +130,9 @@ interface CacheEntry {
 
 interface VersionBucket {
   /** primaryKey → { hash, value } */
-  entries: MutableHashMap.MutableHashMap<string, CacheEntry>
+  entries: MutableHashMap.MutableHashMap<string | number, CacheEntry>
   /** keyName → keyValue → primaryKey */
-  indices: MutableHashMap.MutableHashMap<string, MutableHashMap.MutableHashMap<string, string>>
+  indices: MutableHashMap.MutableHashMap<string, MutableHashMap.MutableHashMap<string, string | number>>
 }
 
 const createVersionBucket = (): VersionBucket => ({
@@ -157,8 +157,11 @@ interface NamespaceState {
 // Cache File Schema
 // ============================================================================
 
-/** Schema for cache file format: JSON array of [version, primaryKey, hash, encodedValue] tuples. */
-const CacheFileSchema = S.parseJson(S.Array(S.Tuple(S.Number, S.String, S.Number, S.Unknown)))
+/** Schema for cache file format: Record<version, [primaryKey, hash, encodedValue][]>. */
+const CacheFileSchema = S.parseJson(
+  S.Record({ key: S.String, value: S.Array(S.Tuple(S.Union(S.String, S.Number), S.Number, S.Unknown)) }),
+  { space: 2 },
+)
 
 // ============================================================================
 // Cache Implementation
@@ -198,7 +201,7 @@ const createCacheImpl = (cacheDir: string): CacheService => {
       getOrCreateNamespace(namespace).schema = schema
     },
 
-    getByPrimaryKey(namespace: string, version: number, primaryKey: string, hash: number) {
+    getByPrimaryKey(namespace: string, version: number, primaryKey: string | number, hash: number) {
       const ns = getOrCreateNamespace(namespace)
       return MutableHashMap.get(ns.data, version).pipe(
         Option.flatMap((bucket) => MutableHashMap.get(bucket.entries, primaryKey)),
@@ -207,7 +210,7 @@ const createCacheImpl = (cacheDir: string): CacheService => {
       )
     },
 
-    setByPrimaryKey(namespace: string, version: number, primaryKey: string, hash: number, value: unknown) {
+    setByPrimaryKey(namespace: string, version: number, primaryKey: string | number, hash: number, value: unknown) {
       const ns = getOrCreateNamespace(namespace)
       const bucket = getOrCreateBucket(ns, version)
       MutableHashMap.set(bucket.entries, primaryKey, { hash, value })
@@ -228,14 +231,14 @@ const createCacheImpl = (cacheDir: string): CacheService => {
       )
     },
 
-    setSecondaryKey(namespace: string, version: number, keyName: string, keyValue: string, primaryKey: string) {
+    setSecondaryKey(namespace: string, version: number, keyName: string, keyValue: string, primaryKey: string | number) {
       const ns = getOrCreateNamespace(namespace)
       const bucket = getOrCreateBucket(ns, version)
 
       // Get or create key index
       const keyIndex = MutableHashMap.get(bucket.indices, keyName).pipe(
         Option.getOrElse(() => {
-          const newIndex = MutableHashMap.empty<string, string>()
+          const newIndex = MutableHashMap.empty<string, string | number>()
           MutableHashMap.set(bucket.indices, keyName, newIndex)
           return newIndex
         }),
@@ -244,7 +247,7 @@ const createCacheImpl = (cacheDir: string): CacheService => {
       MutableHashMap.set(keyIndex, keyValue, primaryKey)
     },
 
-    removeByPrimaryKey(namespace: string, version: number, primaryKey: string): boolean {
+    removeByPrimaryKey(namespace: string, version: number, primaryKey: string | number): boolean {
       const nsOpt = MutableHashMap.get(namespaces, namespace)
       if (Option.isNone(nsOpt)) return false
 
@@ -297,18 +300,20 @@ const createCacheImpl = (cacheDir: string): CacheService => {
 
           yield* fs.makeDirectory(cacheDir, { recursive: true })
 
-          // Flatten: [version, primaryKey, hash, encodedValue] (indices are not persisted, rebuilt on list())
-          const entries: [number, string, number, unknown][] = []
+          // Group by version: { [version]: [primaryKey, hash, encodedValue][] }
+          const byVersion: Record<string, [string | number, number, unknown][]> = {}
           for (const [version, bucket] of state.data) {
+            const versionKey = String(version)
+            byVersion[versionKey] = []
             for (const [primaryKey, entry] of bucket.entries) {
               const encodedValue = state.schema ?
                 S.encodeSync(state.schema as S.Schema<any, any, never>)(entry.value) :
                 entry.value
-              entries.push([version, primaryKey, entry.hash, encodedValue])
+              byVersion[versionKey].push([primaryKey, entry.hash, encodedValue])
             }
           }
 
-          const json = S.encodeSync(CacheFileSchema)(entries)
+          const json = S.encodeSync(CacheFileSchema)(byVersion)
           yield* fs.writeFileString(cachePathForNamespace(namespace), json)
 
           state.dirty = false
@@ -319,7 +324,10 @@ const createCacheImpl = (cacheDir: string): CacheService => {
     load(namespace) {
       return Effect.gen(function*() {
         const ns = getOrCreateNamespace(namespace)
-        if (ns.loaded) return
+        if (ns.loaded) {
+          console.log(`[cache] ${namespace}.load() already loaded`)
+          return
+        }
 
         const fs = yield* FileSystem.FileSystem
         const path = cachePathForNamespace(namespace)
@@ -328,17 +336,26 @@ const createCacheImpl = (cacheDir: string): CacheService => {
         if (exists) {
           const content = yield* fs.readFileString(path)
           if (content.trim()) {
-            const entries = S.decodeSync(CacheFileSchema)(content)
-            for (const [version, primaryKey, hash, encodedValue] of entries) {
-              const decoded = ns.schema ?
-                S.decodeSync(ns.schema as S.Schema<any, any, never>)(encodedValue) :
-                encodedValue
+            const byVersion = S.decodeSync(CacheFileSchema)(content)
+            const versions = Object.keys(byVersion)
+            const totalEntries = Object.values(byVersion).reduce((sum, arr) => sum + arr.length, 0)
+            const samplePks = Object.values(byVersion)[0]?.slice(0, 3).map(([pk]) => pk) ?? []
+            console.log(`[cache] ${namespace}.load() ${totalEntries} entries, versions=[${versions.join(',')}], sample pks=[${samplePks.join(',')}]`)
+            for (const [versionStr, entries] of Object.entries(byVersion)) {
+              const version = Number(versionStr)
+              for (const [primaryKey, hash, encodedValue] of entries) {
+                const decoded = ns.schema ?
+                  S.decodeSync(ns.schema as S.Schema<any, any, never>)(encodedValue) :
+                  encodedValue
 
-              const bucket = getOrCreateBucket(ns, version)
-              MutableHashMap.set(bucket.entries, primaryKey, { hash, value: decoded })
-              // Note: indices are not persisted, will be rebuilt when list() runs
+                const bucket = getOrCreateBucket(ns, version)
+                MutableHashMap.set(bucket.entries, primaryKey, { hash, value: decoded })
+                // Note: indices are not persisted, will be rebuilt when list() runs
+              }
             }
           }
+        } else {
+          console.log(`[cache] ${namespace}.load() no cache file`)
         }
 
         ns.loaded = true
@@ -381,7 +398,7 @@ const createCacheImpl = (cacheDir: string): CacheService => {
  * Core cache format version - bump when data structure changes.
  * Old cache directories (v{N-1}/) are automatically ignored.
  */
-const CACHE_VERSION = 4
+const CACHE_VERSION = 5
 
 // ============================================================================
 // globalThis Singleton Key

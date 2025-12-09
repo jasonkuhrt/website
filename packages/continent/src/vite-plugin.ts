@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import { extname, relative, resolve } from 'node:path'
 import type { Plugin } from 'vite'
 import * as Cache from './cache.js'
+import type { Content } from './content.js'
 import * as DefinitionRegistry from './definition-registry.js'
 
 /**
@@ -36,7 +37,7 @@ export interface ContinentPluginOptions {
   /** Glob pattern for discovering content definition files. */
   discoveryGlob?: string
   /** Initial definitions to register (optional). */
-  definitions?: DefinitionRegistry.Definition[]
+  definitions?: Content.Base[]
   /** Root directory for resolving paths. Defaults to process.cwd(). */
   root?: string
 }
@@ -94,6 +95,17 @@ export const continentPlugin = (options: ContinentPluginOptions = {}): Plugin =>
       // 3. Run discovery (merges with any initial definitions from constructor)
       await Effect.runPromise(registry.discover(loadModule))
 
+      // 3b. Preload cache for all discovered definitions
+      for (const def of registry.getAll()) {
+        await Effect.runPromise(
+          def.restoreCache().pipe(
+            Effect.provide(Cache.CacheLive),
+            Effect.provide(NodeContext.layer),
+          ),
+        )
+      }
+      console.log(`[continent] Preloaded cache for ${registry.getAll().length} definitions`)
+
       // 4. Watch for definition files
       const discoveryGlob = resolve(root, registry.config.discoveryGlob)
       if (!options.definitions) server.watcher.add(discoveryGlob)
@@ -106,7 +118,21 @@ export const continentPlugin = (options: ContinentPluginOptions = {}): Plugin =>
         ),
       )
 
-      // 6. File change handler
+      // 6. Handle SIGINT (Ctrl+C) for graceful shutdown
+      // Vite only handles SIGTERM, not SIGINT, so we need to handle it ourselves
+      const handleSigint = async () => {
+        console.log('\n[continent] Received SIGINT, flushing cache...')
+        await server.close()
+        process.exit(0)
+      }
+      process.once('SIGINT', handleSigint)
+
+      // Clean up SIGINT handler on server close
+      server.httpServer?.on('close', () => {
+        process.off('SIGINT', handleSigint)
+      })
+
+      // 7. File change handler
       server.watcher.on('all', (event, filePath) => {
         if (event !== 'add' && event !== 'change' && event !== 'unlink') return
 
@@ -161,7 +187,7 @@ export const continentPlugin = (options: ContinentPluginOptions = {}): Plugin =>
         ).catch((err) => console.error(`[continent] Error handling ${event} for ${filePath}:`, err))
       })
 
-      // 8. Asset middleware
+      // 9. Asset middleware
       return () => {
         server.middlewares.use((req, res, next) => {
           const url = req.url

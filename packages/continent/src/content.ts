@@ -3,6 +3,7 @@ import { Effect, Hash, Option, Schema as S } from 'effect'
 import type { Struct } from 'effect/Schema'
 import { Cache, type CacheSchema } from './cache.js'
 import { ContentError } from './errors.js'
+import * as PrimaryKey from './primary-key.js'
 import * as SecondaryKey from './secondary-key.js'
 import * as Store from './store.js'
 
@@ -53,6 +54,15 @@ export interface CacheEvent {
 // Content
 // ============================================================================
 
+/** Check if an export is a content definition. */
+export const isBase = (exp: unknown): exp is Content.Base =>
+  exp !== null &&
+  typeof exp === 'object' &&
+  '_tag' in exp &&
+  'store' in exp &&
+  'version' in exp &&
+  'restoreCache' in exp
+
 export namespace Content {
   /** Helper to create validated encoded store data. */
   export interface StoreMake<$Store extends Store.Store> {
@@ -66,14 +76,27 @@ export namespace Content {
     ) => S.Schema.Encoded<Store.Store.Schema<$Store>>[]
   }
 
+  /** Base interface shared by singleton and collection content. */
+  export interface Base {
+    readonly _tag: string
+    readonly version: number
+    readonly store: Store.Store
+    /** Source file that defines this content (set by registry on import). */
+    sourceFilePath?: string
+    /** Restore cache from disk. */
+    restoreCache(): Effect.Effect<void, PlatformErrorModule.PlatformError, Cache | FileSystem.FileSystem>
+  }
+
   /** Interface for cardinality '1' content (singleton). */
-  export interface SingletonClass<$Tag extends string, $Store extends Store.Store, $Output> {
+  export interface SingletonClass<
+    $Tag extends string,
+    $Store extends Store.Store,
+    $Output,
+  > extends Base {
     readonly _tag: $Tag
     readonly store: $Store
     readonly Store: StoreMake<$Store>
     readonly Type: $Output
-    /** Computed version hash for cache invalidation. */
-    readonly version: number
     get(): Effect.Effect<$Output, ContentOpError, FileSystem.FileSystem>
   }
 
@@ -83,18 +106,21 @@ export namespace Content {
     $Store extends Store.Store,
     $Output,
     $SecondaryKeys extends string = never,
-  > {
+    $PrimaryKeyType = Store.Store.GetPrimaryKey<$Store>,
+  > extends Base {
     readonly _tag: $Tag
     readonly store: $Store
     readonly Store: StoreMake<$Store>
     readonly Type: $Output
-    /** Computed version hash for cache invalidation. */
-    readonly version: number
     readonly secondaryKeys: readonly $SecondaryKeys[]
     /** List all records (uses cache). */
     list(): Effect.Effect<$Output[], ContentOpError, Cache | FileSystem.FileSystem>
-    /** Get single record by unique key. Returns Option.none() if not found. */
+    /** Get single record by primary key. Returns Option.none() if not found. */
     get(
+      key: $PrimaryKeyType,
+    ): Effect.Effect<Option.Option<$Output>, ContentOpError, Cache | FileSystem.FileSystem>
+    /** Get single record by secondary key. Returns Option.none() if not found. */
+    getBy(
       key: SecondaryKeyLookup<$SecondaryKeys>,
     ): Effect.Effect<Option.Option<$Output>, ContentOpError, Cache | FileSystem.FileSystem>
   }
@@ -141,6 +167,14 @@ export namespace Content {
      * ```
      */
     version?: number | string | (() => number | string)
+  }
+
+  /** Config type for implementation - widest variant that accepts all overloads. */
+  export type ConfigAny = ConfigBase<Store.Store> & {
+    schema?: Struct.Fields
+    map?: (data: unknown) => Promise<unknown> | Effect.Effect<unknown, unknown>
+    secondaryKeys?: string[]
+    mapKeySecondaryToPrimary?: (key: unknown) => Store.PrimaryKey
   }
 }
 
@@ -203,7 +237,7 @@ interface ContentFn {
 }
 
 /** Create a content definition from a store. */
-export const Content: ContentFn = ((tag: string, config: any) => {
+export const Content: ContentFn = ((tag: string, config: Content.ConfigAny) => {
   const cardinality = config.store.cardinality
   const hasMap = config.map !== undefined
 
@@ -286,6 +320,8 @@ export const Content: ContentFn = ((tag: string, config: any) => {
         },
       },
       get,
+      // Singletons don't use caching, but interface requires this method
+      restoreCache: () => Effect.void,
     }
     return singleton
   }
@@ -302,20 +338,14 @@ export const Content: ContentFn = ((tag: string, config: any) => {
   // Define list as a closure-captured function
   const list = () =>
     Effect.gen(function*() {
+      console.log(`[continent] ${tag}.list() version=${version}`)
       const cache = yield* Cache
-
-      // Register schema for cache encode/decode (before load)
-      if (outputSchema) cache.registerSchema(tag, outputSchema as CacheSchema)
-
-      // Load this namespace's cache (schema already registered)
-      yield* cache.load(tag)
-
       const sourceRecords = yield* config.store.readMany()
       const results: unknown[] = []
 
       for (const source of sourceRecords) {
-        // Primary key is stable identifier (file path for DirStore)
-        const primaryKey = String(source.primaryKey)
+        // Primary key is stable identifier (file path for DirStore, hash for JsStore)
+        const primaryKey = source.primaryKey
 
         // Compute combined hash: source data + definition version
         // Use string concatenation for stable/predictable hash combination
@@ -327,10 +357,12 @@ export const Content: ContentFn = ((tag: string, config: any) => {
         let record: unknown
 
         if (Option.isSome(cached)) {
+          console.log(`[continent] ${tag} HIT pk=${primaryKey} v=${version} srcHash=${sourceHash}`)
           config.onCacheEvent?.({ type: 'hit', hash })
           // Cache stores decoded values (schema handles encode/decode at disk boundary)
           record = cached.value
         } else {
+          console.log(`[continent] ${tag} MISS pk=${primaryKey} v=${version} srcHash=${sourceHash}`)
           config.onCacheEvent?.({ type: 'miss', hash })
           // Cache miss - run map
           record = yield* runMap(source.data)
@@ -350,16 +382,53 @@ export const Content: ContentFn = ((tag: string, config: any) => {
       return results
     })
 
-  // Define get as a closure-captured function
-  const get = (keyLookup: Record<string, string>) =>
+  // Get store's PrimaryKey info for encoding lookup keys
+  const pkInfo = config.store.primaryKeyInfo
+
+  // Define get (primary key lookup) as a closure-captured function
+  const get = (key: unknown) =>
     Effect.gen(function*() {
       const cache = yield* Cache
 
-      // Register schema for cache encode/decode (before load)
-      if (outputSchema) cache.registerSchema(tag, outputSchema as CacheSchema)
+      // Convert user's key to cache key
+      let cacheKey: string | number
+      if (pkInfo) {
+        // Encode user's decoded key to get cache key
+        cacheKey = PrimaryKey.toCacheKey(pkInfo.schema, key)
+      } else {
+        // Fallback: assume key is already a cache key (string or number)
+        cacheKey = key as string | number
+      }
 
-      // Load this namespace's cache (schema already registered)
-      yield* cache.load(tag)
+      // Try direct cache lookup by primary key
+      // We need to iterate through cached entries to find by primaryKey
+      // Since we don't have the hash, we can't use getByPrimaryKey directly
+      // Instead, populate cache via list() then lookup by primary key
+
+      // Ensure cache is populated
+      yield* list()
+
+      // Now find the record by primary key
+      // The cache stores records by primaryKey, so we need to check all entries
+      // This is a limitation - we could optimize by having a direct primaryKey index
+      const sourceRecords = yield* config.store.readMany()
+      for (const source of sourceRecords) {
+        if (source.primaryKey === cacheKey) {
+          // Found the source record, look up its cached output
+          const sourceHash = Hash.hash(source.data)
+          const hash = Hash.hash(`${sourceHash}:${version}`)
+          const cached = cache.getByPrimaryKey(tag, version, cacheKey, hash)
+          if (Option.isSome(cached)) return cached
+        }
+      }
+
+      return Option.none()
+    })
+
+  // Define getBy (secondary key lookup) as a closure-captured function
+  const getBy = (keyLookup: Record<string, string>) =>
+    Effect.gen(function*() {
+      const cache = yield* Cache
 
       // Extract the single key from the lookup object
       const entries = Object.entries(keyLookup)
@@ -367,8 +436,8 @@ export const Content: ContentFn = ((tag: string, config: any) => {
         return yield* Effect.fail(
           new ContentError({
             contentTag: tag,
-            operation: 'get',
-            message: `get() expects exactly one key, got ${entries.length}`,
+            operation: 'getBy',
+            message: `getBy() expects exactly one key, got ${entries.length}`,
           }),
         )
       }
@@ -403,6 +472,14 @@ export const Content: ContentFn = ((tag: string, config: any) => {
     },
     list,
     get,
+    getBy,
+    restoreCache: () =>
+      Effect.gen(function*() {
+        console.log(`[continent] ${tag}.restoreCache() version=${version}`)
+        const cache = yield* Cache
+        if (outputSchema) cache.registerSchema(tag, outputSchema as CacheSchema)
+        yield* cache.load(tag)
+      }),
   }
 
   return collection as any

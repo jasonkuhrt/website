@@ -6,7 +6,7 @@ import { config, page } from '#~/runtime.js'
 import { Option } from 'effect'
 
 export default page<{ slug: string }>(function*({ slug }) {
-  const postOption = yield* Drivel.get({ slug })
+  const postOption = yield* Drivel.getBy({ slug })
   const post = Option.getOrThrowWith(postOption, () => new Error(`Drivel not found: ${slug}`))
 
   return (

@@ -6,7 +6,7 @@ import { config, page } from '#~/runtime.js'
 import { Option } from 'effect'
 
 export default page<{ slug: string }>(function*({ slug }) {
-  const essayOption = yield* Essay.get({ slug })
+  const essayOption = yield* Essay.getBy({ slug })
   const essay = Option.getOrThrowWith(essayOption, () => new Error(`Essay not found: ${slug}`))
 
   return (

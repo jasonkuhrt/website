@@ -240,22 +240,22 @@ export const Mdx = <
     ...extraFrontmatter,
   })
 
-  const outputSchema = {
-    slug: SecondaryKey.SecondaryKey(S.String),
-    title: S.String,
-    date: S.Date,
-    compiledJs: S.String,
-    assets: AssetsField,
-    ...extraFrontmatter,
-  }
-
   // Cast config to bypass complex generic inference; return type is manually specified
   return Content(name, {
-    store: Stores.dir({ glob }),
-    schema: outputSchema,
     // BUMP THIS when factory processing changes (plugins, schema, etc.)
     // v2: Added rehypeImageDimensions plugin
     version: 2,
+    store: Stores.dir({
+      glob,
+    }),
+    schema: {
+      slug: SecondaryKey.SecondaryKey(S.String),
+      title: S.String,
+      date: S.Date,
+      compiledJs: S.String,
+      assets: AssetsField,
+      ...extraFrontmatter,
+    },
     map(source: DirData) {
       const slug = slugFn(source)
       const assetBasePath = assetBasePathFn(slug, source)

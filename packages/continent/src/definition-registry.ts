@@ -2,33 +2,7 @@ import { Console, Effect, Equal, Option, pipe, PubSub, Stream } from 'effect'
 import fg from 'fast-glob'
 import picomatch from 'picomatch'
 import { Cache } from './cache.js'
-
-// ============================================================================
-// Types
-// ============================================================================
-
-/**
- * Content definition interface for the registry.
- * Matches Content.CollectionClass and Content.SingletonClass.
- */
-export interface Definition {
-  readonly _tag: string
-  readonly version: number
-  readonly store: {
-    watchPaths: string[]
-    watchGlobs: string[]
-  }
-  /** Source file that defines this content (for module graph invalidation). */
-  sourceFilePath?: string
-}
-
-/** Check if an export is a content definition. */
-export const isDefinition = (exp: unknown): exp is Definition =>
-  exp !== null &&
-  typeof exp === 'object' &&
-  '_tag' in exp &&
-  'store' in exp &&
-  'version' in exp
+import { Content, isBase } from './content.js'
 
 /** Function to load a module and return its exports (Effect-based). */
 export type LoadModule = (path: string) => Effect.Effect<Record<string, unknown>, Error>
@@ -38,7 +12,7 @@ export interface Config {
   /** Glob pattern for discovering content definition files. */
   discoveryGlob: string
   /** Initial definitions to register (optional). */
-  definitions?: Definition[]
+  definitions?: Content.Base[]
   /** Root directory for resolving paths. */
   root: string
 }
@@ -46,8 +20,8 @@ export interface Config {
 /** Result of classifying what's affected by a file path change. */
 export type AffectedByFilePath =
   | { _tag: 'Nothing' }
-  | { _tag: 'Definition'; definition: Option.Option<Definition> }
-  | { _tag: 'Content'; definitions: Definition[] }
+  | { _tag: 'Definition'; definition: Option.Option<Content.Base> }
+  | { _tag: 'Content'; definitions: Content.Base[] }
 
 /**
  * Registry for tracking content definitions and their watch patterns.
@@ -58,31 +32,31 @@ export interface DefinitionRegistry {
   readonly config: Config
 
   /** Discover and register content definitions from files matching config.discoveryGlob. */
-  discover(loadModule: LoadModule): Effect.Effect<Definition[]>
+  discover(loadModule: LoadModule): Effect.Effect<Content.Base[]>
 
   /** Import a single content file and register its definition (default export). */
-  importFile(sourceFile: string, loadModule: LoadModule): Effect.Effect<Option.Option<Definition>>
+  importFile(sourceFile: string, loadModule: LoadModule): Effect.Effect<Option.Option<Content.Base>>
 
   /** Register a content definition. */
-  register(def: Definition): void
+  register(def: Content.Base): void
 
   /** Get definitions whose watchGlobs match a file path. */
-  getByWatchedFilePath(filePath: string): Definition[]
+  getByWatchedFilePath(filePath: string): Content.Base[]
 
   /** Get all registered definitions. */
-  getAll(): Definition[]
+  getAll(): Content.Base[]
 
   /** Get definition by tag. */
-  get(tag: string): Definition | undefined
+  get(tag: string): Content.Base | undefined
 
   /** Unregister by tag. */
   remove(tag: string): void
 
   /** Unregister definition from a source file. Returns the removed definition. */
-  unregisterBySourceFile(sourceFile: string): Option.Option<Definition>
+  unregisterBySourceFile(sourceFile: string): Option.Option<Content.Base>
 
   /** Get definition from a source file. */
-  getBySourceFile(sourceFile: string): Option.Option<Definition>
+  getBySourceFile(sourceFile: string): Option.Option<Content.Base>
 
   /**
    * Ready-to-run Effect that removes stale cache entries when definition versions change.
@@ -101,7 +75,7 @@ export interface DefinitionRegistry {
    * Stream of imported definitions. Consumers can subscribe to handle
    * activation tasks like setting up file watchers.
    */
-  importStream: Stream.Stream<Definition>
+  importStream: Stream.Stream<Content.Base>
 
   /** Classify what's affected by a file path change. */
   getAffectedByFilePath(filePath: string): AffectedByFilePath
@@ -113,15 +87,15 @@ export interface DefinitionRegistry {
 
 /** Create a new DefinitionRegistry instance. */
 export const create = (config: Config): DefinitionRegistry => {
-  const definitions = new Map<string, Definition>()
-  const pubsub = Effect.runSync(PubSub.unbounded<Definition>())
+  const definitions = new Map<string, Content.Base>()
+  const pubsub = Effect.runSync(PubSub.unbounded<Content.Base>())
 
   // Register initial definitions (stream will emit them on subscription - no publish needed)
   if (config.definitions) {
     for (const def of config.definitions) definitions.set(def._tag, def)
   }
 
-  const importFile = (sourceFilePath: string, loadModule: LoadModule): Effect.Effect<Option.Option<Definition>> =>
+  const importFile = (sourceFilePath: string, loadModule: LoadModule): Effect.Effect<Option.Option<Content.Base>> =>
     Effect.gen(function*() {
       const mod = yield* loadModule(sourceFilePath).pipe(
         Effect.catchAll((err) => {
@@ -135,7 +109,7 @@ export const create = (config: Config): DefinitionRegistry => {
         console.warn(`[continent] No default export in ${sourceFilePath}`)
         return Option.none()
       }
-      if (!isDefinition(exp)) {
+      if (!isBase(exp)) {
         console.warn(`[continent] Default export in ${sourceFilePath} is not a valid content definition`)
         return Option.none()
       }
@@ -157,7 +131,7 @@ export const create = (config: Config): DefinitionRegistry => {
     discover: (loadModule) =>
       Effect.gen(function*() {
         const files = yield* Effect.promise(() => fg(config.discoveryGlob, { cwd: config.root, absolute: true }))
-        const allDefs: Definition[] = []
+        const allDefs: Content.Base[] = []
         for (const file of files) {
           const result = yield* importFile(file, loadModule)
           if (Option.isSome(result)) allDefs.push(result.value)
@@ -173,7 +147,7 @@ export const create = (config: Config): DefinitionRegistry => {
     },
 
     getByWatchedFilePath(filePath) {
-      const results: Definition[] = []
+      const results: Content.Base[] = []
       for (const def of definitions.values()) {
         for (const glob of def.store.watchGlobs) {
           if (picomatch.isMatch(filePath, glob)) {
@@ -243,7 +217,7 @@ export const create = (config: Config): DefinitionRegistry => {
       for (const def of definitions.values())
         if (def.sourceFilePath === filePath) return { _tag: 'Definition', definition: Option.some(def) }
       // Content asset: matches any definition's watchGlobs
-      const affected: Definition[] = []
+      const affected: Content.Base[] = []
       for (const def of definitions.values()) {
         for (const glob of def.store.watchGlobs) {
           if (picomatch.isMatch(filePath, glob)) {

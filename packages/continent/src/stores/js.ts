@@ -1,18 +1,33 @@
-import { FileSystem } from '@effect/platform'
-import { Effect, Hash, Option, Schema as S } from 'effect'
+import { Effect, Hash, Match, Schema as S } from 'effect'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { ensureHashableSchema } from '../lib/hashable.js'
+import { ensureHashable, ensureHashableSchema } from '../lib/hashable.js'
 import { dynamicImport } from '../lib/import.js'
+import * as PrimaryKey from '../primary-key.js'
 import { type Cardinality, defaultCardinality, type SchemaNoContext, type SourceRecord, type Store } from '../store.js'
+
+// ============================================================================
+// Source Repository (tagged union)
+// ============================================================================
+
+type SourceRepository =
+  | { _tag: 'collection'; records: unknown[] }
+  | { _tag: 'singleton'; record: unknown }
 
 // ============================================================================
 // JS Store
 // ============================================================================
 
-/** Type alias for JS manifest-based stores. PrimaryKey is hash (number). */
-export type Js<$Schema extends SchemaNoContext = SchemaNoContext, $Cardinality extends Cardinality = Cardinality> =
-  Store<$Schema, $Cardinality, number>
+/**
+ * Type alias for JS manifest-based stores.
+ * PrimaryKey is string if PrimaryKey combinator used with string-encoded schema,
+ * otherwise falls back to hash (number) for backwards compatibility.
+ */
+export type Js<
+  $Schema extends SchemaNoContext = SchemaNoContext,
+  $Cardinality extends Cardinality = Cardinality,
+  $PrimaryKey extends string | number = string,
+> = Store<$Schema, $Cardinality, $PrimaryKey>
 
 export interface JsConfig<
   $Schema extends SchemaNoContext,
@@ -32,39 +47,29 @@ export interface JsConfig<
 /** Create a JS manifest-based store. */
 export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardinality = typeof defaultCardinality>(
   config: JsConfig<$Schema, $Cardinality>,
-): Js<$Schema, $Cardinality> => {
+): Js<$Schema, $Cardinality, string | number> => {
   const cardinality = config.cardinality ?? defaultCardinality
-  // Wrap schema at creation time to ensure decoded values are hashable
-  const hashableSchema = ensureHashableSchema(config.schema)
+  const decodeSourceRecord = S.decodeUnknownSync(ensureHashableSchema(config.schema))
 
-  // Helper to load all records from the manifest file
-  const loadRecords = () =>
+  // Helper to extract primaryKey from raw item
+  const pkInfo = PrimaryKey.getFromSchema(config.schema)
+  const extractPrimaryKey: (sourceRecord: any) => string | number = pkInfo ?
+    (sourceRecord) => PrimaryKey.read(pkInfo, sourceRecord) :
+    (sourceRecord) => Hash.hash(ensureHashable(sourceRecord))
+
+  // Internal helper - import and validate source module
+  const importSourceRepository = () =>
     Effect.gen(function*() {
-      const fs = yield* FileSystem.FileSystem
       const fullPath = join(process.cwd(), config.path)
-
-      // Get mtime for cache busting
-      const info = yield* fs.stat(fullPath)
-      const mtime = Option.getOrElse(info.mtime, () => new Date(0)).getTime()
-
-      // Dynamic import with cache busting via timestamp query param
-      const fileUrl = pathToFileURL(fullPath).href + `?t=${mtime}`
-      const mod = yield* dynamicImport(fileUrl)
+      const fileUrl = pathToFileURL(fullPath).href
+      const mod = yield* dynamicImport(fileUrl, { bustCache: true })
       const raw = mod.default
 
-      if (cardinality === '1') {
-        const data = S.decodeUnknownSync(hashableSchema)(raw)
-        const primaryKey = Hash.hash(data)
-        return [{ primaryKey, signature: null, data }] as SourceRecord<S.Schema.Type<$Schema>, number>[]
-      }
+      if (cardinality === '1') return { _tag: 'singleton', record: raw } as const
 
-      // 'n'
-      const items = Array.isArray(raw) ? raw : []
-      return items.map((item) => {
-        const data = S.decodeUnknownSync(hashableSchema)(item)
-        const primaryKey = Hash.hash(data)
-        return { primaryKey, signature: null, data }
-      }) as SourceRecord<S.Schema.Type<$Schema>, number>[]
+      if (!Array.isArray(raw))
+        return yield* Effect.die(new Error(`JsStore: Expected array for cardinality 'n' but got ${typeof raw}`))
+      return { _tag: 'collection', records: raw } as const
     })
 
   return {
@@ -72,15 +77,45 @@ export const js = <$Schema extends SchemaNoContext, $Cardinality extends Cardina
     watchPaths: [config.path],
     watchGlobs: [config.path],
     schema: config.schema,
-
-    readMany: loadRecords,
-
-    readOne: (primaryKey: number) =>
+    primaryKeyInfo: pkInfo,
+    readMany: () =>
       Effect.gen(function*() {
-        const records = yield* loadRecords()
-        const found = records.find((r) => r.primaryKey === primaryKey)
-        if (!found) return yield* Effect.die(new Error(`JsStore: No record found with hash ${primaryKey}`))
-        return found
+        const repo = yield* importSourceRepository()
+
+        return Match.value(repo).pipe(
+          Match.tagsExhaustive({
+            singleton: ({ record }) => {
+              const primaryKey = extractPrimaryKey(record)
+              const data = decodeSourceRecord(record)
+              return [{ primaryKey, signature: null, data }]
+            },
+            collection: ({ records }) =>
+              records.map((record) => {
+                const primaryKey = extractPrimaryKey(record)
+                const data = decodeSourceRecord(record)
+                return { primaryKey, signature: null, data }
+              }),
+          }),
+        ) as SourceRecord<S.Schema.Type<$Schema>, string | number>[]
       }),
-  }
+    readOne: (primaryKey?: string | number) =>
+      Effect.gen(function*() {
+        const repo = yield* importSourceRepository()
+
+        return yield* Match.value(repo).pipe(
+          Match.tagsExhaustive({
+            singleton: ({ record }) => {
+              const data = decodeSourceRecord(record)
+              return Effect.succeed({ primaryKey: extractPrimaryKey(record), signature: null, data })
+            },
+            collection: ({ records }) => {
+              const record = records.find((r) => extractPrimaryKey(r) === primaryKey)
+              if (!record) return Effect.die(new Error(`JsStore: No record found with key ${primaryKey}`))
+              const data = decodeSourceRecord(record)
+              return Effect.succeed({ primaryKey: primaryKey!, signature: null, data })
+            },
+          }),
+        )
+      }),
+  } as any
 }

@@ -14,7 +14,7 @@ export default page(function*() {
       <main>
         <h1>Crafting</h1>
         <p>
-          Open source projects I've created or significantly contributed to.
+          Open source projects I've created/co-created.
         </p>
 
         {featured.length > 0 && (

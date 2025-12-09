@@ -1,4 +1,4 @@
-import { Content, Store } from 'continent'
+import { Content, PrimaryKey, Store } from 'continent'
 import * as S from 'effect/Schema'
 
 // ============================================================================
@@ -119,14 +119,14 @@ const fetchGitHubRepo = async (owner: string, name: string): Promise<GitHubRepo>
     body: JSON.stringify({ query, variables: { owner, name } }),
   })
 
-  if (!response.ok) throw new Error(`GitHub API request failed: ${response.status} ${response.statusText}`)
+  if (!response.ok) throw new Error(`GitHub API request failed for ${owner}/${name}: ${response.status} ${response.statusText}`)
 
   const result = (await response.json()) as {
     data?: { repository: GitHubRepo }
     errors?: { message: string }[]
   }
 
-  if (result.errors) throw new Error(`GitHub GraphQL errors: ${result.errors.map((e) => e.message).join(', ')}`)
+  if (result.errors) throw new Error(`GitHub GraphQL errors for ${owner}/${name}: ${result.errors.map((e) => e.message).join(', ')}`)
 
   if (!result.data?.repository) throw new Error(`Repository ${owner}/${name} not found`)
 
@@ -141,7 +141,7 @@ export const Module = Content('module', {
   store: Store.js({
     path: 'content/module.ts',
     schema: S.Struct({
-      repo: RepoId,
+      repo: PrimaryKey.PrimaryKey(RepoId),
       featured: S.optional(S.Boolean),
     }),
   }),

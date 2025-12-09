@@ -164,9 +164,8 @@ pre {
  * ============================================ */
 
 blockquote {
-    --bw-l: 3px;
-    /*padding-left: calc(4rem - var(--bw-l));*/
     border-left: 3px solid var(--color-border);
+    padding-left: calc(4rem - 3px);
     color: var(--color-text-secondary);
     font-style: italic;
 }

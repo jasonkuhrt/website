@@ -45,7 +45,6 @@
    * Evaluated at use-site (adapts to local lh/cap)
    * ============================================ */
     --text-trimmed: calc(1lh - 1cap);
-    /*--text-trimmed: 1lh;*/
 
     /* Grid-locked cap-height multiples.
      * Font-relative units in custom properties evaluate at USE site, not definition site.
@@ -62,16 +61,66 @@
     --cap8: round(nearest, 8cap, 1rem);
     --cap9: round(nearest, 9cap, 1rem);
     --cap10: round(nearest, 10cap, 1rem);
+    --cap11: round(nearest, 11cap, 1rem);
+    --cap12: round(nearest, 12cap, 1rem);
+    --cap13: round(nearest, 13cap, 1rem);
+    --cap14: round(nearest, 14cap, 1rem);
     --cap15: round(nearest, 15cap, 1rem);
+    --cap16: round(nearest, 16cap, 1rem);
+    --cap17: round(nearest, 17cap, 1rem);
+    --cap18: round(nearest, 18cap, 1rem);
+    --cap19: round(nearest, 19cap, 1rem);
+    --cap20: round(nearest, 20cap, 1rem);
 
     /* ============================================
-   * BORDER WIDTH TRACKING
-   * Used by padding utilities for grid compensation
-   * ============================================ */
-    --bw-t: 0px;
-    --bw-r: 0px;
-    --bw-b: 0px;
-    --bw-l: 0px;
+     * GRID-AWARE SPACING SYSTEM
+     *
+     * Problem: Borders break grid alignment by adding to element size.
+     * Solution: Padding tokens that auto-compensate for border width.
+     *
+     * Usage:
+     *   .card {
+     *     --border-width: 1px;
+     *     border: var(--border-width) solid var(--color-border);
+     *     padding: var(--pad4);  // auto-compensates!
+     *   }
+     *
+     * How it works:
+     *   --pad4 = calc(4rem - var(--border-width))
+     *   With --border-width: 1px → 20px - 1px = 19px
+     *   Result: content + border = 20px (grid-aligned)
+     *
+     * Multi-side borders (rare):
+     *   When sides have different border widths, define your own
+     *   per-side variables and use manual calc:
+     *   .asymmetric {
+     *     --border-width-t: 1px;
+     *     --border-width-b: 2px;
+     *     border-top: var(--border-width-t) solid var(--color-border);
+     *     border-bottom: var(--border-width-b) solid var(--color-border);
+     *     padding-top: calc(4rem - var(--border-width-t));
+     *     padding-bottom: calc(4rem - var(--border-width-b));
+     *   }
+     *
+     * Variables cascade, so children/variants can override for hover states.
+     * ============================================ */
+
+    --border-width: 0px;
+    --pad1: calc(1rem - var(--border-width));
+    --pad2: calc(2rem - var(--border-width));
+    --pad3: calc(3rem - var(--border-width));
+    --pad4: calc(4rem - var(--border-width));
+    --pad5: calc(5rem - var(--border-width));
+    --pad6: calc(6rem - var(--border-width));
+    --pad7: calc(7rem - var(--border-width));
+    --pad8: calc(8rem - var(--border-width));
+    --pad9: calc(9rem - var(--border-width));
+    --pad10: calc(10rem - var(--border-width));
+    --pad11: calc(11rem - var(--border-width));
+    --pad12: calc(12rem - var(--border-width));
+    --pad13: calc(13rem - var(--border-width));
+    --pad14: calc(14rem - var(--border-width));
+    --pad15: calc(15rem - var(--border-width));
 
     /* ============================================
      * FONT DEFINITIONS

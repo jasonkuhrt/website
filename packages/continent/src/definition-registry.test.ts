@@ -1,12 +1,21 @@
 import { Effect, Option, Stream } from 'effect'
 import { describe, expect, test } from 'vitest'
+import { type Content, isBase } from './content.js'
 import * as DefinitionRegistry from './definition-registry.js'
 
-const def = (tag: string, version = 1, sourceFilePath?: string): DefinitionRegistry.Definition => ({
+const def = (tag: string, version = 1, sourceFilePath?: string): Content.Base => ({
   _tag: tag,
   version,
-  store: { watchPaths: [`content/${tag}`], watchGlobs: [`content/${tag}/**/*.md`] },
+  store: {
+    cardinality: 'n',
+    watchPaths: [`content/${tag}`],
+    watchGlobs: [`content/${tag}/**/*.md`],
+    schema: {} as any,
+    readMany: () => Effect.succeed([]),
+    readOne: () => Effect.succeed({} as any),
+  },
   sourceFilePath,
+  restoreCache: () => Effect.void,
 })
 
 const create = (opts: Partial<DefinitionRegistry.Config> = {}) =>
@@ -52,13 +61,13 @@ describe('register / get / remove', () => {
 describe('getByWatchedFilePath', () => {
   test('matches glob', () => {
     const r = create()
-    r.register({ _tag: 'essay', version: 1, store: { watchPaths: [], watchGlobs: ['content/essays/**/*.md'] } })
+    r.register({ ...def('essay'), store: { ...def('essay').store, watchGlobs: ['content/essays/**/*.md'] } })
     expect(r.getByWatchedFilePath('content/essays/foo.md')).toHaveLength(1)
   })
 
   test('no match', () => {
     const r = create()
-    r.register({ _tag: 'essay', version: 1, store: { watchPaths: [], watchGlobs: ['content/essays/**/*.md'] } })
+    r.register({ ...def('essay'), store: { ...def('essay').store, watchGlobs: ['content/essays/**/*.md'] } })
     expect(r.getByWatchedFilePath('other/file.txt')).toEqual([])
   })
 })
@@ -90,7 +99,7 @@ describe('getAffectedByFilePath', () => {
 
   test('Content for watched path', () => {
     const r = create()
-    r.register({ _tag: 'essay', version: 1, store: { watchPaths: [], watchGlobs: ['content/**/*.md'] } })
+    r.register({ ...def('essay'), store: { ...def('essay').store, watchPaths: [], watchGlobs: ['content/**/*.md'] } })
     const result = r.getAffectedByFilePath('content/foo.md')
     expect(result._tag).toBe('Content')
   })
@@ -120,8 +129,8 @@ describe('importStream - cold start + hot tail', () => {
   })
 })
 
-describe('isDefinition', () => {
-  test('valid', () => expect(DefinitionRegistry.isDefinition(def('a'))).toBe(true))
-  test('null', () => expect(DefinitionRegistry.isDefinition(null)).toBe(false))
-  test('missing fields', () => expect(DefinitionRegistry.isDefinition({ _tag: 'a' })).toBe(false))
+describe('isBase', () => {
+  test('valid', () => expect(isBase(def('a'))).toBe(true))
+  test('null', () => expect(isBase(null)).toBe(false))
+  test('missing fields', () => expect(isBase({ _tag: 'a' })).toBe(false))
 })

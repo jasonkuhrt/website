@@ -6,7 +6,7 @@ import { config, page } from '#~/runtime.js'
 import { Option } from 'effect'
 
 export default page<{ slug: string }>(function*({ slug }) {
-  const postOption = yield* Scribble.get({ slug })
+  const postOption = yield* Scribble.getBy({ slug })
   const post = Option.getOrThrowWith(postOption, () => new Error(`Scribble not found: ${slug}`))
 
   return (

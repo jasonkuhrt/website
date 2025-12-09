@@ -108,15 +108,15 @@ describe('cache system', () => {
     await run(content.list())
 
     // Get by unique key (now returns Option)
-    const alpha = await run(content.get({ slug: 'alpha' }))
+    const alpha = await run(content.getBy({ slug: 'alpha' }))
     expect(Option.isSome(alpha)).toBe(true)
     expect(Option.getOrThrow(alpha).content).toBe('ALPHA CONTENT')
 
-    const beta = await run(content.get({ slug: 'beta' }))
+    const beta = await run(content.getBy({ slug: 'beta' }))
     expect(Option.getOrThrow(beta).content).toBe('BETA CONTENT')
 
     // Non-existent key
-    const missing = await run(content.get({ slug: 'nonexistent' }))
+    const missing = await run(content.getBy({ slug: 'nonexistent' }))
     expect(Option.isNone(missing)).toBe(true)
   })
 
@@ -133,7 +133,7 @@ describe('cache system', () => {
     // Cache loads automatically via ensureLoaded when list()/get() is called
 
     // Should still be able to get cached record without re-running map
-    const record = await run(content2.get({ slug: 'persist' }))
+    const record = await run(content2.getBy({ slug: 'persist' }))
     expect(Option.isSome(record)).toBe(true)
     expect(Option.getOrThrow(record).content).toBe('PERSIST ME')
   })
@@ -150,7 +150,7 @@ describe('cache system', () => {
     const content2 = TestContent()
 
     // Get triggers lazy cache load from disk
-    const record = await run(content2.get({ slug: 'restore' }))
+    const record = await run(content2.getBy({ slug: 'restore' }))
     expect(Option.getOrThrow(record).content).toBe('RESTORE ME')
   })
 
@@ -195,7 +195,7 @@ describe('cache system', () => {
     const content = TestContent()
 
     // Direct get without list() first
-    const record = await run(content.get({ slug: 'lazy' }))
+    const record = await run(content.getBy({ slug: 'lazy' }))
     expect(Option.isSome(record)).toBe(true)
     expect(Option.getOrThrow(record).content).toBe('LAZY LOAD')
   })
@@ -249,7 +249,10 @@ describe('cache system', () => {
 
     // This should hit the cache since hash should be stable and cache loads from disk
     await Effect.runPromise(
-      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+      Effect.gen(function*() {
+        yield* content2.restoreCache()
+        yield* content2.list()
+      }).pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
     )
 
     expect(events).toHaveLength(1)
@@ -396,7 +399,10 @@ describe('version-based cache invalidation', () => {
     })
 
     await Effect.runPromise(
-      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+      Effect.gen(function*() {
+        yield* content2.restoreCache()
+        yield* content2.list()
+      }).pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
     )
 
     // Should be a cache hit because map.toString() is identical
@@ -446,7 +452,10 @@ describe('version-based cache invalidation', () => {
     })
 
     const results = await Effect.runPromise(
-      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+      Effect.gen(function*() {
+        yield* content2.restoreCache()
+        return yield* content2.list()
+      }).pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
     )
 
     // Should be a cache HIT because version is the same (map.toString() is ignored)
@@ -549,7 +558,10 @@ describe('version-based cache invalidation', () => {
     })
 
     await Effect.runPromise(
-      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+      Effect.gen(function*() {
+        yield* content2.restoreCache()
+        yield* content2.list()
+      }).pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
     )
 
     expect(events[0]!.type).toBe('hit')
@@ -646,7 +658,10 @@ describe('version-based cache invalidation', () => {
     })
 
     await Effect.runPromise(
-      content2.list().pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
+      Effect.gen(function*() {
+        yield* content2.restoreCache()
+        yield* content2.list()
+      }).pipe(Effect.provide(FreshCacheLayer), Effect.provide(NodeContext.layer)),
     )
 
     expect(events[0]!.type).toBe('hit')
