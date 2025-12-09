@@ -1,5 +1,6 @@
 import { compile } from '@mdx-js/mdx'
 import type { CompileOptions } from '@mdx-js/mdx'
+import { remarkDefinitionList, defListHastHandlers } from 'remark-definition-list'
 import { Effect, Schema as S } from 'effect'
 import type { Struct } from 'effect/Schema'
 import matter from 'gray-matter'
@@ -94,7 +95,10 @@ const processMdx = <$a, $i>(
     const compiled = yield* Effect.promise(() =>
       compile(processedContent, {
         outputFormat: 'function-body',
-        remarkPlugins: config.remarkPlugins,
+        remarkPlugins: [remarkDefinitionList, ...(config.remarkPlugins ?? [])],
+        remarkRehypeOptions: {
+          handlers: defListHastHandlers,
+        },
         rehypePlugins: config.rehypePlugins,
       })
     )
@@ -244,7 +248,9 @@ export const Mdx = <
   return Content(name, {
     // BUMP THIS when factory processing changes (plugins, schema, etc.)
     // v2: Added rehypeImageDimensions plugin
-    version: 2,
+    // v3: Added remark-definition-list plugin
+    // v4: Added defListHastHandlers for proper dl/dt/dd HTML output
+    version: 4,
     store: Stores.dir({
       glob,
     }),

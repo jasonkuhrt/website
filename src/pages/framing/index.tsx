@@ -13,11 +13,6 @@ export default page(function*() {
       <Meta title='Framing' />
 
       <main>
-        <h1>Framing</h1>
-        <p>
-          Moments framed through the lens.
-        </p>
-
         <div>
           {sorted.map((photo) => <PhotoCard key={photo.slug} photo={photo} />)}
         </div>

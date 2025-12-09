@@ -7,16 +7,19 @@
 
 :root {
     --container-prose: 130rem; /* 650px */
-    --prose-space-sm: var(--cap3); /*calc(4 * var(--text-trimmed));*/
-    --prose-space-md: var(--cap10);
-    --prose-space-lg: var(--cap15);
+    --prose-space-sm: var(--cap3);
+    --prose-space-md: var(--cap8);
+    --prose-space-lg: var(--cap12);
 }
 
 /* Prose mixin — use via @mixin prose; */
 @define-mixin prose {
     max-width: var(--container-prose);
 
-    /* First/last child — collapse margins */
+    /* =========================================================================
+       Base
+       ========================================================================= */
+
     & > :first-child {
         margin-top: 0;
     }
@@ -24,17 +27,25 @@
         margin-bottom: 0;
     }
 
-    /* Paragraphs & lists */
-    & p,
+    /* =========================================================================
+       Paragraphs
+       ========================================================================= */
+
+    & p {
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    /* =========================================================================
+       Lists
+       ========================================================================= */
+
     & ul,
     & ol {
         margin-bottom: var(--prose-space-sm);
     }
 
-    /* Lists */
-
     & li {
-        margin-bottom: var(--cap1); /*var(--text-trimmed);*/
+        margin-bottom: var(--cap1);
         &::marker {
             /* BROWSER QUIRK: ::marker ignores text-box trimming.
                Even with * { text-box: trim-both cap alphabetic },
@@ -51,8 +62,7 @@
         padding-left: 3rem;
     }
 
-    /* TOC List pattern */
-
+    /* TOC pattern: links followed by nested list */
     & li > a {
         display: block;
     }
@@ -62,7 +72,14 @@
         margin-bottom: var(--cap1);
     }
 
-    & > p:has(+ :is(h1, h2, h3, h4, h5, h6)) {
+    /* =========================================================================
+       Headings
+       ========================================================================= */
+
+    & > p:has(+ :is(h1, h2)) {
+        margin-bottom: var(--prose-space-lg);
+    }
+    & > p:has(+ :is(h3)) {
         margin-bottom: var(--prose-space-md);
     }
 
@@ -74,7 +91,8 @@
     & > h6 {
         margin-bottom: var(--prose-space-sm);
     }
-    /* Headings that are diretly adjacent should collapse */
+
+    /* Adjacent headings collapse */
     & > :is(h1, h2, h3, h4, h5, h6):has(+ :is(h1, h2, h3, h4, h5, h6)) {
         margin-bottom: 0;
     }
@@ -83,7 +101,7 @@
         text-align: center;
     }
 
-    /* H2 with hairlines extending to viewport edges */
+    /* H2: hairlines extending to viewport edges */
     & > h2 {
         position: relative;
         text-align: center;
@@ -108,23 +126,78 @@
         }
     }
 
-    /* Code blocks */
+    /* =========================================================================
+       Code Blocks
+       ========================================================================= */
+
     & > pre {
         @mixin breakout1;
         margin-bottom: var(--prose-space-md);
     }
 
-    /* Blockquotes */
+    /* =========================================================================
+       Blockquotes
+       ========================================================================= */
+
     & > blockquote {
         margin-bottom: var(--prose-space-md);
     }
 
-    /* Horizontal rules */
+    /* =========================================================================
+       Horizontal Rules
+       ========================================================================= */
+
     & > hr {
         margin-bottom: var(--prose-space-lg);
     }
 
-    /* Images — grid-snapped heights via CSS round() */
+    /* =========================================================================
+       Definition Lists
+       Hanging terms in left margin on desktop
+       ========================================================================= */
+
+    & dl {
+        margin-bottom: var(--prose-space-md);
+    }
+
+    & dt {
+        font-weight: 600;
+        font-style: italic;
+        margin-bottom: var(--cap1);
+    }
+
+    & dd {
+        margin: 0;
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    @mixin at-md {
+        & dl {
+            /* Dynamic width: fills space from viewport edge to content spine */
+            --term-width: calc((100vw - 100cqi) / 2);
+            --term-gap: 2rem;
+            display: grid;
+            grid-template-columns: var(--term-width) 1fr;
+            gap: 0 var(--term-gap);
+            margin-left: calc(-1 * (var(--term-width) + var(--term-gap)));
+        }
+
+        & dt {
+            padding-right: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: right;
+            hyphens: auto;
+            margin-bottom: 0;
+            padding-left: 5rem;
+        }
+    }
+
+    /* =========================================================================
+       Images
+       Grid-snapped heights via CSS round()
+       ========================================================================= */
+
     & img {
         --h: round(down, 100cqi / var(--aspect-ratio), 1rem);
         display: block;
@@ -138,7 +211,7 @@
     margin-inline: auto;
     padding-inline: 4rem; /* 20px */
     container-type: inline-size;
-    @media (min-width: 768px) {
+    @mixin at-md {
         padding-inline: 6rem; /* 30px */
     }
 }

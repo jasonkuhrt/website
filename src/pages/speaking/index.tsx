@@ -11,7 +11,6 @@ export default page(function*() {
       <Meta title='Speaking' />
 
       <main>
-        <h1>Speaking</h1>
         <table>
           <thead>
             <tr>

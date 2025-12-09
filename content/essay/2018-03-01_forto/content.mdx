@@ -164,43 +164,60 @@ An "infinite" threshold can disable most rezones altogether. In the following di
 
 ### Components
 
-**Target** – A rectangular thing. The aim of Popover.
+Target
+:   A rectangular thing. The aim of Popover.
 
-**Frame** – The rectangular thing that Popover should remain within.
+Frame
+:   The rectangular thing that Popover should remain within.
 
-**Popover** – The rectangular thing Forto is optimally positioning in relation to Target and Frame.
+Popover
+:   The rectangular thing Forto is optimally positioning in relation to Target and Frame.
 
-**Tip** – A visual cue reflecting Popover's aim. It is positioned relative to Popover and Target.
+Tip
+:   A visual cue reflecting Popover's aim. It is positioned relative to Popover and Target.
 
 ### Layout
 
 ![Anatomy layout diagram](./anatomy-layout.png)
 
-**Arrangement** – The current position and dimensions of Target, Frame, and Popover.
+Arrangement
+:   The current position and dimensions of Target, Frame, and Popover.
 
-**Main/Cross Axes** – Relative axes whose concrete orientation depend upon Popover's position relative to Target. The main-axis is along the orientation containing Popover adjacent to Target while the cross-axis is along that which does not cross through both Target and Popover.
+Main/Cross Axes
+:   Relative axes whose concrete orientation depend upon Popover's position relative to Target. The main-axis is along the orientation containing Popover adjacent to Target while the cross-axis is along that which does not cross through both Target and Popover.
 
-**Before/After Sides** – A slightly more general way to think about rectangle sides. _Before_ refers to top or left. _After_ refers to bottom or right.
+Before/After Sides
+:   A slightly more general way to think about rectangle sides. _Before_ refers to top or left. _After_ refers to bottom or right.
 
-**Zone** – A rectangle between the inner Frame and outer Target. There are four zones between Target and Frame since there are four sides to a rectangle which both Target and Frame are.
+Zone
+:   A rectangle between the inner Frame and outer Target. There are four zones between Target and Frame since there are four sides to a rectangle which both Target and Frame are.
 
-**Zone Fit** – How well a given zone fits the Popover. Determined by subtracting the Popover's dimensions from that of zone's.
+Zone Fit
+:   How well a given zone fits the Popover. Determined by subtracting the Popover's dimensions from that of zone's.
 
-**Rezone** – Move the Popover from one zone to another due to changes in the arrangement.
+Rezone
+:   Move the Popover from one zone to another due to changes in the arrangement.
 
-**First Class Zone** – A zone whose fit is positive on both dimensions.
+First Class Zone
+:   A zone whose fit is positive on both dimensions.
 
-**Second Class Zone** – A zone whose fit is negative on one or both dimensions.
+Second Class Zone
+:   A zone whose fit is negative on one or both dimensions.
 
-**Rezone thresholds** – A technique to control rezone frequency.
+Rezone thresholds
+:   A technique to control rezone frequency.
 
-**Preferred Zones** – A user configurable option that tweaks the algorithm to prefer particular zones during ranking. The preference is specified as a threshold of how much better can other zones be while preferring these ones. The zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default Forto prefers no zones and just picks whichever is top ranked.
+Preferred Zones
+:   A user configurable option that tweaks the algorithm to prefer particular zones during ranking. The preference is specified as a threshold of how much better can other zones be while preferring these ones. The zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default Forto prefers no zones and just picks whichever is top ranked.
 
-**Eligible Zones** – A user configurable option instructing Forto about which zones Popover can be positioned within. The eligible zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default all zones are eligible.
+Eligible Zones
+:   A user configurable option instructing Forto about which zones Popover can be positioned within. The eligible zones can be expressed as any of: vertical, horizontal, before, after, top, bottom, left, right. By default all zones are eligible.
 
-**Mode Bounded** – Popover will always try to stay within Frame bounds.
+Mode Bounded
+:   Popover will always try to stay within Frame bounds.
 
-**Mode Unbounded** – Popover will ignore Frame bounds.
+Mode Unbounded
+:   Popover will ignore Frame bounds.
 
 ### Zone Measure Diagram
 

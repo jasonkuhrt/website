@@ -15,8 +15,6 @@ export default page(function*() {
       <Meta title='Writing' />
 
       <main>
-        <h1>Writing</h1>
-
         <div>
           <section>
             <h2>Essays</h2>

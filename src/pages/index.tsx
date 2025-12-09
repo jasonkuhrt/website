@@ -1,14 +1,67 @@
 import { Meta } from '#~/components/meta.js'
 import { config, page } from '#~/runtime.js'
+import {
+  DateString,
+  Experience,
+  ExperienceAchievement,
+  ExperienceEducation,
+  ExperienceWork,
+} from '../content/experience.js'
+import { Profile } from '../content/profile.js'
 
 export default page(function*() {
+  const profile = yield* Profile.get()
+  const allExperiences = yield* Experience.list()
+
+  const workItems = allExperiences.filter((e): e is ExperienceWork => e._tag === 'work')
+  const educationItems = allExperiences.filter((e): e is ExperienceEducation => e._tag === 'education')
+  const achievementItems = allExperiences.filter((e): e is ExperienceAchievement => e._tag === 'achievement')
+
   return (
     <>
       <Meta title='Jason Kuhrt' description='Personal website of Jason Kuhrt' />
 
       <main>
-        <h1>Jason Kuhrt</h1>
-        <p>Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering</p>
+        <h1>{profile.name.first} {profile.name.last}</h1>
+        <p>{profile.tagline}</p>
+        <p>{profile.summary}</p>
+
+        <section>
+          <h2>Experience</h2>
+          {workItems.map((item) => (
+            <article key={item.id}>
+              <h3>{item.title}</h3>
+              <p>{item.company} · {item.location}</p>
+              <p>{item.formatDateRange()}</p>
+              {item.overview && <p>{item.overview}</p>}
+              {item.technologies && item.technologies.length > 0 && <p>{item.technologies.join(' · ')}</p>}
+            </article>
+          ))}
+        </section>
+
+        <section>
+          <h2>Education</h2>
+          {educationItems.map((item) => (
+            <article key={item.id}>
+              <h3>{item.degree}</h3>
+              <p>{item.institution}</p>
+              <p>{item.formatDateRange()}</p>
+              {item.description && <p>{item.description}</p>}
+            </article>
+          ))}
+        </section>
+
+        <section>
+          <h2>Achievements</h2>
+          {achievementItems.map((item) => (
+            <article key={item.id}>
+              <h3>{item.title}</h3>
+              <p>{item.issuer}</p>
+              <p>{DateString.format(item.date)}</p>
+              {item.description && <p>{item.description}</p>}
+            </article>
+          ))}
+        </section>
       </main>
     </>
   )

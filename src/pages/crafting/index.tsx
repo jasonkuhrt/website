@@ -12,11 +12,6 @@ export default page(function*() {
       <Meta title='Crafting' />
 
       <main>
-        <h1>Crafting</h1>
-        <p>
-          Open source projects I've created/co-created.
-        </p>
-
         {featured.length > 0 && (
           <section>
             <h2>Featured</h2>

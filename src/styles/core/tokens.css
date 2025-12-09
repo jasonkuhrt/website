@@ -230,22 +230,26 @@
    * Change these core values to recalculate entire palette
    * ============================================ */
 
-    /* Neutral anchors */
-    --color-black: oklch(0% 0 0);
-    --color-white: oklch(100% 0 0);
+    /* Neutral anchors - Tokyo Night blue tint */
+    --neutral-h: 250; /* blue-purple hue for Tokyo Night feel */
+    --color-black: oklch(0% 0 var(--neutral-h));
+    --color-white: oklch(100% 0 var(--neutral-h));
+    /* Tinted dark/light for backgrounds (slight blue cast) */
+    --color-dark: oklch(15% 0.02 var(--neutral-h)); /* Tokyo Night storm ~#24283b */
+    --color-light: oklch(98% 0.01 60); /* warm cream for light mode */
 
-    /* Accent foundation - change hue to shift entire palette */
-    --accent-h: 250;
-    --accent-c: 0.2;
-    --accent-l: 55%;
+    /* Accent foundation - warm amber/gold (earthy) */
+    --accent-h: 45;
+    --accent-c: 0.15;
+    --accent-l: 70%;
     --accent-base: oklch(var(--accent-l) var(--accent-c) var(--accent-h));
 
-    /* Experience hues - only define the hue, derive colors below */
-    --hue-work: 250;
-    --hue-education: 145;
-    --hue-achievement: 85;
-    --hue-speaking: 300;
-    --hue-personal: 25;
+    /* Experience hues - warmer palette */
+    --hue-work: 220; /* steel blue - professional */
+    --hue-education: 160; /* teal-green - growth */
+    --hue-achievement: 45; /* gold/amber - success */
+    --hue-speaking: 340; /* warm rose - personal */
+    --hue-personal: 25; /* burnt orange - creative */
 
     /* Experience color foundation */
     --experience-l: 55%;
@@ -338,19 +342,19 @@
     --color-personal-base: oklch(60% 0.18 var(--hue-personal));
 
     /* ============================================
-   * SEMANTIC COLORS - LIGHT MODE
+   * SEMANTIC COLORS - LIGHT MODE (warm earth tones)
    * Map scale positions to semantic meanings
    * ============================================ */
-    --color-text: var(--gray950);
-    --color-text-secondary: var(--gray600);
-    --color-text-tertiary: var(--gray500);
+    --color-text: oklch(20% 0.02 45); /* warm dark brown */
+    --color-text-secondary: oklch(45% 0.02 45);
+    --color-text-tertiary: oklch(55% 0.02 45);
 
-    --color-bg: var(--color-white);
-    --color-bg-subtle: var(--gray50);
-    --color-bg-muted: var(--gray100);
+    --color-bg: var(--color-light); /* warm cream */
+    --color-bg-subtle: oklch(95% 0.015 60);
+    --color-bg-muted: oklch(92% 0.02 60);
 
-    --color-border: var(--gray200);
-    --color-border-hover: var(--gray400);
+    --color-border: oklch(85% 0.02 60);
+    --color-border-hover: oklch(75% 0.02 60);
 
     --color-accent: var(--accent500);
     --color-accent-hover: var(--accent600);
@@ -392,26 +396,26 @@
 }
 
 /* ============================================
- * DARK MODE
- * Inverts semantic mappings, palette stays derived
+ * DARK MODE - Tokyo Night style
+ * Blue-gray backgrounds with soft blue-white text
  * ============================================ */
 @media (prefers-color-scheme: dark) {
     :root {
-        /* Semantic text - invert the gray scale positions */
-        --color-text: var(--gray100);
-        --color-text-secondary: var(--gray400);
-        --color-text-tertiary: var(--gray500);
+        /* Text - soft blue-white (Tokyo Night foreground) */
+        --color-text: oklch(90% 0.02 var(--neutral-h)); /* ~#c0caf5 */
+        --color-text-secondary: oklch(70% 0.02 var(--neutral-h));
+        --color-text-tertiary: oklch(55% 0.02 var(--neutral-h));
 
-        /* Semantic backgrounds - invert */
-        --color-bg: var(--gray950);
-        --color-bg-subtle: var(--gray900);
-        --color-bg-muted: var(--gray800);
+        /* Backgrounds - Tokyo Night storm blue-gray */
+        --color-bg: var(--color-dark); /* ~#24283b */
+        --color-bg-subtle: oklch(18% 0.02 var(--neutral-h));
+        --color-bg-muted: oklch(22% 0.02 var(--neutral-h));
 
-        /* Semantic borders - invert */
-        --color-border: var(--gray800);
-        --color-border-hover: var(--gray600);
+        /* Borders - subtle blue-gray */
+        --color-border: oklch(28% 0.02 var(--neutral-h));
+        --color-border-hover: oklch(40% 0.02 var(--neutral-h));
 
-        /* Accent - use lighter end for dark backgrounds */
+        /* Accent - lighter amber for dark backgrounds */
         --color-accent: var(--accent400);
         --color-accent-hover: var(--accent300);
         --color-accent-text: var(--accent300);

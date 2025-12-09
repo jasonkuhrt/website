@@ -3,12 +3,11 @@ import { Link as NavLink } from '#~/components/link/_.js'
 
 // TODO: Migrate Site to new content framework
 const navItems = [
-  { to: '/' as const, label: 'home' },
+  { to: '/' as const, label: 'bio' },
   { to: '/writing' as const, label: 'writing' },
   { to: '/crafting' as const, label: 'crafting' },
   { to: '/framing' as const, label: 'framing' },
   { to: '/speaking' as const, label: 'speaking' },
-  { to: '/bio' as const, label: 'bio' },
 ]
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

@@ -332,8 +332,11 @@ export const Content: ContentFn = ((tag: string, config: Content.ConfigAny) => {
   const configKeys: string[] = config.secondaryKeys ?? []
   const secondaryKeys = [...new Set([...autoKeys, ...configKeys])]
 
-  // Create schema for cache encode/decode if provided
-  const outputSchema = config.schema ? S.Struct(config.schema as Struct.Fields) : null
+  // Cache schema is the output schema if provided (after map transform),
+  // otherwise the store schema (when output = source, no transform)
+  const cacheSchema = config.schema
+    ? S.Struct(config.schema as Struct.Fields)
+    : config.store.schema
 
   // Define list as a closure-captured function
   const list = () =>
@@ -477,7 +480,7 @@ export const Content: ContentFn = ((tag: string, config: Content.ConfigAny) => {
       Effect.gen(function*() {
         console.log(`[continent] ${tag}.restoreCache() version=${version}`)
         const cache = yield* Cache
-        if (outputSchema) cache.registerSchema(tag, outputSchema as CacheSchema)
+        if (cacheSchema) cache.registerSchema(tag, cacheSchema as CacheSchema)
         yield* cache.load(tag)
       }),
   }
