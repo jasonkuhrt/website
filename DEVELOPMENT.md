@@ -1,5 +1,66 @@
 # Development Guide
 
+## Writing Content
+
+Content lives in `content/writing/` with three categories:
+
+### Essays (`essays/`)
+
+Long-form technical essays. Two formats:
+
+- **Flat file**: `{slug}.mdx` - no assets
+- **Directory**: `{slug}/content.mdx` + assets - for posts with images
+
+### Drivel (`drivel/`)
+
+Shorter blog posts. Same formats as essays but with date prefix:
+
+- **Flat file**: `YYYY-MM-DD_{slug}.mdx` - no assets
+- **Directory**: `YYYY-MM-DD_{slug}/content.mdx` + assets
+
+### Scribbles (`scribbles/`)
+
+Quick notes/TIL. Date-based naming:
+
+- **Flat file**: `YYYY-MM-DD.mdx` or `YYYY-MM-DD_{slug}.mdx` - no assets
+- **Directory**: `YYYY-MM-DD/content.mdx` + assets
+
+### Asset References
+
+Use relative paths `./image.png` - automatically rewritten to absolute URLs.
+
+## Dev Server Behavior
+
+### Dev Server Restart Required
+
+The dev server must be restarted when:
+
+**Content Type Definitions** - Changes to content definitions in `src/content/` require restart:
+
+- Schema changes (adding/removing fields)
+- Discover config changes (strategies, roots, entry patterns)
+- Loader logic changes (ID extraction, date normalization)
+
+**Continent Package** - Changes to `packages/continent/src/`:
+
+- `definition.ts` - Core discovery and loading logic
+- `vite-plugin.ts` - Asset copying behavior
+
+**Asset Path Changes** - Any change that affects how asset URLs are computed:
+
+- Changes to `getAssetBasePath()` logic
+- Changes to `getAssetsToCopy()` destination paths
+- ID transformation changes in loaders (e.g., date stripping)
+
+### What Hot Reloads
+
+The following changes are picked up automatically:
+
+- MDX content changes
+- React component changes
+- CSS/styling changes
+- New content files (detected by watcher)
+
 ## GitHub Repository Data
 
 The coding page displays GitHub repository data that is automatically refreshed daily.
@@ -173,3 +234,95 @@ When adding new pages or features:
 - `pnpm optimize-photos` - Optimize hi-res photos to web-res
 - `pnpm check` - Run all checks (format, types, lint)
 - `pnpm format` - Format code with Prettier
+
+## Layout System
+
+A compositional layout system built with Panda CSS for type-safe, zero-runtime styling. Based on 6px baseline grid and modern CSS features (75%+ browser support threshold).
+
+### Architecture
+
+**3-Tier Composition:**
+
+1. **Primitives** (Building blocks) - `app/components/layout/`
+   - `<Flex>` - Directional flow (direction, align, justify, gap, wrap)
+   - `<Center>` - Centering utility (axis: both/x/y)
+   - `<GridLayout>` - CSS Grid with subgrid support (columns, rows, gap)
+   - `<Cluster>` - Horizontal wrapping group (gap, align, justify)
+   - `<Spacer>` - Flexible space (flex-grow: 1)
+
+2. **Patterns** (Composed layouts) - Future: Cover, Switcher, AspectRatio
+3. **Specialized** (Domain-specific) - Future: Reel, Masonry, Sidebar
+
+### Design Tokens
+
+**Container Sizes:** `containerSizes.xs/sm/md/lg/xl` (320px → 1280px)
+**Grid Columns:** `gridColumns.1/2/3/4/6/12`
+
+### Modern CSS Features Used
+
+- **CSS Grid Level 2** (96% support) - Base grid system
+- **CSS Subgrid** (89% support) - Child grids inherit parent tracks
+- **Container Queries** (91% support) - Component-scoped responsive design
+- **Gap Property** (96% support) - Works with flexbox AND grid
+- **Text Box Trim** (80% support) - Perfect baseline alignment
+
+### Usage Examples
+
+```tsx
+// Header with centered logo and nav
+<Flex direction="column" align="center" gap={2}>
+  <Logo />
+  <Cluster gap={3}>
+    <NavLink />
+    <NavLink />
+  </Cluster>
+</Flex>
+
+// 3-column responsive grid
+<GridLayout columns={3} gap={8}>
+  <Card />
+  <Card />
+  <Card />
+</GridLayout>
+
+// Centered hero section
+<Center axis="both" minHeight="60vh">
+  <H1>Title</H1>
+</Center>
+```
+
+**Important:** Use **numeric values** for spacing props (gap, padding, margin). Numbers automatically map to the spacing scale:
+
+- `gap={3}` → `spacings.3` → `18px` (3 × 6px baseline)
+- `gap={8}` → `spacings.8` → `48px` (8 × 6px baseline)
+
+### Migration Patterns
+
+**Before (manual css):**
+
+```tsx
+const header = css({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginTop: 'spacings.12',
+})
+
+<div className={header}>...</div>
+```
+
+**After (layout component):**
+
+```tsx
+<Flex direction='column' align='center' marginTop='spacings.12'>
+  ...
+</Flex>
+```
+
+### Design Principles
+
+- **6px Baseline Grid** - All spacing snaps to 6px multiples
+- **Composition Over Configuration** - Combine primitives, don't create mega-components
+- **Semantic Names** - Intent clear from component name
+- **Type-Safe Props** - Panda CSS codegen provides autocomplete
+- **Zero Runtime** - All CSS generated at build time

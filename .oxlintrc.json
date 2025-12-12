@@ -1,6 +1,8 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "rules": {},
+  "rules": {
+    "require-yield": "off"
+  },
   "ignorePatterns": [
     "**/node_modules",
     "**/.svelte-kit",

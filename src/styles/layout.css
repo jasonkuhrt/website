@@ -1,0 +1,43 @@
+/**
+ * Layout
+ *
+ * Grid-locked to 5px baseline.
+ */
+@import "./mixins.css";
+
+body {
+    padding-bottom: 50vh;
+    overflow-x: clip; /* Prevent horizontal scroll from full-bleed elements */
+}
+
+/* ============================================
+ * BREAKOUT
+ * Escape container bounds, grid-aligned
+ * ============================================ */
+
+.breakout1 {
+    @mixin breakout1;
+}
+
+.breakout2 {
+    @mixin breakout2;
+}
+
+/* ============================================
+ * CONTAINERS
+ * ============================================ */
+
+.container-app {
+    width: 100%;
+    max-width: var(--container-standard); /* 1280px */
+    margin-inline: auto;
+    padding-inline: 4rem; /* 20px */
+
+    @media (min-width: 768px) {
+        padding-inline: 6rem; /* 30px */
+    }
+
+    @media (min-width: 1020px) {
+        padding-inline: 8rem; /* 40px */
+    }
+}

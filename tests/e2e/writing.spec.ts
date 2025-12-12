@@ -45,17 +45,23 @@ test.describe('Writing page', () => {
   test('essay links are clickable and navigate correctly', async ({ page }) => {
     await page.goto('/writing')
 
-    await page.getByRole('link', { name: /Visiting Lambda Calculus/ }).click()
-    await expect(page).toHaveURL(/\/writing\/essays\/visiting-lambda-calculus/)
-    await expect(page.locator('.prose')).toBeVisible()
+    // Wait for navigation while clicking (view transitions can cause timing issues)
+    await Promise.all([
+      page.waitForURL(/\/writing\/essays\/visiting-lambda-calculus/),
+      page.getByRole('link', { name: /Visiting Lambda Calculus/ }).click(),
+    ])
+    await expect(page.locator('article')).toBeVisible()
   })
 
   test('drivel links are clickable and navigate correctly', async ({ page }) => {
     await page.goto('/writing')
 
-    await page.getByRole('link', { name: /Yarn publish woes/ }).click()
-    await expect(page).toHaveURL(/\/writing\/drivel\/2017-06-08_yarn-publish-woes/)
-    await expect(page.locator('.prose')).toBeVisible()
+    // Wait for navigation while clicking (view transitions can cause timing issues)
+    await Promise.all([
+      page.waitForURL(/\/writing\/drivel\/2017-06-08_yarn-publish-woes/),
+      page.getByRole('link', { name: /Yarn publish woes/ }).click(),
+    ])
+    await expect(page.locator('article')).toBeVisible()
   })
 
   test('Scribbles link is clickable and navigates correctly', async ({ page }) => {
@@ -63,9 +69,11 @@ test.describe('Writing page', () => {
 
     // Use semantic region selector to target Scribbles section, then click first link
     const scribblesSection = page.getByRole('region', { name: 'Scribbles' })
-    await scribblesSection.getByRole('link').first().click()
 
-    // Should navigate to a scribbles entry
-    await expect(page).toHaveURL(/\/writing\/scribbles\//)
+    // Wait for navigation while clicking (view transitions can cause timing issues)
+    await Promise.all([
+      page.waitForURL(/\/writing\/scribbles\//),
+      scribblesSection.getByRole('link').first().click(),
+    ])
   })
 })

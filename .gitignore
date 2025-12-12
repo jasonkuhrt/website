@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -38,3 +38,17 @@ dist
 .playwright-mcp
 .svelte-kit
 .react-router
+
+# Generated design tokens
+app/styles/tokens.generated.css
+
+## Panda
+styled-system
+styled-system-studio
+
+# Job applications
+/applications
+
+# Content framework cache
+.content
+.continent

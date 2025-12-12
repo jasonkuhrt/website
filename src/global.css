@@ -1,0 +1,42 @@
+/**
+ * Global Styles
+ *
+ * Grid-Locked Design System
+ * 6px baseline, grid-locked typography scale
+ */
+
+/* ============================================
+ * CSS LAYERS (Cascade Control)
+ * Order determines specificity: later = higher
+ *
+ * reset  - Blank slate (box model, margins, normalize)
+ * tokens - CSS custom properties (design tokens)
+ * base   - Opinionated defaults (fonts, colors, grid on elements)
+ * prose  - Long-form content styles (.prose-container, .prose-header)
+ * layout - Layout utilities (containers, breakouts)
+ * debug  - Development aids (grid overlay)
+ * ============================================ */
+@layer reset, tokens, base, prose, layout, debug;
+
+/* ============================================
+ * FONTS (Unlayered - always highest priority)
+ * ============================================ */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/newsreader";
+@import "@fontsource/jetbrains-mono";
+
+/* ============================================
+ * DESIGN SYSTEM LAYERS
+ * ============================================ */
+@import "./styles/core/reset.css" layer(reset);
+@import "./styles/core/tokens.css" layer(tokens);
+@import "./styles/core/base.css" layer(base);
+@import "./styles/core/debug.css" layer(debug);
+@import "./styles/components/prose.css" layer(prose);
+@import "./styles/layout.css" layer(layout);
+
+/* ============================================
+ * UNLAYERED (Highest priority)
+ * ============================================ */
+@import "./styles/transitions.css";
+@import "./styles/print.css";

@@ -1,0 +1,23 @@
+/**
+ * Debug Styles
+ *
+ * Grid overlay for visual debugging.
+ * Toggle: document.documentElement.classList.toggle('debug')
+ */
+
+:root.debug {
+    body {
+        --debug-grid-color: oklch(70% 0.15 20 / 0.15);
+
+        background-image: linear-gradient(
+            to bottom,
+            var(--debug-grid-color) 1px,
+            transparent 1px
+        );
+        background-size: 100% 1rem;
+        background-attachment: local;
+    }
+    pre {
+        opacity: 20%; /* Allow seeing grid through code blocks */
+    }
+}

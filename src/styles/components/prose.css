@@ -1,0 +1,226 @@
+/**
+ * Prose Module
+ *
+ * Styles for long-form prose content with grid-locked vertical rhythm.
+ */
+@import "../mixins.css";
+
+:root {
+    --container-prose: 130rem; /* 650px */
+    --prose-space-sm: var(--cap3);
+    --prose-space-md: var(--cap8);
+    --prose-space-lg: var(--cap12);
+}
+
+/* Prose mixin — use via @mixin prose; */
+@define-mixin prose {
+    max-width: var(--container-prose);
+
+    /* =========================================================================
+       Base
+       ========================================================================= */
+
+    & > :first-child {
+        margin-top: 0;
+    }
+    & > :last-child {
+        margin-bottom: 0;
+    }
+
+    /* =========================================================================
+       Paragraphs
+       ========================================================================= */
+
+    & p {
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    /* =========================================================================
+       Lists
+       ========================================================================= */
+
+    & ul,
+    & ol {
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    & li {
+        margin-bottom: var(--cap1);
+        &::marker {
+            /* BROWSER QUIRK: ::marker ignores text-box trimming.
+               Even with * { text-box: trim-both cap alphabetic },
+               markers retain their line-height contribution.
+               Setting to 0 eliminates marker's height impact,
+               letting li height be determined by content alone. */
+            line-height: 0;
+        }
+    }
+
+    & ul ul {
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 3rem;
+    }
+
+    /* TOC pattern: links followed by nested list */
+    & li > a {
+        display: block;
+    }
+
+    & li > a:has(+ ul:last-child) {
+        display: block;
+        margin-bottom: var(--cap1);
+    }
+
+    /* =========================================================================
+       Headings
+       ========================================================================= */
+
+    & > p:has(+ :is(h1, h2)) {
+        margin-bottom: var(--prose-space-lg);
+    }
+    & > p:has(+ :is(h3)) {
+        margin-bottom: var(--prose-space-md);
+    }
+
+    & > h1,
+    & > h2,
+    & > h3,
+    & > h4,
+    & > h5,
+    & > h6 {
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    /* Adjacent headings collapse */
+    & > :is(h1, h2, h3, h4, h5, h6):has(+ :is(h1, h2, h3, h4, h5, h6)) {
+        margin-bottom: 0;
+    }
+
+    & > h3 {
+        text-align: center;
+    }
+
+    /* H2: hairlines extending to viewport edges */
+    & > h2 {
+        position: relative;
+        text-align: center;
+
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            top: 60%;
+            height: 1px;
+            width: 100vw;
+            opacity: 0.5;
+            background-color: var(--color-border);
+        }
+
+        &::before {
+            right: calc(100% + 5rem);
+        }
+
+        &::after {
+            left: calc(100% + 5rem);
+        }
+    }
+
+    /* =========================================================================
+       Code Blocks
+       ========================================================================= */
+
+    & > pre {
+        @mixin breakout1;
+        margin-bottom: var(--prose-space-md);
+    }
+
+    /* =========================================================================
+       Blockquotes
+       ========================================================================= */
+
+    & > blockquote {
+        margin-bottom: var(--prose-space-md);
+    }
+
+    /* =========================================================================
+       Horizontal Rules
+       ========================================================================= */
+
+    & > hr {
+        margin-bottom: var(--prose-space-lg);
+    }
+
+    /* =========================================================================
+       Definition Lists
+       Hanging terms in left margin on desktop
+       ========================================================================= */
+
+    & dl {
+        margin-bottom: var(--prose-space-md);
+    }
+
+    & dt {
+        font-weight: 600;
+        font-style: italic;
+        margin-bottom: var(--cap1);
+    }
+
+    & dd {
+        margin: 0;
+        margin-bottom: var(--prose-space-sm);
+    }
+
+    @mixin at-md {
+        & dl {
+            /* Dynamic width: fills space from viewport edge to content spine */
+            --term-width: calc((100vw - 100cqi) / 2);
+            --term-gap: 2rem;
+            display: grid;
+            grid-template-columns: var(--term-width) 1fr;
+            gap: 0 var(--term-gap);
+            margin-left: calc(-1 * (var(--term-width) + var(--term-gap)));
+        }
+
+        & dt {
+            padding-right: 1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: right;
+            hyphens: auto;
+            margin-bottom: 0;
+            padding-left: 5rem;
+        }
+    }
+
+    /* =========================================================================
+       Images
+       Grid-snapped heights via CSS round()
+       ========================================================================= */
+
+    & img {
+        --h: round(down, 100cqi / var(--aspect-ratio), 1rem);
+        display: block;
+        height: var(--h);
+        width: calc(var(--h) * var(--aspect-ratio));
+    }
+}
+
+.prose {
+    @mixin prose;
+    margin-inline: auto;
+    padding-inline: 4rem; /* 20px */
+    container-type: inline-size;
+    @mixin at-md {
+        padding-inline: 6rem; /* 30px */
+    }
+}
+
+.prose-header {
+    @mixin breakout1;
+    text-align: center;
+    margin-block: 10rem 15rem;
+    > time {
+        margin-top: 5rem;
+    }
+}
